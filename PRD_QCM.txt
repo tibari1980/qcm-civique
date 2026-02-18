@@ -1,0 +1,131 @@
+Excellent — tu disposes déjà d’un **cahier des charges très complet et structuré**. Un **PRD (Product Requirements Document)** va synthétiser ce contenu sous un format plus produit : objectifs, périmètre, fonctionnalités, expérience utilisateur et exigences techniques, dans un langage orienté produit (moins technique que le CDC mais plus actionnable pour un PM, designer ou développeur).  
+
+Voici une première version professionnelle du **PRD pour ton application “Prépa Examen Civique FR”** 👇  
+
+***
+
+# **Product Requirements Document (PRD) – Prépa Examen Civique FR**
+
+## 1. Vision Produit
+**Objectif global :**  
+Faciliter la réussite à l’examen civique obligatoire pour les étrangers en France, en offrant une plateforme web et mobile complète, pédagogique et conforme aux exigences officielles.
+
+**Proposition de valeur :**  
+Une solution fiable, intuitive et adaptée aux publics FLE, permettant de se préparer efficacement via des entraînements progressifs, des examens blancs réalistes et un suivi intelligent des performances.
+
+***
+
+## 2. Objectifs Stratégiques
+- Offrir un **entraînement complet** et conforme au format officiel (QCM 40 questions / 45 min / 80% réussite).  
+- Permettre une **progression adaptative** par niveaux et par thème.  
+- Développer un **outil de suivi pour formateurs et associations**.  
+- Fournir une **solution scalable et administrable** (import Excel, gestion Firebase).  
+
+**KPI clés :**
+- Taux de réussite moyen des utilisateurs > 80%.  
+- Taux d’engagement hebdomadaire > 60%.  
+- Retention 30 jours > 50%.  
+
+***
+
+## 3. Publics Cibles
+| Segment | Besoin principal | Fonctionnalité clé |
+|----------|------------------|--------------------|
+| Demandeurs de titre de séjour | Se préparer à l’examen civique | Mode entraînement & examens blancs |
+| Candidats à la carte de résident | Consolider connaissances | Mode révision & statistiques |
+| Candidats à la naturalisation | Préparer examen + entretien | Suivi de progression intelligent |
+| Formateurs & associations | Gérer jeunes ou apprenants | Tableau de suivi formateur |
+
+***
+
+## 4. Fonctionnalités Principales
+
+### 4.1 Tableau de bord utilisateur
+- Visualisation des scores globaux et par thème.  
+- Suivi du taux de réussite et du nombre de tests réalisés.  
+- Historique des tentatives.
+
+### 4.2 Mode Entraînement
+- QCM thématiques.  
+- Correction immédiate avec explications pédagogiques.  
+- Relecture des erreurs et explications associées.
+
+### 4.3 Mode Examen Blanc
+- 40 questions aléatoires / timer 45 min / blocage navigation arrière.  
+- Résultat instantané avec seuil de réussite à 80%.  
+- Résumé détaillé des erreurs.
+
+### 4.4 Mode Révision
+- Fiches thématiques synthétiques.  
+- Liste des erreurs fréquentes.  
+- Focus sur les notions récurrentes.
+
+### 4.5 Comptes utilisateurs
+- Authentification Firebase (email/password).  
+- Synchronisation multi-appareils.  
+- Sauvegarde automatique sur le cloud.
+
+### 4.6 Accès formateurs
+- Gestion des groupes d’apprenants.  
+- Suivi individuel et par thème.  
+- Export des résultats en CSV.
+
+***
+
+## 5. Exigences Techniques
+
+### Frontend
+- Framework : React / Next.js (SEO-friendly).  
+- Design responsive mobile-first.  
+- Dark mode & code couleur par progression.  
+
+### Backend
+- Firebase Authentication / Firestore.  
+- Cloud Functions pour validation et sécurité.  
+- Pour le developoiment sur hostinger 
+### Import des questions
+- Upload via fichier Excel validé.  
+- Contrôles d’intégrité (unicité ID, colonnes).  
+- Conversion automatique en JSON et insertion Firestore.
+
+***
+
+## 6. Expérience Utilisateur
+- Navigation simple et intuitive.  
+- Temps de chargement < 2 secondes.  
+- Interface accessible (WCAG AA).  
+- Textes simplifiés pour publics non francophones.  
+
+***
+
+## 7. Sécurité & Performance
+- Règles Firestore renforcées.  
+- Anti-triche (mélange réponses, limite tentatives).  
+- Audit des logs et backups réguliers.
+
+***
+
+## 8. Livrables
+- Cahier des charges validé.  
+- Maquettes UI/UX (desktop et mobile).  
+- Version MVP hébergée Firebase.  
+- Documentation technique + guide import questions.
+
+## 10. Différenciation concurrentielle
+Comparé aux plateformes existantes :
+- Système de **niveaux adaptatifs**.  
+- **Import Excel administrateur** prêt à l’emploi.  
+- **Multi-type d’examen** (titre séjour, résident, naturalisation).  
+- **Tableau formateur dédié**.  
+- Architecture Firebase performante et évolutive (≥5000 questions).
+
+
+
+voici ma configurartion sur firebase :
+  apiKey: "AIzaSyBgwmq_u5Z6rJS4z7Ndebo5dWzgP0MyHNE",
+  authDomain: "qcm-civique.firebaseapp.com",
+  projectId: "qcm-civique",
+  storageBucket: "qcm-civique.firebasestorage.app",
+  messagingSenderId: "821949209591",
+  appId: "1:821949209591:web:94e7e231696ce45b64ecf2"
+};

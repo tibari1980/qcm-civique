@@ -1,0 +1,297 @@
+
+# 📘 CAHIER DES CHARGES FINAL
+
+# APPLICATION « PRÉPA EXAMEN CIVIQUE FR »
+
+---
+
+# 1️⃣ CONTEXTE RÉGLEMENTAIRE
+
+Depuis le 1er janvier 2026, un **examen civique obligatoire** est requis pour :
+
+* Demande de **titre de séjour pluriannuel**
+* Demande de **carte de résident**
+* Demande de **naturalisation française**
+
+Format officiel :
+
+* 40 questions QCM
+* 45 minutes
+* 1 seule bonne réponse par question
+* Seuil de réussite : **80 % (32/40)**
+
+Référence institutionnelle : Service-public.fr
+
+---
+
+# 2️⃣ OBJECTIF STRATÉGIQUE DE L’APPLICATION
+
+Créer une plateforme **web + mobile responsive** permettant :
+
+✔ Préparation complète à l’examen civique officiel
+✔ Entraînement progressif par niveaux
+✔ Simulations réalistes d’examen
+✔ Suivi intelligent des performances
+✔ Outil pédagogique pour formateurs
+
+Positionnement :
+👉 Solution professionnelle, fiable, pédagogique
+👉 Conforme aux exigences des préfectures
+👉 Accessible aux publics FLE
+
+---
+
+# 3️⃣ PUBLICS CIBLES
+
+| Profil                     | Objectif                    |
+| -------------------------- | --------------------------- |
+| Demandeur titre de séjour  | Réussir l’examen civique    |
+| Candidat carte de résident | Consolider connaissances    |
+| Candidat naturalisation    | Préparer examen + entretien |
+| Associations / formateurs  | Suivi pédagogique           |
+
+---
+
+# 4️⃣ STRUCTURE PÉDAGOGIQUE OBLIGATOIRE
+
+Les contenus doivent respecter les **5 thématiques officielles** :
+
+1. Principes & Valeurs de la République
+2. Institutions françaises
+3. Droits et devoirs
+4. Histoire, géographie & culture
+5. Vie en société
+
+Chaque question doit être rattachée à :
+
+* un thème
+* un niveau (Débutant / Intermédiaire / Avancé)
+* un type d’examen (titre_sejour / carte_resident / naturalisation)
+
+---
+
+# 5️⃣ FONCTIONNALITÉS UTILISATEUR
+
+## 🔹 5.1 Tableau de bord
+
+* Score global
+* Progression par thème
+* Nombre de tests réalisés
+* Taux de réussite
+* Historique
+
+---
+
+## 🔹 5.2 Mode Entraînement
+
+* QCM par thème
+* Correction immédiate
+* Explication pédagogique détaillée
+* Relecture des erreurs
+
+---
+
+## 🔹 5.3 Mode Examen Blanc
+
+* 40 questions aléatoires
+* Chronomètre 45 minutes
+* Blocage navigation arrière
+* Résultat final détaillé
+* Indication réussite / échec (32/40)
+
+---
+
+## 🔹 5.4 Mode Révision
+
+* Fiches explicatives
+* Résumés simplifiés
+* Mise en avant des erreurs fréquentes
+
+---
+
+## 🔹 5.5 Comptes Utilisateurs
+
+* Authentification Firebase (email)
+* Synchronisation multi-appareils
+* Sauvegarde cloud
+
+---
+
+## 🔹 5.6 Tableau de bord Formateur
+
+* Gestion groupe apprenants
+* Score moyen
+* Export CSV
+* Suivi par thème
+
+---
+
+# 6️⃣ ADMINISTRATION & IMPORT DES QUESTIONS
+
+## 🔹 6.1 Système d’import Excel
+
+Fonctionnalités :
+
+* Upload fichier Excel
+* Vérification colonnes obligatoires
+* Validation unicité ID
+* Conversion automatique JSON
+* Enregistrement Firestore
+* Journal modifications
+
+---
+
+## 🔹 6.2 Structure Excel validée
+
+Colonnes obligatoires :
+
+| Colonne             | Description                                    |
+| ------------------- | ---------------------------------------------- |
+| id                  | identifiant unique                             |
+| exam_type           | titre_sejour / carte_resident / naturalisation |
+| theme               | 1 des 5 thèmes                                 |
+| level               | Débutant / Intermédiaire / Avancé              |
+| question            | texte                                          |
+| choice_1 à choice_4 | réponses                                       |
+| correct_index       | 0-3                                            |
+| explanation         | explication pédagogique                        |
+| tags                | SEO / filtres                                  |
+| is_active           | TRUE/FALSE                                     |
+| created_at          | ISO                                            |
+| updated_at          | ISO                                            |
+
+Compatible Firebase.
+
+---
+
+# 7️⃣ ARCHITECTURE TECHNIQUE
+
+## 🔹 Frontend
+
+* React (recommandé pour SEO avec Next.js)
+* Responsive design mobile-first
+* UI professionnelle épurée
+* Optimisation SEO (balises meta, schema.org)
+
+---
+
+## 🔹 Backend
+
+* Firebase Authentication
+* Firestore (NoSQL)
+* Cloud Functions (validation)
+* Hébergement Firebase Hosting
+* Scalabilité automatique
+
+---
+
+# 8️⃣ BASE DE DONNÉES – MODÈLE FIRESTORE
+
+## Collection : users
+
+* uid
+* email
+* role (user / formateur / admin)
+* progress
+* stats
+
+## Collection : questions
+
+* id
+* exam_type
+* theme
+* level
+* question
+* choices[]
+* correct_index
+* explanation
+* tags[]
+* is_active
+* created_at
+* updated_at
+
+## Collection : attempts
+
+* user_id
+* score
+* time_spent
+* answers[]
+* created_at
+
+---
+
+# 9️⃣ EXPÉRIENCE UTILISATEUR (UX)
+
+* Interface claire
+* Couleurs neutres + code couleur progression
+* Mode sombre
+* Adapté FLE (phrases simples)
+* Temps de chargement < 2 secondes
+* Accessibilité WCAG
+
+---
+
+# 🔟 DIFFÉRENCIATION PAR RAPPORT AUX CONCURRENTS
+
+Les plateformes existantes comme :
+
+* Examen Civique France
+* CitoyenPlus
+* LeTestCivique
+
+Proposent :
+
+✔ QCM
+✔ Examens blancs
+✔ Statistiques
+
+Ton application ajoutera :
+
+⭐ Suivi intelligent par niveau
+⭐ Import Excel administrateur
+⭐ Gestion multi-types d’examen
+⭐ Tableau formateur
+⭐ Structure scalable 5000+ questions
+⭐ Architecture professionnelle Firebase
+
+---
+
+# 1️⃣1️⃣ PERFORMANCE & SÉCURITÉ
+
+* Règles Firestore sécurisées
+* Protection anti-triche (shuffle réponses)
+* Limitation tentatives examen blanc
+* Sauvegarde automatique
+
+---
+
+# 1️⃣2️⃣ LIVRABLES
+
+✔ Cahier des charges final validé
+✔ Maquettes UI/UX
+✔ Architecture Firebase
+✔ Web App responsive
+✔ Documentation technique
+✔ Guide import questions
+
+---
+
+# 🎯 VISION FINALE
+
+Ce projet doit devenir :
+
+> La référence francophone de préparation à l’examen civique officiel
+
+Plateforme pédagogique + outil institutionnel + solution scalable.
+
+---
+
+Si tu veux maintenant, je peux te produire :
+
+* 📊 Le diagramme UML complet
+* 📐 Le wireframe détaillé écran par écran
+* 🔐 Les règles Firestore prêtes à copier
+* 📈 Le business model (freemium / premium)
+* 📦 Le plan MVP en 60 jours
+
+Dis-moi la prochaine étape stratégique 🚀
