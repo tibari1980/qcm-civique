@@ -1,7 +1,7 @@
 
-'use client'; // Client component for interactivity
+'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useId } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
@@ -11,20 +11,36 @@ import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useAuth } from '@/context/AuthContext';
 
+/**
+ * LoginPage — Connexion
+ * WCAG 2.1 AA :
+ * - Messages d'erreur annoncés immédiatement (role="alert" + aria-live="assertive")
+ * - État de chargement visible et annoncé (aria-busy)
+ * - Champs associés à leurs labels via htmlFor/id
+ * - Description de formulaire avec aria-describedby
+ * - Lien "Mot de passe oublié ?" avec texte descriptif
+ */
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const router = useRouter();
-    const { user, loading: authLoading } = useAuth();
+    const { user, loading: authLoading, isAdmin } = useAuth();
 
-    // Redirect if already logged in
+    // IDs uniques pour aria-describedby (évite collisions si plusieurs instances)
+    const headingDescId = useId();
+    const errorId = useId();
+
     React.useEffect(() => {
         if (!authLoading && user) {
-            router.push('/dashboard');
+            if (isAdmin) {
+                router.push('/admin');
+            } else {
+                router.push('/dashboard');
+            }
         }
-    }, [user, authLoading, router]);
+    }, [user, authLoading, isAdmin, router]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -33,12 +49,9 @@ export default function LoginPage() {
 
         try {
             await signInWithEmailAndPassword(auth, email, password);
-            console.log('Login successful');
-            router.push('/dashboard');
-        } catch (err: any) {
-            console.error(err);
-            setError("Échec de la connexion. Vérifiez vos identifiants.");
-        } finally {
+            // La redirection est gérée par le useEffect qui attend le profil utilisateur
+        } catch {
+            setError("Échec de la connexion. Vérifiez vos identifiants et réessayez.");
             setLoading(false);
         }
     };
@@ -47,46 +60,90 @@ export default function LoginPage() {
         <div className="flex items-center justify-center min-h-[calc(100vh-200px)] py-12 px-4 sm:px-6 lg:px-8">
             <Card className="w-full max-w-md shadow-lg">
                 <CardHeader className="space-y-1">
-                    <CardTitle className="text-2xl font-bold text-center">Connexion</CardTitle>
-                    <p className="text-center text-sm text-gray-500">
+                    <CardTitle className="text-2xl font-bold text-center" id="login-title">
+                        Connexion
+                    </CardTitle>
+                    <p className="text-center text-sm text-gray-500" id={headingDescId}>
                         Entrez votre email et mot de passe pour accéder à votre compte.
                     </p>
                 </CardHeader>
                 <CardContent>
-                    {error && (
-                        <div className="bg-red-50 text-red-600 p-3 rounded-md text-sm mb-4">
-                            {error}
-                        </div>
-                    )}
-                    <form onSubmit={handleSubmit} className="space-y-4">
+                    {/*
+                      role="alert" + aria-live="assertive" :
+                      NVDA / lecteurs d'écran annoncent l'erreur immédiatement
+                      sans que l'utilisateur ait besoin de naviguer jusqu'à elle.
+                    */}
+                    <div
+                        id={errorId}
+                        role="alert"
+                        aria-live="assertive"
+                        aria-atomic="true"
+                    >
+                        {error && (
+                            <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-md text-sm mb-4">
+                                <span className="sr-only">Erreur : </span>
+                                {error}
+                            </div>
+                        )}
+                    </div>
+                    <form
+                        onSubmit={handleSubmit}
+                        className="space-y-4"
+                        aria-labelledby="login-title"
+                        aria-describedby={headingDescId}
+                        noValidate
+                    >
                         <div className="space-y-2">
-                            <label htmlFor="email" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Email</label>
+                            <label htmlFor="login-email" className="text-sm font-medium leading-none">
+                                Adresse email
+                            </label>
                             <Input
-                                id="email"
+                                id="login-email"
                                 type="email"
                                 placeholder="exemple@email.com"
                                 required
+                                autoComplete="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                aria-required="true"
                             />
                         </div>
                         <div className="space-y-2">
                             <div className="flex items-center justify-between">
-                                <label htmlFor="password" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Mot de passe</label>
-                                <Link href="/forgot-password" className="text-sm font-medium text-[var(--color-primary)] hover:underline">
-                                    Oublié ?
+                                <label htmlFor="login-password" className="text-sm font-medium leading-none">
+                                    Mot de passe
+                                </label>
+                                <Link
+                                    href="/forgot-password"
+                                    className="text-sm font-medium text-[var(--color-primary)] hover:underline"
+                                    aria-label="Réinitialiser mon mot de passe oublié"
+                                >
+                                    Mot de passe oublié ?
                                 </Link>
                             </div>
                             <Input
-                                id="password"
+                                id="login-password"
                                 type="password"
                                 required
+                                autoComplete="current-password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                aria-required="true"
                             />
                         </div>
-                        <Button type="submit" className="w-full" disabled={loading}>
-                            {loading ? 'Connexion en cours...' : 'Se connecter'}
+                        <Button
+                            type="submit"
+                            className="w-full"
+                            disabled={loading}
+                            aria-busy={loading}
+                            aria-label={loading ? 'Connexion en cours, veuillez patienter' : 'Se connecter'}
+                        >
+                            {loading ? (
+                                <>
+                                    <span aria-hidden="true">⏳</span>
+                                    {' '}Connexion en cours...
+                                </>
+                            ) : 'Se connecter'}
                         </Button>
                     </form>
                 </CardContent>
@@ -94,7 +151,7 @@ export default function LoginPage() {
                     <div className="text-sm text-gray-500">
                         Pas encore de compte ?{' '}
                         <Link href="/register" className="font-medium text-[var(--color-primary)] hover:underline">
-                            S'inscrire
+                            Créer un compte
                         </Link>
                     </div>
                 </CardFooter>

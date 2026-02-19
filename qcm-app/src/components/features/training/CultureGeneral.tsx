@@ -69,7 +69,7 @@ export default function CultureGeneral() {
                                     </ul>
                                 </div>
                                 <div className="md:col-span-2 mt-4 bg-blue-50 p-4 rounded-lg">
-                                    <h3 className="font-bold text-lg text-blue-800 mb-2">L'Outre-Mer (DROM-COM)</h3>
+                                    <h3 className="font-bold text-lg text-blue-800 mb-2">L&apos;Outre-Mer (DROM-COM)</h3>
                                     <p className="text-gray-700">Guadeloupe, Martinique, Guyane, La Réunion, Mayotte, etc.</p>
                                 </div>
                             </CardContent>

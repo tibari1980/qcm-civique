@@ -36,8 +36,9 @@ export interface UserProfile {
     email: string;
     displayName: string;
     photoURL?: string;
-    track: 'residence' | 'naturalisation' | null; // Track selection
+    track: 'residence' | 'naturalisation' | null;
     createdAt: number;
+    role?: 'user' | 'admin';
 }
 
 export interface Attempt {
@@ -50,5 +51,5 @@ export interface Attempt {
     answers: Array<{ question_id: string; choice_index: number; correct: boolean }>;
     theme?: string; // specific theme if training
     created_at: string;
-    timestamp?: any; // Firestore Timestamp
+    timestamp?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }

@@ -8,6 +8,7 @@ export const useSoundEffects = () => {
     useEffect(() => {
         // Initialize AudioContext only on client side and on user interaction if possible, 
         // but here we prepare it. Browsers might block until interaction.
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
         if (AudioContextClass) {
             audioContextRef.current = new AudioContextClass();

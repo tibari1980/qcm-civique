@@ -140,7 +140,117 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+/* ============================================================
+   ACCESSIBILITÉ — WCAG 2.1 AA
+   ============================================================ */
+
+/*
+ * Classe utilitaire pour masquer visuellement un élément
+ * tout en le gardant accessible aux lecteurs d'écran (NVDA, JAWS, VoiceOver).
+ * Utilisation : <span className="sr-only">Texte pour lecteur d'écran</span>
+ */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/* Version inverse : visible seulement au focus clavier */
+.sr-only-focusable:not(:focus):not(:focus-within) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+/*
+ * Indicateur de focus — WCAG 2.4.7 (Focus visible) & 2.4.11 (Focus Appearance)
+ * Outline bleu fort de 3px avec offset pour tous les éléments interactifs.
+ * Contraste 3:1 minimum sur fond blanc et foncé.
+ */
+:focus-visible {
+  outline: 3px solid #2563eb !important;
+  outline-offset: 3px !important;
+  border-radius: 3px;
+}
+
+/* L'outline sur les éléments non-interactifs avec tabIndex={-1} est inutile visuellement */
+[tabindex="-1"]:focus {
+  outline: none !important;
+}
+
+/*
+ * Animations — WCAG 2.3.3 (Animation from Interactions)
+ * Désactivation de toutes les animations pour les utilisateurs
+ * ayant activé "Réduire les animations" dans leur système.
+ */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/*
+ * Mode contraste élevé Windows (High Contrast Mode)
+ * WCAG 1.4.11 (Non-text Contrast) en mode système forcé.
+ * Les éléments utilisent les couleurs système du mode haute visibilité.
+ */
+@media (forced-colors: active) {
+
+  /* Forcer les bordures visibles sur les éléments interactifs */
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    forced-color-adjust: none;
+  }
+
+  /* Focus encore plus visible en HCM */
+  :focus-visible {
+    outline: 3px solid ButtonText !important;
+    outline-offset: 3px !important;
+  }
+}
+
+/*
+ * Taille de texte minimale — WCAG 1.4.4 (Resize text)
+ * L'application ne bloque pas le zoom navigateur.
+ * Les tailles de police en rem respectent les préférences système.
+ */
+html {
+  font-size: 100%;
+  /* Respecte la taille système de l'utilisateur */
+}
+
+/*
+ * Liens soulignés — WCAG 1.4.1 (Use of Color)
+ * Les liens ne doivent pas être différenciés seulement par la couleur.
+ */
+main a:not([class]) {
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }

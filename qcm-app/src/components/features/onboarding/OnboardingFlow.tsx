@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { doc, setDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { Card, CardContent } from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { CheckCircle, Flag, FileText, ArrowRight } from 'lucide-react';
 import { UserProfile } from '@/types';
 import { motion } from 'framer-motion';
 
 export default function OnboardingFlow() {
-    const { user, userProfile, refreshProfile } = useAuth();
+    const { user, userProfile, refreshProfile, isAdmin } = useAuth();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [selectedTrack, setSelectedTrack] = useState<'residence' | 'naturalisation' | null>(null);
@@ -21,9 +21,9 @@ export default function OnboardingFlow() {
         if (!user) {
             router.push('/login');
         } else if (userProfile?.track) {
-            router.push('/dashboard');
+            router.push(isAdmin ? '/admin' : '/dashboard');
         }
-    }, [user, userProfile, router]);
+    }, [user, userProfile, isAdmin, router]);
 
     if (!user) return null;
 
@@ -62,7 +62,7 @@ export default function OnboardingFlow() {
                 <div className="text-center mb-12">
                     <h1 className="text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">Bienvenue, {user.displayName} !</h1>
                     <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Pour commencer, sélectionnez votre objectif. Nous adapterons votre expérience d'apprentissage pour maximiser vos chances de réussite.
+                        Pour commencer, sélectionnez votre objectif. Nous adapterons votre expérience d&apos;apprentissage pour maximiser vos chances de réussite.
                     </p>
                 </div>
 
@@ -124,12 +124,12 @@ export default function OnboardingFlow() {
                                 Naturalisation Française
                             </h3>
                             <p className="text-gray-600 text-center mb-8 flex-grow">
-                                Préparez tout le nécessaire pour devenir français : entretien d'assimilation, culture générale et livret du citoyen.
+                                Préparez tout le nécessaire pour devenir français : entretien d&apos;assimilation, culture générale et livret du citoyen.
                             </p>
                             <div className="space-y-3 bg-gray-50 p-4 rounded-xl">
                                 <div className="flex items-center text-sm text-gray-700">
                                     <CheckCircle className="h-5 w-5 mr-3 text-green-500 flex-shrink-0" />
-                                    <span>Simulateur d'entretien oral</span>
+                                    <span>Simulateur d&apos;entretien oral</span>
                                 </div>
                                 <div className="flex items-center text-sm text-gray-700">
                                     <CheckCircle className="h-5 w-5 mr-3 text-green-500 flex-shrink-0" />
@@ -150,8 +150,8 @@ export default function OnboardingFlow() {
                         disabled={!selectedTrack || loading}
                         onClick={handleConfirmTrack}
                         className={`px-12 py-6 text-lg font-bold rounded-full transition-all duration-300 shadow-lg hover:shadow-xl ${!selectedTrack ? 'bg-gray-300 cursor-not-allowed' :
-                                selectedTrack === 'naturalisation' ? 'bg-red-600 hover:bg-red-700 text-white' :
-                                    'bg-[var(--color-primary)] hover:opacity-90 text-white'
+                            selectedTrack === 'naturalisation' ? 'bg-red-600 hover:bg-red-700 text-white' :
+                                'bg-[var(--color-primary)] hover:opacity-90 text-white'
                             }`}
                     >
                         {loading ? 'Configuration...' : (

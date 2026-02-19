@@ -45,7 +45,7 @@ export default function CleanupPage() {
 
                 if (!originalQuestion) continue;
 
-                let newQuestion = originalQuestion
+                const newQuestion = originalQuestion
                     .replace(/\(Variante\s*\d*\)/gi, '')
                     .replace(/^Variante\s*\d*\s*[:.-]?\s*/gi, '')
                     .replace(/Variante\s*\d*/gi, '')
@@ -104,7 +104,7 @@ export default function CleanupPage() {
                 </CardHeader>
                 <CardContent className="space-y-6">
                     <p className="text-gray-600">
-                        This tool removes "Variante" text from all questions in the database.
+                        This tool removes &quot;Variante&quot; text from all questions in the database.
                     </p>
 
                     <div className="bg-gray-100 p-4 rounded-lg font-mono text-sm h-64 overflow-y-auto">

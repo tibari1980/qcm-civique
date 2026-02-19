@@ -55,6 +55,7 @@ const themes = [
 export default function TrainingThemeList() {
     const { user, userProfile, loading } = useAuth();
     const router = useRouter();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [stats, setStats] = React.useState<any>(null);
 
     useEffect(() => {

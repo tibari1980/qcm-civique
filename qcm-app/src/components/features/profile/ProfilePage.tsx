@@ -52,7 +52,7 @@ export default function ProfilePage() {
                             <span className="text-lg">{user.email}</span>
                         </div>
                         <div className="flex flex-col gap-1">
-                            <span className="text-sm text-gray-500 font-medium">Nom d'utilisateur</span>
+                            <span className="text-sm text-gray-500 font-medium">Nom d&apos;utilisateur</span>
                             <span className="text-lg">{user.displayName || 'Utilisateur'}</span>
                         </div>
                         <div className="flex flex-col gap-1">
@@ -99,7 +99,7 @@ export default function ProfilePage() {
                                 <span className="font-bold text-lg text-purple-900">Naturalisation</span>
                                 {currentTrack === 'naturalisation' && <Check className="text-purple-600" />}
                             </div>
-                            <p className="text-sm text-gray-600">Entretien d'assimilation et culture française.</p>
+                            <p className="text-sm text-gray-600">Entretien d&apos;assimilation et culture française.</p>
                         </div>
                     </CardContent>
                     <CardFooter>

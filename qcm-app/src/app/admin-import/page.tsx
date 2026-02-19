@@ -38,6 +38,7 @@ export default function AdminImportPage() {
             const workbook = XLSX.read(arrayBuffer);
             const sheetName = workbook.SheetNames[0];
             const sheet = workbook.Sheets[sheetName];
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const rows: any[] = XLSX.utils.sheet_to_json(sheet);
 
             addLog(`Found ${rows.length} rows. Starting Firestore import...`);
@@ -109,10 +110,11 @@ export default function AdminImportPage() {
             addLog(`SUCCESS! Imported ${totalImported} questions.`);
             setProgress("Terminé !");
 
-        } catch (error: any) {
+        } catch (error: unknown) {
+            const err = error as Error;
             console.error(error);
-            addLog("Error: " + error.message);
-            if (error.message.includes("Missing or insufficient permissions")) {
+            addLog("Error: " + err.message);
+            if (err.message.includes("Missing or insufficient permissions")) {
                 setPermissionError(true);
             }
         } finally {
@@ -135,9 +137,10 @@ export default function AdminImportPage() {
             } else {
                 addLog(`⚠️ Attention : ${count} questions trouvées (attendu: 5000).`);
             }
-        } catch (e: any) {
+        } catch (e: unknown) {
+            const error = e as Error;
             console.error(e);
-            addLog("Error checking count: " + e.message);
+            addLog("Error checking count: " + error.message);
         }
     };
 
@@ -161,13 +164,14 @@ export default function AdminImportPage() {
                         <div className="bg-red-50 border border-red-200 text-red-800 p-4 rounded-md text-sm">
                             <h3 className="font-bold mb-2">Erreur de Permissions Firestore</h3>
                             <p className="mb-2">
-                                Votre base de données bloque l'écriture. Veuillez mettre à jour vos <strong>Règles de sécurité Firestore</strong> dans la console Firebase.
+                                Your database blocks writing. Please update your <strong>Firestore Security Rules</strong> in the Firebase console.
+                                Votre base de données bloque l&apos;écriture. Veuillez mettre à jour vos <strong>Règles de sécurité Firestore</strong> dans la console Firebase.
                             </p>
                             <div className="bg-white p-2 rounded border border-gray-300 font-mono text-xs overflow-x-auto">
                                 allow read, write: if request.auth != null;
                             </div>
                             <p className="mt-2 text-xs">
-                                (À placer dans l'onglet "Rules" de votre Firestore Database)
+                                (À placer dans l&apos;onglet &quot;Rules&quot; de votre Firestore Database)
                             </p>
                         </div>
                     )}

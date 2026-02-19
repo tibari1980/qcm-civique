@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, ArrowRight, RotateCw, Volume2 } from 'lucide-react';
 import Link from 'next/link';
@@ -97,7 +97,7 @@ export default function InterviewSimulator() {
                             <ArrowLeft className="mr-2 h-4 w-4" aria-hidden="true" /> Retour
                         </Button>
                     </Link>
-                    <h1 className="text-2xl font-bold">Simulateur d'Entretien</h1>
+                    <h1 className="text-2xl font-bold">Simulateur d&apos;Entretien</h1>
                     <div className="w-20" aria-hidden="true"></div> {/* Spacer */}
                 </header>
 

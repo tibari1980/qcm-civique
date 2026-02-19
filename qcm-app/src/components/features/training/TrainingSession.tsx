@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -31,6 +31,10 @@ export default function TrainingSession() {
     const [status, setStatus] = useState<'idle' | 'correct' | 'wrong'>('idle');
     const { playSound } = useSoundEffects();
 
+    // --- ALL REFS MUST BE DECLARED BEFORE ANY CONDITIONAL RETURNS ---
+    const questionRef = useRef<HTMLHeadingElement>(null);
+    const resultRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         if (!loading && !user) {
             router.push('/login');
@@ -42,7 +46,7 @@ export default function TrainingSession() {
         const loadQuestions = async () => {
             if (!themeId) return;
             setIsLoadingData(true);
-            const fetched = await QuestionService.getQuestionsByTheme(themeId, 20); // Fetch 20 random questions
+            const fetched = await QuestionService.getQuestionsByTheme(themeId, 20);
             setQuestions(fetched);
             setIsLoadingData(false);
         };
@@ -52,7 +56,7 @@ export default function TrainingSession() {
         }
     }, [themeId, user]);
 
-    // Audio Logic (Simplified for brevity, ensuring robustness)
+    // Audio Logic
     useEffect(() => {
         if (!isAudioEnabled || !questions[currentQuestionIndex]) {
             window.speechSynthesis?.cancel();
@@ -66,6 +70,106 @@ export default function TrainingSession() {
         return () => window.speechSynthesis.cancel();
     }, [currentQuestionIndex, isAudioEnabled, questions]);
 
+    // Focus management for accessibility - MUST be before any conditional returns
+    useEffect(() => {
+        if (!isLoadingData && !isFinished && questionRef.current) {
+            questionRef.current.focus();
+        } else if (isFinished && resultRef.current) {
+            resultRef.current.focus();
+        }
+    }, [currentQuestionIndex, isLoadingData, isFinished]);
+
+
+
+
+    const triggerConfetti = useCallback(() => {
+        confetti({
+            particleCount: 150,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ['#2563eb', '#3b82f6', '#60a5fa', '#93c5fd']
+        });
+    }, []);
+
+    const handleAnswerSelect = useCallback((index: number) => {
+        if (isAnswered) return;
+        setSelectedAnswer(index);
+    }, [isAnswered]);
+
+    const handleValidate = useCallback(() => {
+        if (selectedAnswer === null) return;
+        const currentQuestion = questions[currentQuestionIndex];
+        const isCorrect = selectedAnswer === currentQuestion.correct_index;
+        setIsAnswered(true);
+        setStatus(isCorrect ? 'correct' : 'wrong');
+        setAnswers(prev => ({ ...prev, [currentQuestionIndex]: selectedAnswer }));
+
+        if (isCorrect) {
+            setScore(s => s + 1);
+            triggerConfetti();
+            playSound('success');
+        } else {
+            playSound('error');
+        }
+    }, [selectedAnswer, questions, currentQuestionIndex, triggerConfetti, playSound]);
+
+    const handleNext = useCallback(async () => {
+        if (currentQuestionIndex < questions.length - 1) {
+            setCurrentQuestionIndex(currentQuestionIndex + 1);
+            setSelectedAnswer(null);
+            setIsAnswered(false);
+            setStatus('idle');
+        } else {
+            // Last question - save attempt and finish
+            setIsFinished(true);
+            if (user) {
+                try {
+                    const finalAnswers = questions.map((q, index) => ({
+                        question_id: q.id,
+                        choice_index: answers[index] ?? -1,
+                        correct: answers[index] === q.correct_index
+                    }));
+                    await UserService.saveAttempt({
+                        user_id: user.uid,
+                        exam_type: 'titre_sejour',
+                        theme: themeId,
+                        score: score,
+                        total_questions: questions.length,
+                        time_spent: 0,
+                        answers: finalAnswers
+                    });
+                } catch (error) {
+                    console.error('Failed to save attempt:', error);
+                }
+            }
+        }
+    }, [currentQuestionIndex, questions, user, answers, score, themeId]);
+
+    // Keyboard navigation - MUST be before any conditional returns
+    useEffect(() => {
+        const currentQuestion = questions[currentQuestionIndex];
+        if (!currentQuestion) return;
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (isAnswered || isFinished) return;
+
+            if (['a', 'b', 'c', 'd'].includes(e.key.toLowerCase())) {
+                const index = e.key.toLowerCase().charCodeAt(0) - 97;
+                if (index < currentQuestion.choices.length) {
+                    handleAnswerSelect(index);
+                }
+            } else if (e.key === 'Enter' && selectedAnswer !== null) {
+                handleValidate();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isAnswered, isFinished, selectedAnswer, questions, currentQuestionIndex, handleAnswerSelect, handleValidate]);
+
+    const handleRetry = () => {
+        window.location.reload();
+    };
 
     if (loading || isLoadingData) {
         return (
@@ -91,121 +195,8 @@ export default function TrainingSession() {
         );
     }
 
+    // --- CONDITIONAL RETURNS AFTER ALL HOOKS ---
     const currentQuestion = questions[currentQuestionIndex];
-
-    const handleAnswerSelect = (index: number) => {
-        if (isAnswered) return;
-        setSelectedAnswer(index);
-    };
-
-    const handleValidate = () => {
-        if (selectedAnswer === null) return;
-
-        const isCorrect = selectedAnswer === currentQuestion.correct_index;
-        setIsAnswered(true);
-        setStatus(isCorrect ? 'correct' : 'wrong');
-
-        // Store answer
-        setAnswers(prev => ({ ...prev, [currentQuestionIndex]: selectedAnswer }));
-
-        if (isCorrect) {
-            setScore(score + 1);
-            triggerConfetti();
-            playSound('success');
-        } else {
-            playSound('error');
-        }
-    };
-
-    const handleFinish = async () => {
-        setIsFinished(true);
-        if (score > questions.length / 2) {
-            triggerConfetti();
-            playSound('success');
-        } else {
-            playSound('error');
-        }
-
-        if (user) {
-            try {
-                // Construct answers array
-                const attemptAnswers = questions.map((q, index) => ({
-                    question_id: q.id,
-                    choice_index: answers[index] ?? -1,
-                    correct: answers[index] === q.correct_index
-                }));
-
-                await UserService.saveAttempt({
-                    user_id: user.uid,
-                    exam_type: 'titre_sejour',
-                    theme: themeId,
-                    score: score,
-                    total_questions: questions.length,
-                    time_spent: 0,
-                    answers: attemptAnswers
-                });
-                console.log("Attempt saved successfully!");
-            } catch (error) {
-                console.error("Failed to save attempt:", error);
-            }
-        }
-    };
-
-    const handleNext = () => {
-        if (currentQuestionIndex < questions.length - 1) {
-            setCurrentQuestionIndex(currentQuestionIndex + 1);
-            setSelectedAnswer(null);
-            setIsAnswered(false);
-            setStatus('idle');
-        } else {
-            setIsFinished(true);
-        }
-    };
-
-    // Focus management for accessibility
-    const questionRef = React.useRef<HTMLHeadingElement>(null);
-    const resultRef = React.useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (!isLoadingData && !isFinished && questionRef.current) {
-            questionRef.current.focus();
-        } else if (isFinished && resultRef.current) {
-            resultRef.current.focus();
-        }
-    }, [currentQuestionIndex, isLoadingData, isFinished]);
-
-    // Keyboard navigation
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (isAnswered || isFinished) return;
-
-            if (['a', 'b', 'c', 'd'].includes(e.key.toLowerCase())) {
-                const index = e.key.toLowerCase().charCodeAt(0) - 97;
-                if (index < currentQuestion.choices.length) {
-                    handleAnswerSelect(index);
-                }
-            } else if (e.key === 'Enter' && selectedAnswer !== null) {
-                handleValidate();
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isAnswered, isFinished, selectedAnswer, currentQuestion]);
-
-
-    const handleRetry = () => {
-        window.location.reload();
-    };
-
-    const triggerConfetti = () => {
-        confetti({
-            particleCount: 150,
-            spread: 70,
-            origin: { y: 0.6 },
-            colors: ['#2563eb', '#3b82f6', '#60a5fa', '#93c5fd']
-        });
-    };
 
     if (isFinished) {
         const percentage = Math.round((score / questions.length) * 100);
@@ -445,8 +436,8 @@ export default function TrainingSession() {
                                 size="lg"
                                 onClick={handleNext}
                                 className={`min-w-[160px] text-lg font-bold shadow-lg transition-transform hover:scale-[1.02] focus:ring-4 ${status === 'correct'
-                                        ? 'bg-green-600 hover:bg-green-700 shadow-green-500/20 focus:ring-green-300'
-                                        : 'bg-gray-900 hover:bg-black shadow-gray-500/20 focus:ring-gray-500'
+                                    ? 'bg-green-600 hover:bg-green-700 shadow-green-500/20 focus:ring-green-300'
+                                    : 'bg-gray-900 hover:bg-black shadow-gray-500/20 focus:ring-gray-500'
                                     }`}
                                 aria-label={currentQuestionIndex < questions.length - 1 ? 'Question suivante' : 'Voir les résultats'}
                             >

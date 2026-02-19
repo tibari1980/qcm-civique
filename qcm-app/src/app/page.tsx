@@ -9,7 +9,8 @@ import { useAuth } from '@/context/AuthContext';
 import { UserService } from '@/services/user.service';
 
 export default function Home() {
-  const { user, userProfile } = useAuth();
+  const { user, userProfile, isAdmin } = useAuth();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [stats, setStats] = useState<any>(null);
 
   useEffect(() => {
@@ -25,6 +26,8 @@ export default function Home() {
     };
     fetchStats();
   }, [user, userProfile]);
+
+  const dashboardLink = isAdmin ? "/admin" : "/dashboard";
 
   return (
     <div className="flex flex-col gap-12 pb-12">
@@ -56,17 +59,17 @@ export default function Home() {
                     <div className="text-xs text-gray-500 uppercase tracking-wide font-semibold">Thèmes</div>
                   </div>
                   <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center">
-                    <Link href="/dashboard" className="text-[var(--color-primary)] font-bold flex items-center hover:underline focus:ring-2 focus:ring-blue-300 rounded px-2 py-1" aria-label="Aller au tableau de bord">
-                      Go Dashboard <ArrowRight className="ml-1 w-4 h-4" aria-hidden="true" />
+                    <Link href={dashboardLink} className="text-[var(--color-primary)] font-bold flex items-center hover:underline focus:ring-2 focus:ring-blue-300 rounded px-2 py-1" aria-label="Aller au tableau de bord">
+                      {isAdmin ? "Admin Dashboard" : "Go Dashboard"} <ArrowRight className="ml-1 w-4 h-4" aria-hidden="true" />
                     </Link>
                   </div>
                 </div>
               )}
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                <Link href="/dashboard">
+                <Link href={dashboardLink}>
                   <Button size="lg" className="px-8 shadow-lg shadow-blue-500/20 gap-2 focus:ring-4 focus:ring-blue-300">
-                    <TrendingUp className="w-5 h-5" aria-hidden="true" /> Reprendre l'entraînement
+                    <TrendingUp className="w-5 h-5" aria-hidden="true" /> {isAdmin ? "Administration" : "Reprendre l'entraînement"}
                   </Button>
                 </Link>
                 <Link href="/review">
@@ -128,13 +131,13 @@ export default function Home() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
-                  Simulez l'examen réel : 40 questions, 45 minutes. Entraînez-vous dans les conditions exactes du jour J.
+                  Simulez l&apos;examen réel : 40 questions, 45 minutes. Entraînez-vous dans les conditions exactes du jour J.
                 </p>
               </CardContent>
             </Card>
           </Link>
 
-          <Link href={user ? "/dashboard" : "/register"} className="block h-full group focus:outline-none">
+          <Link href={user ? dashboardLink : "/register"} className="block h-full group focus:outline-none">
             <Card className="h-full hover:shadow-lg transition-all duration-300 hover:scale-105 cursor-pointer border-blue-100 hover:border-blue-300 group-focus:ring-4 group-focus:ring-blue-300">
               <CardHeader>
                 <CheckCircle className="h-10 w-10 text-[var(--color-primary)] mb-4" aria-hidden="true" />
@@ -144,6 +147,32 @@ export default function Home() {
                 <p className="text-gray-600">
                   Visualisez vos progrès, identifiez vos points faibles et maximisez vos chances de réussite (Objectif 80%).
                 </p>
+              </CardContent>
+            </Card>
+          </Link>
+
+          {/* Nouvelle fonctionnalité : QCM IA */}
+          <Link href={user ? "/ai-quiz" : "/register"} className="block h-full group focus:outline-none md:col-span-3">
+            <Card className="h-full hover:shadow-xl transition-all duration-300 cursor-pointer bg-gradient-to-r from-blue-50 to-violet-50 border-2 border-blue-200 hover:border-[var(--color-primary)] group-focus:ring-4 group-focus:ring-blue-300">
+              <CardHeader className="flex flex-col md:flex-row md:items-center md:gap-6">
+                <div className="text-4xl mb-2 md:mb-0" aria-hidden="true">✨</div>
+                <div>
+                  <div className="inline-flex items-center gap-1 bg-[var(--color-primary)] text-white text-xs font-bold px-2 py-0.5 rounded-full mb-2">
+                    NOUVEAU · Propulsé par Gemini AI
+                  </div>
+                  <CardTitle className="text-xl">QCM Personnalisé IA — PROFESSEUR_FLE_CIVIQUE</CardTitle>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-700 mb-4">
+                  Générez des QCM sur mesure selon votre niveau CECRL (A1 à B2) et votre objectif administratif.
+                  10 questions pédagogiques avec explications détaillées, calibrées pour la carte de séjour, la carte résident ou la naturalisation.
+                </p>
+                <div className="flex flex-wrap gap-2 text-xs">
+                  {['✅ Carte de séjour A2', '✅ Carte résident B1', '✅ Naturalisation B2', '🌍 6 thèmes', '📚 Explications pédagogiques'].map(tag => (
+                    <span key={tag} className="bg-white border border-blue-200 text-gray-700 px-2 py-1 rounded-full">{tag}</span>
+                  ))}
+                </div>
               </CardContent>
             </Card>
           </Link>
@@ -158,7 +187,7 @@ export default function Home() {
             Rejoignez des milliers de candidats qui ont préparé leur examen avec succès grâce à notre méthode.
           </p>
           {user ? (
-            <Link href="/dashboard">
+            <Link href={dashboardLink}>
               <Button size="lg" className="bg-white text-[var(--color-primary)] hover:bg-gray-100 border-none focus:ring-4 focus:ring-white/50">
                 Accéder à mon espace
               </Button>

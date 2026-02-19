@@ -30,7 +30,7 @@ export default function Dashboard() {
                     setStats({
                         totalTests: statsData.total_attempts,
                         averageScore: statsData.average_score,
-                        completedThemes: Object.values(statsData.theme_stats).filter((s: any) => s.success_rate >= 75 || s.last_score >= 80).length,
+                        completedThemes: Object.values(statsData.theme_stats).filter((s: any) => s.success_rate >= 75 || s.last_score >= 80).length, // eslint-disable-line @typescript-eslint/no-explicit-any
                     });
 
                     const activity = await UserService.getRecentActivity(user.uid);
@@ -160,7 +160,7 @@ export default function Dashboard() {
                                             </div>
                                             <p className="text-gray-500 mb-4 text-sm">Simulation réelle (40 questions, 45 minutes).</p>
                                             <div className="w-full py-2 px-4 rounded-md text-center font-medium bg-red-600 text-white group-hover:bg-red-700 transition-colors">
-                                                Lancer l'examen
+                                                Lancer l&apos;examen
                                             </div>
                                         </div>
                                     </Link>
@@ -178,7 +178,7 @@ export default function Dashboard() {
                                             </div>
                                             <p className="text-gray-500 mb-4 text-sm">Questions orales fréquentes (Motivations, Culture...).</p>
                                             <div className="w-full py-2 px-4 rounded-md text-center font-medium bg-purple-600 text-white group-hover:bg-purple-700 transition-colors">
-                                                S'entraîner à l'oral
+                                                S&apos;entraîner à l&apos;oral
                                             </div>
                                         </div>
                                     </Link>

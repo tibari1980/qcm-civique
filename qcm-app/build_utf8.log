@@ -1,0 +1,38 @@
+﻿
+> qcm-app@0.1.0 build
+> next build
+
+Ôû▓ Next.js 16.1.6 (Turbopack)
+
+  Creating an optimized production build ...
+Ô£ô Compiled successfully in 2.9s
+  Running TypeScript ...
+  Collecting page data using 15 workers ...
+  Generating static pages using 15 workers (0/16) ...
+  Generating static pages using 15 workers (4/16) 
+  Generating static pages using 15 workers (8/16) 
+  Generating static pages using 15 workers (12/16) 
+Ô£ô Generating static pages using 15 workers (16/16) in 355.9ms
+  Finalizing page optimization ...
+
+Route (app)
+Ôöî Ôùï /
+Ôö£ Ôùï /_not-found
+Ôö£ Ôùï /admin-import
+Ôö£ Ôùï /cleanup
+Ôö£ Ôùï /dashboard
+Ôö£ Ôùï /exam
+Ôö£ Ôùï /interview
+Ôö£ Ôùï /login
+Ôö£ Ôùï /onboarding
+Ôö£ Ôùï /profile
+Ôö£ Ôùï /register
+Ôö£ Ôùï /review
+Ôö£ Ôùï /training
+Ôö£ ãÆ /training/[themeId]
+Ôöö Ôùï /training/culture
+
+
+Ôùï  (Static)   prerendered as static content
+ãÆ  (Dynamic)  server-rendered on demand
+

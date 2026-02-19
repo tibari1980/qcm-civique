@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -33,13 +33,11 @@ export default function ReviewSession() {
         }
     }, [user, loading, router]);
 
-    // Fetch Review Questions
     useEffect(() => {
         const loadReviewQuestions = async () => {
             if (!user) return;
             setIsLoadingData(true);
             try {
-                // 1. Get incorrect IDs
                 const incorrectIds = await UserService.getIncorrectQuestionIds(user.uid);
 
                 if (incorrectIds.length === 0) {
@@ -48,12 +46,10 @@ export default function ReviewSession() {
                     return;
                 }
 
-                // 2. Fetch full questions (limit to 20 for a session)
                 const fetchedQuestions = await QuestionService.getQuestionsByIds(incorrectIds);
-                // Shuffle them
                 setQuestions(fetchedQuestions.sort(() => Math.random() - 0.5).slice(0, 20));
             } catch (error) {
-                console.error("Failed to load review questions", error);
+                console.error('Failed to load review questions', error);
             } finally {
                 setIsLoadingData(false);
             }
@@ -63,6 +59,90 @@ export default function ReviewSession() {
             loadReviewQuestions();
         }
     }, [user]);
+
+    // --- ALL REFS AND THEIR EFFECTS MUST BE BEFORE CONDITIONAL RETURNS ---
+    const questionHeaderRef = useRef<HTMLHeadingElement>(null);
+    const resultRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (!loading && !isLoadingData && !isFinished && questionHeaderRef.current) {
+            questionHeaderRef.current.focus();
+        } else if (isFinished && resultRef.current) {
+            resultRef.current.focus();
+        }
+    }, [currentQuestionIndex, loading, isLoadingData, isFinished]);
+
+
+
+    const triggerConfetti = useCallback(() => {
+        confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+    }, []);
+
+    const handleAnswerSelect = useCallback((index: number) => {
+        if (isAnswered) return;
+        setSelectedAnswer(index);
+    }, [isAnswered]);
+
+    const handleValidate = useCallback(() => {
+        if (selectedAnswer === null) return;
+        const currentQuestion = questions[currentQuestionIndex];
+        const isCorrect = selectedAnswer === currentQuestion.correct_index;
+        setIsAnswered(true);
+        setStatus(isCorrect ? 'correct' : 'wrong');
+
+        if (isCorrect) {
+            setScore(s => s + 1);
+            triggerConfetti();
+            playSound('success');
+        } else {
+            playSound('error');
+        }
+    }, [selectedAnswer, questions, currentQuestionIndex, triggerConfetti, playSound]);
+
+    const handleNext = useCallback(() => {
+        if (currentQuestionIndex < questions.length - 1) {
+            setCurrentQuestionIndex(currentQuestionIndex + 1);
+            setSelectedAnswer(null);
+            setIsAnswered(false);
+            setStatus('idle');
+        } else {
+            setIsFinished(true);
+            if (score > questions.length / 2) {
+                playSound('finish');
+            }
+        }
+    }, [currentQuestionIndex, questions, score, playSound]);
+
+    const handleRetry = () => {
+        window.location.reload();
+    };
+
+    // Keyboard navigation - MUST be before any conditional returns
+    useEffect(() => {
+        const currentQuestion = questions[currentQuestionIndex];
+        if (!currentQuestion) return;
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (isAnswered || isFinished) return;
+
+            if (['a', 'b', 'c', 'd'].includes(e.key.toLowerCase())) {
+                const index = e.key.toLowerCase().charCodeAt(0) - 97;
+                if (index < currentQuestion.choices.length) {
+                    handleAnswerSelect(index);
+                }
+            } else if (e.key === 'Enter' && selectedAnswer !== null) {
+                handleValidate();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [isAnswered, isFinished, selectedAnswer, questions, currentQuestionIndex, handleAnswerSelect, handleValidate]);
+
 
     if (loading || isLoadingData) {
         return (
@@ -80,7 +160,7 @@ export default function ReviewSession() {
                     <CardContent className="pt-10 pb-10 flex flex-col items-center gap-4">
                         <CheckCircle className="h-16 w-16 text-green-500" />
                         <h2 className="text-2xl font-bold">Tout est parfait !</h2>
-                        <p className="text-gray-600">Vous n'avez aucune erreur à réviser pour le moment.</p>
+                        <p className="text-gray-600">Vous n&apos;avez aucune erreur à réviser pour le moment.</p>
                         <Link href="/dashboard">
                             <Button className="mt-4" size="lg">Retour au tableau de bord</Button>
                         </Link>
@@ -90,96 +170,8 @@ export default function ReviewSession() {
         );
     }
 
+    // --- CONDITIONAL RETURNS AFTER ALL HOOKS ---
     const currentQuestion = questions[currentQuestionIndex];
-
-    const handleAnswerSelect = (index: number) => {
-        if (isAnswered) return;
-        setSelectedAnswer(index);
-    };
-
-    const handleValidate = () => {
-        if (selectedAnswer === null) return;
-
-        const isCorrect = selectedAnswer === currentQuestion.correct_index;
-        setIsAnswered(true);
-        setStatus(isCorrect ? 'correct' : 'wrong');
-
-        if (isCorrect) {
-            setScore(score + 1);
-            triggerConfetti();
-            playSound('success');
-        } else {
-            playSound('error');
-        }
-    };
-
-    const handleNext = () => {
-        if (currentQuestionIndex < questions.length - 1) {
-            setCurrentQuestionIndex(currentQuestionIndex + 1);
-            setSelectedAnswer(null);
-            setIsAnswered(false);
-            setStatus('idle');
-        } else {
-            setIsFinished(true);
-            if (score > questions.length / 2) {
-                playSound('finish');
-            }
-        }
-    };
-
-    const handleRetry = () => {
-        window.location.reload();
-    };
-
-    const triggerConfetti = () => {
-        confetti({
-            particleCount: 100,
-            spread: 70,
-            origin: { y: 0.6 }
-        });
-    };
-
-    // Focus management
-    const questionHeaderRef = React.useRef<HTMLHeadingElement>(null);
-    const resultRef = React.useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (!loading && !isLoadingData && !isFinished && questionHeaderRef.current) {
-            questionHeaderRef.current.focus();
-        } else if (isFinished && resultRef.current) {
-            resultRef.current.focus();
-        }
-    }, [currentQuestionIndex, loading, isLoadingData, isFinished]);
-
-    // Keyboard navigation
-    useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (isAnswered || isFinished) return;
-
-            if (['a', 'b', 'c', 'd'].includes(e.key.toLowerCase())) {
-                const index = e.key.toLowerCase().charCodeAt(0) - 97;
-                if (index < (questions[currentQuestionIndex]?.choices.length || 0)) {
-                    handleAnswerSelect(index);
-                }
-            } else if (e.key === 'Enter' && selectedAnswer !== null && status === 'idle') {
-                handleValidate();
-            }
-        };
-
-        const handleNextKeyDown = (e: KeyboardEvent) => {
-            if (isAnswered && !isFinished && (e.key === 'ArrowRight' || e.key === 'Enter')) {
-                handleNext();
-            }
-        }
-
-        window.addEventListener('keydown', handleKeyDown);
-        if (isAnswered) window.addEventListener('keydown', handleNextKeyDown);
-
-        return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-            window.removeEventListener('keydown', handleNextKeyDown);
-        };
-    }, [isAnswered, isFinished, selectedAnswer, currentQuestionIndex, questions, status]);
 
 
     if (isFinished) {

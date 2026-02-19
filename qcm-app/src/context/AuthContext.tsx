@@ -9,16 +9,18 @@ import { UserProfile } from '@/types';
 
 interface AuthContextType {
     user: User | null;
-    userProfile: UserProfile | null; // Added userProfile to context
+    userProfile: UserProfile | null;
     loading: boolean;
+    isAdmin: boolean;
     signOut: () => Promise<void>;
-    refreshProfile: () => Promise<void>; // Added method to refresh profile manually
+    refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
     user: null,
     userProfile: null,
     loading: true,
+    isAdmin: false,
     signOut: async () => { },
     refreshProfile: async () => { },
 });
@@ -71,8 +73,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }
 
+    const isAdmin = userProfile?.role === 'admin';
+
     return (
-        <AuthContext.Provider value={{ user, userProfile, loading, signOut, refreshProfile }}>
+        <AuthContext.Provider value={{ user, userProfile, loading, isAdmin, signOut, refreshProfile }}>
             {!loading && children}
         </AuthContext.Provider>
     );

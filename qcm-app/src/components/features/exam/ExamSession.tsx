@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Clock, AlertCircle, CheckCircle, XCircle } from 'lucide-react';
+import { Clock, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -16,7 +16,7 @@ import { useSoundEffects } from '@/hooks/useSoundEffects';
 export default function ExamSession() {
     const { user, userProfile, loading } = useAuth();
     const router = useRouter();
-    const { playSound } = useSoundEffects();
+    // const { playSound } = useSoundEffects();
 
     const [questions, setQuestions] = useState<Question[]>([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -44,6 +44,34 @@ export default function ExamSession() {
         }
     }, [user]);
 
+    const finishExam = useCallback(async () => {
+        setIsFinished(true);
+        if (user) {
+            try {
+                const calculatedScore = questions.reduce((acc, q, index) => {
+                    return acc + (answers[index] === q.correct_index ? 1 : 0);
+                }, 0);
+
+                const attemptAnswers = questions.map((q, index) => ({
+                    question_id: q.id,
+                    choice_index: answers[index] ?? -1,
+                    correct: answers[index] === q.correct_index
+                }));
+
+                await UserService.saveAttempt({
+                    user_id: user.uid,
+                    exam_type: userProfile?.track === 'naturalisation' ? 'naturalisation' : 'titre_sejour',
+                    score: calculatedScore,
+                    total_questions: questions.length,
+                    time_spent: 45 * 60 - timeLeft,
+                    answers: attemptAnswers
+                });
+            } catch (error) {
+                console.error('Failed to save exam attempt:', error);
+            }
+        }
+    }, [user, questions, answers, userProfile, timeLeft]);
+
     useEffect(() => {
         if (loading || !user || isFinished || isLoadingData) return;
 
@@ -58,56 +86,11 @@ export default function ExamSession() {
             });
         }, 1000);
         return () => clearInterval(timer);
-    }, [isFinished, loading, user, isLoadingData]);
+    }, [isFinished, loading, user, isLoadingData, finishExam]);
 
-    const finishExam = async () => {
-        setIsFinished(true);
-        if (user) {
-            try {
-                // Calculate score
-                const calculatedScore = questions.reduce((acc, q, index) => {
-                    return acc + (answers[index] === q.correct_index ? 1 : 0);
-                }, 0);
-
-                // Construct answers array
-                const attemptAnswers = questions.map((q, index) => ({
-                    question_id: q.id,
-                    choice_index: answers[index] ?? -1,
-                    correct: answers[index] === q.correct_index
-                }));
-
-                await UserService.saveAttempt({
-                    user_id: user.uid,
-                    exam_type: userProfile?.track === 'naturalisation' ? 'naturalisation' : 'titre_sejour', // Use user track
-                    score: calculatedScore,
-                    total_questions: questions.length,
-                    time_spent: 45 * 60 - timeLeft, // Time spent in seconds
-                    answers: attemptAnswers
-                });
-                console.log("Exam attempt saved successfully!");
-            } catch (error) {
-                console.error("Failed to save exam attempt:", error);
-            }
-        }
-    };
-
-    const handleAnswerSelect = (choiceIndex: number) => {
-        setAnswers({ ...answers, [currentQuestionIndex]: choiceIndex });
-    };
-
-    const calculateScore = () => {
-        let score = 0;
-        questions.forEach((q, index) => {
-            if (answers[index] === q.correct_index) {
-                score++;
-            }
-        });
-        return score;
-    };
-
-    // Focus management
-    const questionHeaderRef = React.useRef<HTMLHeadingElement>(null);
-    const resultRef = React.useRef<HTMLDivElement>(null);
+    // --- ALL REFS AND THEIR EFFECTS MUST BE BEFORE CONDITIONAL RETURNS ---
+    const questionHeaderRef = useRef<HTMLHeadingElement>(null);
+    const resultRef = useRef<HTMLDivElement>(null);
 
     // Initial focus on question when changed
     useEffect(() => {
@@ -122,6 +105,18 @@ export default function ExamSession() {
             resultRef.current.focus();
         }
     }, [isFinished]);
+
+
+
+    const handleAnswerSelect = useCallback((choiceIndex: number) => {
+        setAnswers(prev => ({ ...prev, [currentQuestionIndex]: choiceIndex }));
+    }, [currentQuestionIndex]);
+
+    const calculateScore = useCallback(() => {
+        return questions.reduce((acc, q, index) => {
+            return acc + (answers[index] === q.correct_index ? 1 : 0);
+        }, 0);
+    }, [questions, answers]);
 
     // Keyboard navigation
     useEffect(() => {
@@ -151,7 +146,7 @@ export default function ExamSession() {
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [currentQuestionIndex, questions, loading, isLoadingData, isFinished]);
+    }, [currentQuestionIndex, questions, loading, isLoadingData, isFinished, handleAnswerSelect]);
 
 
     const formatTime = (seconds: number) => {
@@ -164,7 +159,7 @@ export default function ExamSession() {
         return (
             <div className="flex h-screen items-center justify-center flex-col gap-4" role="status" aria-busy="true" aria-live="polite">
                 <Loader2 className="h-10 w-10 animate-spin text-[var(--color-primary)]" aria-hidden="true" />
-                <p className="text-gray-500 font-medium">Préparation de l'examen...</p>
+                <p className="text-gray-500 font-medium">Préparation de l&apos;examen...</p>
             </div>
         );
     }
@@ -178,7 +173,7 @@ export default function ExamSession() {
             <main className="container mx-auto px-4 py-12 max-w-2xl text-center" ref={resultRef} tabIndex={-1} aria-labelledby="result-title">
                 <Card className={isSuccess ? "border-green-500 border-t-8" : "border-red-500 border-t-8"}>
                     <CardHeader>
-                        <CardTitle id="result-title" className="text-3xl font-bold">Résultat de l'Examen</CardTitle>
+                        <CardTitle id="result-title" className="text-3xl font-bold">Résultat de l&apos;Examen</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         <div className={`mx-auto p-6 rounded-full w-40 h-40 flex flex-col items-center justify-center border-8 ${isSuccess ? 'border-green-500 bg-green-50 text-green-600' : 'border-red-500 bg-red-50 text-red-600'}`} aria-label={`Score: ${score} sur ${questions.length}. ${isSuccess ? 'Admis' : 'Ajourné'}`}>
@@ -286,7 +281,7 @@ export default function ExamSession() {
                             </Button>
                         ) : (
                             <Button onClick={finishExam} className="bg-green-600 hover:bg-green-700 text-white" aria-label="Valider l'examen">
-                                Valider l'examen
+                                Valider l&apos;examen
                             </Button>
                         )}
                     </div>
