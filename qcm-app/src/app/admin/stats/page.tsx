@@ -7,8 +7,8 @@ import {
 } from 'recharts';
 import { AdminService } from '@/services/admin.service';
 import { useAdminGuard } from '@/lib/adminGuard';
+import { useSettings } from '@/context/SettingsContext';
 
-const PIE_COLORS = ['#002394', '#3b5bdb', '#4c6ef5', '#748ffc', '#a5b4fc'];
 const TRACK_LABELS: Record<string, string> = {
     residence: 'Résidence',
     naturalisation: 'Naturalisation',
@@ -16,9 +16,13 @@ const TRACK_LABELS: Record<string, string> = {
 
 export default function AdminStatsPage() {
     useAdminGuard();
+    const { settings } = useSettings();
     const [themeStats, setThemeStats] = useState<{ theme: string; avgScore: number; count: number }[]>([]);
     const [trackDist, setTrackDist] = useState<{ name: string; value: number }[]>([]);
     const [loading, setLoading] = useState(true);
+
+    const brandColor = settings.brandColor || '#002394';
+    const PIE_COLORS = [brandColor, '#3b5bdb', '#4c6ef5', '#748ffc', '#a5b4fc'];
 
     useEffect(() => {
         Promise.all([
@@ -41,21 +45,24 @@ export default function AdminStatsPage() {
 
     if (loading) return (
         <div className="flex justify-center py-20">
-            <div className="w-8 h-8 border-4 border-[#002394] border-t-transparent rounded-full animate-spin" />
+            <div
+                className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin"
+                style={{ borderColor: brandColor, borderTopColor: 'transparent' }}
+            />
         </div>
     );
 
     return (
         <div className="p-6 max-w-5xl mx-auto">
             <div className="mb-8">
-                <h1 className="text-2xl font-bold text-gray-900">Statistiques</h1>
+                <h1 className="text-2xl font-bold text-gray-900">Statistiques — {settings.appName}</h1>
                 <p className="text-gray-500 text-sm mt-1">Analyse des performances globales</p>
             </div>
 
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
                 {/* Score moyen par thème */}
                 <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
-                    <h2 className="font-semibold text-gray-900 mb-5">Score moyen par thème</h2>
+                    <h2 className="font-semibold text-gray-900 mb-5 text-[var(--color-primary)]">Score moyen par thème</h2>
                     {themeStats.length === 0 ? (
                         <p className="text-gray-400 text-sm text-center py-12">Pas de données disponibles</p>
                     ) : (
@@ -64,8 +71,8 @@ export default function AdminStatsPage() {
                                 <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" horizontal={false} />
                                 <XAxis type="number" domain={[0, 100]} tick={{ fontSize: 11 }} unit="%" />
                                 <YAxis type="category" dataKey="theme" tick={{ fontSize: 11 }} width={100} />
-                                <Tooltip formatter={(v) => `${v}%`} />
-                                <Bar dataKey="avgScore" name="Score moyen" fill="#002394" radius={[0, 4, 4, 0]} />
+                                <Tooltip formatter={(v) => `${v}%`} cursor={{ fill: 'transparent' }} />
+                                <Bar dataKey="avgScore" name="Score moyen" fill={brandColor} radius={[0, 4, 4, 0]} />
                             </BarChart>
                         </ResponsiveContainer>
                     )}
@@ -114,7 +121,7 @@ export default function AdminStatsPage() {
                                 {themeStats.map(t => (
                                     <tr key={t.theme} className="hover:bg-gray-50">
                                         <td className="px-4 py-3">
-                                            <span className="px-2 py-0.5 bg-blue-50 text-blue-700 rounded-full text-xs">{t.theme}</span>
+                                            <span className="px-2 py-0.5 bg-[var(--color-primary-soft)] text-[var(--color-primary)] rounded-full text-xs font-medium">{t.theme}</span>
                                         </td>
                                         <td className="px-4 py-3 text-center text-gray-700">{t.count}</td>
                                         <td className="px-4 py-3 text-center">

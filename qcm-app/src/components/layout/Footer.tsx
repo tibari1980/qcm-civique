@@ -1,3 +1,4 @@
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -9,7 +10,15 @@ import Link from 'next/link';
  * - <nav> avec aria-label distinct de la nav principale
  * - Liens avec textes descriptifs
  */
+import { useSettings } from '@/context/SettingsContext';
+import { Instagram, Linkedin, Mail } from 'lucide-react';
+
+/**
+ * Footer — Pied de page
+ */
 export function Footer() {
+    const { settings } = useSettings();
+
     return (
         <footer aria-label="Pied de page" className="border-t border-gray-200 bg-white py-8">
             <div className="container mx-auto px-4 md:px-6">
@@ -17,16 +26,33 @@ export function Footer() {
                     {/* Bloc marque */}
                     <div>
                         <p className="font-bold text-lg mb-4 text-[var(--color-primary)]">
-                            Prépa Examen Civique FR
+                            {settings.appName}
                         </p>
                         <p className="text-sm text-gray-500">
-                            Préparez votre examen civique français avec des QCM officiels et des cours détaillés.
+                            Préparez votre examen civique français efficacement avec des outils personnalisés et des contenus de qualité.
                         </p>
+                        <div className="flex items-center gap-4 mt-4">
+                            {settings.contactEmail && (
+                                <a href={`mailto:${settings.contactEmail}`} className="text-gray-400 hover:text-[var(--color-primary)] transition-colors" aria-label="Nous envoyer un email">
+                                    <Mail className="h-5 w-5" />
+                                </a>
+                            )}
+                            {settings.socialInstagram && (
+                                <a href={`https://instagram.com/${settings.socialInstagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[var(--color-primary)] transition-colors" aria-label="Suivre sur Instagram">
+                                    <Instagram className="h-5 w-5" />
+                                </a>
+                            )}
+                            {settings.socialLinkedIn && (
+                                <a href={`https://linkedin.com/in/${settings.socialLinkedIn}`} target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[var(--color-primary)] transition-colors" aria-label="Suivre sur LinkedIn">
+                                    <Linkedin className="h-5 w-5" />
+                                </a>
+                            )}
+                        </div>
                     </div>
 
                     {/* Navigation liens utiles */}
                     <nav aria-label="Liens utiles">
-                        <h2 className="font-semibold text-sm mb-4 text-gray-900">Liens utiles</h2>
+                        <h2 className="font-semibold text-sm mb-4 text-gray-900">Navigation</h2>
                         <ul className="space-y-2 text-sm text-gray-500" role="list">
                             <li>
                                 <Link href="/training" className="hover:text-[var(--color-primary)] transition-colors">
@@ -38,14 +64,16 @@ export function Footer() {
                                     Examen Blanc
                                 </Link>
                             </li>
-                            <li>
-                                <Link href="/about" className="hover:text-[var(--color-primary)] transition-colors">
-                                    À propos
-                                </Link>
-                            </li>
+                            {settings.enableInterview && (
+                                <li>
+                                    <Link href="/interview" className="hover:text-[var(--color-primary)] transition-colors">
+                                        Entretien
+                                    </Link>
+                                </li>
+                            )}
                             <li>
                                 <Link href="/contact" className="hover:text-[var(--color-primary)] transition-colors">
-                                    Contactez-nous
+                                    Contact
                                 </Link>
                             </li>
                         </ul>
@@ -57,22 +85,25 @@ export function Footer() {
                         <ul className="space-y-2 text-sm text-gray-500" role="list">
                             <li>
                                 <Link href="/privacy" className="hover:text-[var(--color-primary)] transition-colors">
-                                    Politique de confidentialité
+                                    Confidentialité
                                 </Link>
                             </li>
                             <li>
                                 <Link href="/terms" className="hover:text-[var(--color-primary)] transition-colors">
-                                    {"Conditions d'utilisation"}
+                                    {"Conditions"}
                                 </Link>
                             </li>
                         </ul>
                     </nav>
                 </div>
 
-                <div className="mt-8 border-t border-gray-100 pt-6">
-                    <p className="text-center text-sm text-gray-400">
+                <div className="mt-8 border-t border-gray-100 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <p className="text-sm text-gray-400">
                         <span aria-label="Copyright">©</span>{' '}
-                        {new Date().getFullYear()} Prépa Examen Civique FR. Tous droits réservés.
+                        {new Date().getFullYear()} {settings.appName}. Tous droits réservés.
+                    </p>
+                    <p className="text-xs text-gray-300">
+                        Propulsé par JL Cloud
                     </p>
                 </div>
             </div>

@@ -1,0 +1,24 @@
+{
+  "headers": [
+    "ID",
+    "Thème",
+    "Niveau",
+    "Question",
+    "Réponse A",
+    "Réponse B",
+    "Réponse C",
+    "Réponse D",
+    "Bonne réponse"
+  ],
+  "firstRow": {
+    "ID": 1,
+    "Thème": "Société et citoyenneté",
+    "Niveau": "Débutant",
+    "Question": "L'école en France est obligatoire jusqu'à : (Variante 1)",
+    "Réponse A": "14 ans",
+    "Réponse B": "16 ans",
+    "Réponse C": "18 ans",
+    "Réponse D": "12 ans",
+    "Bonne réponse": "B"
+  }
+}

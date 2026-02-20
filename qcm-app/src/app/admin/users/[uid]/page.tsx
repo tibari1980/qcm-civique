@@ -15,23 +15,20 @@ export default function AdminUserDetailPage() {
     useAdminGuard();
     const { uid } = useParams<{ uid: string }>();
     const router = useRouter();
-    const [data, setData] = useState<{
-        profile: Record<string, unknown> | null;
-        attempts: Record<string, unknown>[];
-    } | null>(null);
+    const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (!uid) return;
         AdminService.getUserDetail(uid).then(d => {
-            setData(d as typeof data);
+            setData(d);
             setLoading(false);
         });
     }, [uid]);
 
     if (loading) return (
         <div className="flex justify-center py-20">
-            <div className="w-8 h-8 border-4 border-[#002394] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
         </div>
     );
 
@@ -53,7 +50,7 @@ export default function AdminUserDetailPage() {
         <div className="p-6 max-w-4xl mx-auto">
             <button
                 onClick={() => router.back()}
-                className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#002394] mb-6 transition-colors"
+                className="flex items-center gap-2 text-sm text-gray-500 hover:text-[var(--color-primary)] mb-6 transition-colors"
             >
                 <ArrowLeft className="h-4 w-4" /> Retour
             </button>
@@ -61,14 +58,14 @@ export default function AdminUserDetailPage() {
             {/* Profile card */}
             <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6 mb-6">
                 <div className="flex items-center gap-4 mb-6">
-                    <div className="w-14 h-14 rounded-full bg-[#002394] flex items-center justify-center text-white font-bold text-xl">
+                    <div className="w-14 h-14 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white font-bold text-xl">
                         {String(p.displayName || 'A').charAt(0).toUpperCase()}
                     </div>
                     <div>
                         <h1 className="text-xl font-bold text-gray-900">{String(p.displayName || 'Anonyme')}</h1>
                         <span className={[
                             'text-xs px-2 py-0.5 rounded-full font-semibold',
-                            p.role === 'admin' ? 'bg-blue-100 text-[#002394]' : 'bg-gray-100 text-gray-500',
+                            p.role === 'admin' ? 'bg-blue-100 text-[var(--color-primary)]' : 'bg-gray-100 text-gray-500',
                         ].join(' ')}>
                             {p.role === 'admin' ? 'Administrateur' : 'Utilisateur'}
                         </span>

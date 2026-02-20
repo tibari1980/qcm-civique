@@ -9,15 +9,7 @@ import { useRouter } from 'next/navigation';
 
 type LogLine = { type: 'info' | 'success' | 'error'; text: string };
 
-/* ── Supprime toutes les mentions Variante du texte d'une question ── */
-function cleanVariante(text: string): string {
-    return text
-        .replace(/\(Variante\s*\d*\)/gi, '')
-        .replace(/^Variante\s*\d*\s*[:.-]?\s*/gi, '')
-        .replace(/Variante\s*\d*/gi, '')
-        .replace(/\s+/g, ' ')
-        .trim();
-}
+import { cleanQuestionText } from '@/utils/cleaning';
 
 export default function AdminCleanVariantePage() {
     useAdminGuard();
@@ -45,14 +37,37 @@ export default function AdminCleanVariantePage() {
 
             for (const docSnapshot of snap.docs) {
                 const data = docSnapshot.data();
-                const original: string = data.question || '';
-                if (!original) continue;
+                const updates: any = {};
+                let hasChanges = false;
 
-                const cleaned = cleanVariante(original);
-                if (cleaned === original) continue;
+                // Question
+                const qOrig = data.question || '';
+                const qClean = cleanQuestionText(qOrig);
+                if (qClean !== qOrig) {
+                    updates.question = qClean;
+                    hasChanges = true;
+                }
 
-                addLog('info', `✏️  "${original}" → "${cleaned}"`);
-                batch.update(doc(db, 'questions', docSnapshot.id), { question: cleaned });
+                // Choices
+                const choicesOrig = (data.choices || []) as string[];
+                const choicesClean = choicesOrig.map(c => cleanQuestionText(c));
+                if (JSON.stringify(choicesOrig) !== JSON.stringify(choicesClean)) {
+                    updates.choices = choicesClean;
+                    hasChanges = true;
+                }
+
+                // Explanation
+                const eOrig = data.explanation || '';
+                const eClean = cleanQuestionText(eOrig);
+                if (eClean !== eOrig) {
+                    updates.explanation = eClean;
+                    hasChanges = true;
+                }
+
+                if (!hasChanges) continue;
+
+                addLog('info', `✏️  Question ID: ${docSnapshot.id} mise à jour.`);
+                batch.update(doc(db, 'questions', docSnapshot.id), updates);
                 batchCount++;
                 totalUpdated++;
 
@@ -91,7 +106,7 @@ export default function AdminCleanVariantePage() {
         <div className="p-6 max-w-2xl mx-auto">
             <button
                 onClick={() => router.back()}
-                className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#002394] mb-6 transition-colors"
+                className="flex items-center gap-2 text-sm text-gray-500 hover:text-[var(--color-primary)] mb-6 transition-colors"
             >
                 <ArrowLeft className="h-4 w-4" /> Retour
             </button>
@@ -114,7 +129,7 @@ export default function AdminCleanVariantePage() {
                 onClick={runClean}
                 disabled={running || done}
                 aria-busy={running}
-                className="flex items-center gap-2 px-6 py-3 bg-[#002394] text-white rounded-xl font-semibold text-sm hover:bg-blue-800 transition-colors disabled:opacity-50"
+                className="flex items-center gap-2 px-6 py-3 bg-[var(--color-primary)] text-white rounded-xl font-semibold text-sm hover:brightness-110 transition-colors disabled:opacity-50"
             >
                 {running
                     ? <><RefreshCw className="h-4 w-4 animate-spin" /> Nettoyage en cours…</>

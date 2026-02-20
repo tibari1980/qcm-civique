@@ -162,6 +162,35 @@ export default function ExamSession() {
         );
     }
 
+    if (questions.length === 0) {
+        return (
+            <main className="container mx-auto px-4 py-12 max-w-2xl text-center">
+                <Card className="border-amber-200 border-t-8">
+                    <CardHeader>
+                        <CardTitle className="text-2xl font-bold flex items-center justify-center gap-2">
+                            <AlertCircle className="h-6 w-6 text-amber-500" />
+                            Aucune question disponible
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <p className="text-gray-600">
+                            Nous n&apos;avons pas pu trouver de questions pour générer cet examen.
+                            Cela peut arriver si la base de données est vide ou si les critères ne sont pas remplis.
+                        </p>
+                        <div className="bg-amber-50 p-4 rounded-lg text-sm text-amber-800">
+                            💡 Veuillez contacter un administrateur pour importer des questions.
+                        </div>
+                    </CardContent>
+                    <CardFooter className="justify-center">
+                        <Link href="/dashboard">
+                            <Button size="lg">Retour au tableau de bord</Button>
+                        </Link>
+                    </CardFooter>
+                </Card>
+            </main>
+        );
+    }
+
     if (isFinished) {
         const score = calculateScore();
         const percentage = Math.round((score / questions.length) * 100);

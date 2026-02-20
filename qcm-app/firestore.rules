@@ -51,11 +51,11 @@ service cloud.firestore {
       // Allow users to delete their own history? Maybe not for now.
     }
 
-    // Settings Collection (Global App Config)
-    // - Public/Auth read? Let's say Auth read.
+    // Config Collection (Global App Config)
+    // - Public read (needed for branding/announcements)
     // - Only Admins write
-    match /settings/{docId} {
-      allow read: if isAuthenticated();
+    match /config/{docId} {
+      allow read: if true;
       allow write: if isAdmin();
     }
 

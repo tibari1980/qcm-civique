@@ -111,7 +111,7 @@ export default function AdminDeduplicatePage() {
         <div className="p-6 max-w-2xl mx-auto">
             <button
                 onClick={() => router.back()}
-                className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#002394] mb-6 transition-colors"
+                className="flex items-center gap-2 text-sm text-gray-500 hover:text-[var(--color-primary)] mb-6 transition-colors"
             >
                 <ArrowLeft className="h-4 w-4" /> Retour
             </button>

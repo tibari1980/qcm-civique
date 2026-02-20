@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useAdminGuard } from '@/lib/adminGuard';
+import { useSettings } from '@/context/SettingsContext';
 
 const NAV_ITEMS = [
     { href: '/admin', label: 'Dashboard', icon: LayoutDashboard, exact: true },
@@ -25,16 +26,17 @@ interface SidebarContentProps {
     userProfile: any;
     user: any;
     handleSignOut: () => void;
+    appName: string;
 }
 
-const SidebarContent = ({ setMobileOpen, isActive, userProfile, user, handleSignOut }: SidebarContentProps) => (
+const SidebarContent = ({ setMobileOpen, isActive, userProfile, user, handleSignOut, appName }: SidebarContentProps) => (
     <div className="flex flex-col h-full">
         {/* Logo / Brand */}
         <div className="flex items-center gap-3 px-6 py-5 border-b border-white/10">
             <ShieldCheck className="h-7 w-7 text-white" aria-hidden="true" />
             <div>
                 <p className="text-white font-bold text-base leading-none">Admin</p>
-                <p className="text-blue-200 text-xs mt-0.5">Prépa Civique</p>
+                <p className="text-blue-200 text-xs mt-0.5 truncate max-w-[140px]">{appName}</p>
             </div>
         </div>
 
@@ -87,18 +89,19 @@ const SidebarContent = ({ setMobileOpen, isActive, userProfile, user, handleSign
 );
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
-    const { loading, isAdmin } = useAdminGuard();
+    const { loading: guardLoading, isAdmin } = useAdminGuard();
     const { user, userProfile, signOut } = useAuth();
+    const { settings, loading: settingsLoading } = useSettings();
     const pathname = usePathname();
     const router = useRouter();
     const [mobileOpen, setMobileOpen] = useState(false);
 
-    if (loading) {
+    if (guardLoading || settingsLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
                 <div className="flex flex-col items-center gap-3 text-gray-500">
-                    <div className="w-8 h-8 border-4 border-[#002394] border-t-transparent rounded-full animate-spin" />
-                    <span className="text-sm">Vérification des droits…</span>
+                    <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+                    <span className="text-sm">Chargement…</span>
                 </div>
             </div>
         );
@@ -118,7 +121,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="flex h-screen bg-gray-50 overflow-hidden">
             {/* Sidebar desktop */}
             <aside
-                className="hidden md:flex flex-col w-60 bg-[#002394] flex-shrink-0"
+                className="hidden md:flex flex-col w-60 flex-shrink-0 shadow-xl"
+                style={{ backgroundColor: settings.brandColor || '#002394' }}
                 aria-label="Panneau d'administration"
             >
                 <SidebarContent
@@ -127,6 +131,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     userProfile={userProfile}
                     user={user}
                     handleSignOut={handleSignOut}
+                    appName={settings.appName}
                 />
             </aside>
 
@@ -142,9 +147,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             {/* Sidebar mobile */}
             <aside
                 className={[
-                    'fixed top-0 left-0 h-full w-60 bg-[#002394] z-50 transition-transform duration-300 md:hidden',
+                    'fixed top-0 left-0 h-full w-60 z-50 transition-transform duration-300 md:hidden shadow-2xl',
                     mobileOpen ? 'translate-x-0' : '-translate-x-full',
                 ].join(' ')}
+                style={{ backgroundColor: settings.brandColor || '#002394' }}
             >
                 <SidebarContent
                     setMobileOpen={setMobileOpen}
@@ -152,13 +158,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     userProfile={userProfile}
                     user={user}
                     handleSignOut={handleSignOut}
+                    appName={settings.appName}
                 />
             </aside>
 
             {/* Main content */}
             <div className="flex-1 flex flex-col overflow-hidden">
                 {/* Mobile topbar */}
-                <div className="md:hidden flex items-center gap-3 px-4 py-3 bg-[#002394] text-white">
+                <div className="md:hidden flex items-center gap-3 px-4 py-3 text-white"
+                    style={{ backgroundColor: settings.brandColor || '#002394' }}>
                     <button
                         onClick={() => setMobileOpen(v => !v)}
                         aria-label={mobileOpen ? 'Fermer le menu' : 'Ouvrir le menu'}

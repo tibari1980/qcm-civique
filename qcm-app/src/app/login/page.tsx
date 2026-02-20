@@ -10,6 +10,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { useAuth } from '@/context/AuthContext';
+import { useSettings } from '@/context/SettingsContext';
 
 /**
  * LoginPage — Connexion
@@ -21,6 +22,7 @@ import { useAuth } from '@/context/AuthContext';
  * - Lien "Mot de passe oublié ?" avec texte descriptif
  */
 export default function LoginPage() {
+    const { settings } = useSettings();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -63,7 +65,10 @@ export default function LoginPage() {
                     <CardTitle className="text-2xl font-bold text-center" id="login-title">
                         Connexion
                     </CardTitle>
-                    <p className="text-center text-sm text-gray-500" id={headingDescId}>
+                    <p className="text-center text-sm font-medium text-gray-500">
+                        {settings.appName}
+                    </p>
+                    <p className="text-center text-xs text-gray-400 mt-1" id={headingDescId}>
                         Entrez votre email et mot de passe pour accéder à votre compte.
                     </p>
                 </CardHeader>

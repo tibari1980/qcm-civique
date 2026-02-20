@@ -61,7 +61,7 @@ export default function AdminEditQuestionPage() {
 
     if (loading) return (
         <div className="flex justify-center py-20">
-            <div className="w-8 h-8 border-4 border-[#002394] border-t-transparent rounded-full animate-spin" />
+            <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
         </div>
     );
     if (!form) return <div className="p-6 text-gray-500">Question introuvable.</div>;
@@ -69,13 +69,13 @@ export default function AdminEditQuestionPage() {
     return (
         <div className="p-6 max-w-3xl mx-auto">
             <button onClick={() => router.back()}
-                className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#002394] mb-6 transition-colors">
+                className="flex items-center gap-2 text-sm text-gray-500 hover:text-[var(--color-primary)] mb-6 transition-colors">
                 <ArrowLeft className="h-4 w-4" /> Retour
             </button>
             <div className="flex items-center justify-between mb-6">
                 <h1 className="text-2xl font-bold text-gray-900">Modifier la question</h1>
                 <button onClick={() => setPreview(v => !v)}
-                    className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:border-[#002394] transition-colors">
+                    className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:border-[var(--color-primary)] transition-colors">
                     <Eye className="h-4 w-4" aria-hidden="true" />
                     {preview ? 'Formulaire' : 'Aperçu'}
                 </button>
@@ -114,7 +114,7 @@ export default function AdminEditQuestionPage() {
                                 <div key={key}>
                                     <label className="block text-xs font-medium text-gray-600 mb-1">{label}</label>
                                     <select value={String(form[key])} onChange={e => set(key, e.target.value as never)}
-                                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#002394]/30">
+                                        className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30">
                                         {options.map(o => <option key={o} value={o}>{o}</option>)}
                                     </select>
                                 </div>
@@ -122,14 +122,14 @@ export default function AdminEditQuestionPage() {
                         </div>
                         <div className="mt-3 flex items-center gap-2">
                             <input type="checkbox" id="is_active" checked={form.is_active}
-                                onChange={e => set('is_active', e.target.checked)} className="w-4 h-4 accent-[#002394]" />
+                                onChange={e => set('is_active', e.target.checked)} className="w-4 h-4 accent-[var(--color-primary)]" />
                             <label htmlFor="is_active" className="text-sm text-gray-600">Question active</label>
                         </div>
                     </div>
                     <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
                         <label className="block text-sm font-semibold text-gray-900 mb-2">Texte de la question</label>
                         <textarea value={form.question} onChange={e => set('question', e.target.value)}
-                            rows={3} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#002394]/30 resize-none" />
+                            rows={3} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30 resize-none" />
                     </div>
                     <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
                         <h2 className="font-semibold text-gray-900 mb-4">Réponses</h2>
@@ -137,11 +137,11 @@ export default function AdminEditQuestionPage() {
                             {form.choices.map((c, i) => (
                                 <div key={i} className="flex items-center gap-3">
                                     <input type="radio" name="correct" checked={form.correct_index === i}
-                                        onChange={() => set('correct_index', i)} className="w-4 h-4 accent-[#002394]"
+                                        onChange={() => set('correct_index', i)} className="w-4 h-4 accent-[var(--color-primary)]"
                                         aria-label={`Réponse ${LETTERS[i]} correcte`} />
                                     <span className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-xs font-bold text-gray-500 flex-shrink-0">{LETTERS[i]}</span>
                                     <input type="text" value={c} onChange={e => setChoice(i, e.target.value)}
-                                        className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#002394]/30" />
+                                        className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30" />
                                 </div>
                             ))}
                         </div>
@@ -149,14 +149,14 @@ export default function AdminEditQuestionPage() {
                     <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-5">
                         <label className="block text-sm font-semibold text-gray-900 mb-2">Explication</label>
                         <textarea value={form.explanation} onChange={e => set('explanation', e.target.value)}
-                            rows={2} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#002394]/30 resize-none" />
+                            rows={2} className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30 resize-none" />
                     </div>
                 </div>
             )}
 
             <div className="mt-6 flex justify-end">
                 <button onClick={handleSave} disabled={saving}
-                    className="flex items-center gap-2 px-6 py-3 bg-[#002394] text-white rounded-xl font-semibold text-sm hover:bg-blue-800 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 px-6 py-3 bg-[var(--color-primary)] text-white rounded-xl font-semibold text-sm hover:brightness-110 transition-colors disabled:opacity-50"
                     aria-busy={saving}>
                     {saving ? <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <Save className="h-4 w-4" aria-hidden="true" />}
                     {saving ? 'Enregistrement…' : 'Sauvegarder'}

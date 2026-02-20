@@ -5,22 +5,19 @@ import Link from 'next/link';
 import { Menu, X, BookOpen, GraduationCap, LayoutDashboard, Home, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthContext';
+import { useSettings } from '@/context/SettingsContext';
 
 /**
  * Header — Navigation principale
- * WCAG 2.1 AA améliorations :
- * - aria-label, aria-expanded, aria-controls sur le bouton hamburger
- * - Menu mobile avec role="dialog" + focus trap
- * - Bouton Déconnexion avec texte visible
- * - Toutes les icônes décoratives ont aria-hidden="true"
- * - Deux <nav> distinctes nommées différemment
  */
 export function Header() {
     const [isMenuOpen, setIsMenuOpen] = React.useState(false);
     const { user, signOut, isAdmin } = useAuth();
+    const { settings } = useSettings();
     const mobileMenuRef = useRef<HTMLDivElement>(null);
     const hamburgerRef = useRef<HTMLButtonElement>(null);
 
+    // ... (rest of effects stay same)
     // Fermer le menu avec Échap
     useEffect(() => {
         if (!isMenuOpen) return;
@@ -81,10 +78,10 @@ export function Header() {
                         <Link
                             href="/"
                             className="flex items-center gap-2 font-bold text-xl text-[var(--color-primary)]"
-                            aria-label="Prépa Civique — Retour à l'accueil"
+                            aria-label={`${settings.appName} — Retour à l'accueil`}
                         >
                             <GraduationCap className="h-8 w-8" aria-hidden="true" />
-                            <span>Prépa Civique</span>
+                            <span>{settings.appName}</span>
                         </Link>
                     </div>
 
@@ -99,14 +96,21 @@ export function Header() {
                         <Link href="/exam" className="text-sm font-medium text-gray-700 hover:text-[var(--color-primary)] transition-colors">
                             Examen Blanc
                         </Link>
-                        <Link href="/ai-quiz" className="text-sm font-medium text-[var(--color-primary)] hover:text-blue-700 transition-colors flex items-center gap-1">
-                            <span aria-hidden="true">✨</span> QCM IA
-                        </Link>
+                        {settings.enableInterview && (
+                            <Link href="/interview" className="text-sm font-medium text-gray-700 hover:text-[var(--color-primary)] transition-colors">
+                                Entretien
+                            </Link>
+                        )}
+                        {settings.enableAIQCM && (
+                            <Link href="/ai-quiz" className="text-sm font-medium text-[var(--color-primary)] hover:opacity-80 transition-all flex items-center gap-1">
+                                <span aria-hidden="true">✨</span> QCM IA
+                            </Link>
+                        )}
                         <Link
                             href={isAdmin ? "/admin" : "/dashboard"}
-                            className={`text-sm font-medium transition-colors ${isAdmin ? 'text-[#002394] font-bold' : 'text-gray-700 hover:text-[var(--color-primary)]'}`}
+                            className={`text-sm font-medium transition-colors ${isAdmin ? 'text-[var(--color-primary)] font-bold' : 'text-gray-700 hover:text-[var(--color-primary)]'}`}
                         >
-                            {isAdmin ? "Administration" : "Tableau de bord"}
+                            {isAdmin ? "Administration" : "Dashboard"}
                         </Link>
                     </nav>
 
@@ -192,13 +196,21 @@ export function Header() {
                                 <GraduationCap className="h-4 w-4" aria-hidden="true" />
                                 Examen Blanc
                             </Link>
-                            <Link href="/ai-quiz" className="flex items-center gap-2 text-sm font-medium py-2 text-[var(--color-primary)]" onClick={closeMenu}>
-                                <span aria-hidden="true" className="text-base">✨</span>
-                                QCM IA
-                            </Link>
+                            {settings.enableInterview && (
+                                <Link href="/interview" className="flex items-center gap-2 text-sm font-medium py-2" onClick={closeMenu}>
+                                    <GraduationCap className="h-4 w-4" aria-hidden="true" />
+                                    Entretien
+                                </Link>
+                            )}
+                            {settings.enableAIQCM && (
+                                <Link href="/ai-quiz" className="flex items-center gap-2 text-sm font-medium py-2 text-[var(--color-primary)]" onClick={closeMenu}>
+                                    <span aria-hidden="true" className="text-base">✨</span>
+                                    QCM IA
+                                </Link>
+                            )}
                             <Link
                                 href={isAdmin ? "/admin" : "/dashboard"}
-                                className={`flex items-center gap-2 text-sm font-medium py-2 ${isAdmin ? 'text-[#002394] font-bold' : ''}`}
+                                className={`flex items-center gap-2 text-sm font-medium py-2 ${isAdmin ? 'text-[var(--color-primary)] font-bold' : ''}`}
                                 onClick={closeMenu}
                             >
                                 <LayoutDashboard className="h-4 w-4" aria-hidden="true" />

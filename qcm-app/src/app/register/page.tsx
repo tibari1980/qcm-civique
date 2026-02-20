@@ -12,6 +12,7 @@ import { useAuth } from '@/context/AuthContext';
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import { auth, db } from '@/lib/firebase';
 import { doc, setDoc } from 'firebase/firestore';
+import { useSettings } from '@/context/SettingsContext';
 
 /**
  * RegisterPage — Création de compte
@@ -23,6 +24,7 @@ import { doc, setDoc } from 'firebase/firestore';
  * - Confirmation de mot de passe avec description de correspondance
  */
 export default function RegisterPage() {
+    const { settings } = useSettings();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -83,8 +85,11 @@ export default function RegisterPage() {
                     <CardTitle className="text-2xl font-bold text-center" id="register-title">
                         Créer un compte
                     </CardTitle>
-                    <p className="text-center text-sm text-gray-500" id={headingDescId}>
-                        Commencez votre préparation dès aujourd&apos;hui. Inscription gratuite.
+                    <p className="text-center text-sm font-medium text-gray-500">
+                        Rejoindre {settings.appName}
+                    </p>
+                    <p className="text-center text-xs text-gray-400 mt-1" id={headingDescId}>
+                        Commencez votre préparation dès aujourd&apos;hui.
                     </p>
                 </CardHeader>
                 <CardContent>

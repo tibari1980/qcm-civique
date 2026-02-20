@@ -16,6 +16,8 @@ export const metadata: Metadata = {
 };
 
 import { AuthProvider } from "@/context/AuthContext";
+import { SettingsProvider } from "@/context/SettingsContext";
+import { AnnouncementBanner } from "@/components/layout/AnnouncementBanner";
 
 export default function RootLayout({
   children,
@@ -29,17 +31,15 @@ export default function RootLayout({
         className={`${inter.variable} antialiased min-h-screen flex flex-col bg-[var(--color-background)]`}
       >
         <AuthProvider>
-          {/* Lien d'évitement — WCAG 2.4.1, essentiel pour NVDA et clavier */}
-          <SkipLink />
-          <Header />
-          {/*
-            id="main-content" permet au SkipLink de sauter la navigation.
-            tabIndex={-1} permet le focus programmatique après la navigation.
-          */}
-          <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
-            {children}
-          </main>
-          <Footer />
+          <SettingsProvider>
+            <AnnouncementBanner />
+            <SkipLink />
+            <Header />
+            <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
+              {children}
+            </main>
+            <Footer />
+          </SettingsProvider>
         </AuthProvider>
       </body>
     </html>

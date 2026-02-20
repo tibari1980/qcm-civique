@@ -204,7 +204,7 @@ export class AdminService {
     /* ── Questions paginées ── */
     static async getQuestions(filters: {
         theme?: string; level?: string; is_active?: boolean
-    } = {}, maxResults: number = 100): Promise<AdminQuestion[]> {
+    } = {}, maxResults: number = 2000): Promise<AdminQuestion[]> {
         let q = query(collection(db, 'questions'), orderBy('theme'), limit(maxResults));
 
         if (filters.theme) {

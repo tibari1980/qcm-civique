@@ -17,7 +17,7 @@ console.log(JSON.stringify(raw[2]));
 console.log('\n=== TOTAL LIGNES ===', raw.length - 1);
 
 // Parsed rows
-const rows = XLSX.utils.sheet_to_json(sheet);
+const rows = XLSX.utils.sheet_to_json(sheet) as any[];
 if (rows.length === 0) { console.log('AUCUNE LIGNE PARSÉE'); process.exit(0); }
 
 // Detect question column
@@ -29,13 +29,15 @@ const themeKey = allKeys.find(k => k.toLowerCase().includes('th') || k.toLowerCa
 console.log('\n=== COLONNE THÈME DÉTECTÉE ===', themeKey);
 if (themeKey) {
     const counts: Record<string, number> = {};
-    rows.forEach((r: Record<string, unknown>) => {
-        const t = String(r[themeKey] || 'VIDE');
+    rows.forEach((r: any) => {
+        const val = themeKey ? r[themeKey] : null;
+        const t = String(val || 'VIDE');
         counts[t] = (counts[t] || 0) + 1;
     });
     console.log('\n=== NOMBRES PAR THÈME ===');
     Object.entries(counts).sort((a, b) => b[1] - a[1]).forEach(([t, n]) => console.log(`  ${n.toString().padStart(5)} | ${t}`));
 }
+Riverside.
 
 // Simulate variante cleaning on question column
 const qKey = allKeys.find(k => k.toLowerCase() === 'question');
@@ -50,7 +52,7 @@ if (qKey) {
 
     const seen = new Set<string>();
     let dupes = 0, unique = 0;
-    rows.forEach((r: Record<string, unknown>) => {
+    rows.forEach((r: any) => {
         const q = clean(String(r[qKey] || ''));
         if (seen.has(q.toLowerCase())) dupes++;
         else { seen.add(q.toLowerCase()); unique++; }
@@ -58,6 +60,6 @@ if (qKey) {
     console.log(`\n=== SIMULATION DÉDUPLICATION ===`);
     console.log(`  Uniques après nettoyage : ${unique}`);
     console.log(`  Doublons intra-fichier  : ${dupes}`);
-    console.log(`  Exemple cleaned row 1   : "${clean(String((rows[0] as Record<string, unknown>)[qKey] || ''))}"`);
-    console.log(`  Exemple cleaned row 2   : "${clean(String((rows[1] as Record<string, unknown>)[qKey] || ''))}"`);
+    console.log(`  Exemple cleaned row 1   : "${clean(String(rows[0][qKey] || ''))}"`);
+    console.log(`  Exemple cleaned row 2   : "${clean(String(rows[1][qKey] || ''))}"`);
 }

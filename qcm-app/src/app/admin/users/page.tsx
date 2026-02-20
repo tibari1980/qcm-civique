@@ -64,7 +64,7 @@ export default function AdminUsersPage() {
                         placeholder="Nom ou email…"
                         value={search}
                         onChange={e => setSearch(e.target.value)}
-                        className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#002394]/30"
+                        className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30"
                         aria-label="Rechercher un utilisateur"
                     />
                 </div>
@@ -72,7 +72,7 @@ export default function AdminUsersPage() {
 
             {loading ? (
                 <div className="flex justify-center py-20">
-                    <div className="w-8 h-8 border-4 border-[#002394] border-t-transparent rounded-full animate-spin" />
+                    <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
                 </div>
             ) : (
                 <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
@@ -93,7 +93,7 @@ export default function AdminUsersPage() {
                                     <tr key={u.uid} className="hover:bg-gray-50 transition-colors">
                                         <td className="px-4 py-3">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-8 h-8 rounded-full bg-[#002394] flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
+                                                <div className="w-8 h-8 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-white font-bold text-xs flex-shrink-0">
                                                     {u.displayName.charAt(0).toUpperCase()}
                                                 </div>
                                                 <div>
@@ -124,7 +124,7 @@ export default function AdminUsersPage() {
                                             <span className={[
                                                 'px-2 py-0.5 rounded-full text-xs font-semibold',
                                                 u.role === 'admin'
-                                                    ? 'bg-blue-100 text-[#002394]'
+                                                    ? 'bg-[var(--color-primary-soft)] text-[var(--color-primary)]'
                                                     : 'bg-gray-100 text-gray-500',
                                             ].join(' ')}>
                                                 {u.role === 'admin' ? 'Admin' : 'Utilisateur'}
@@ -134,7 +134,7 @@ export default function AdminUsersPage() {
                                             <div className="flex items-center justify-end gap-2">
                                                 <Link
                                                     href={`/admin/users/${u.uid}`}
-                                                    className="p-1.5 rounded-lg hover:bg-blue-50 text-gray-400 hover:text-[#002394] transition-colors"
+                                                    className="p-1.5 rounded-lg hover:bg-[var(--color-primary-soft)] text-gray-400 hover:text-[var(--color-primary)] transition-colors"
                                                     aria-label={`Voir le détail de ${u.displayName}`}
                                                 >
                                                     <Eye className="h-4 w-4" aria-hidden="true" />

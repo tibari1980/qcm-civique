@@ -7,9 +7,11 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { BookOpen, GraduationCap, CheckCircle, TrendingUp, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { UserService } from '@/services/user.service';
+import { useSettings } from '@/context/SettingsContext';
 
 export default function Home() {
   const { user, userProfile, isAdmin } = useAuth();
+  const { settings } = useSettings();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [stats, setStats] = useState<any>(null);
 
@@ -40,7 +42,7 @@ export default function Home() {
                 Bonjour <span className="text-[var(--color-primary)]">{user.displayName || 'Candidat'}</span> !
               </h1>
               <p className="max-w-2xl mx-auto text-lg text-gray-600 mb-8">
-                Heureux de vous revoir. Prêt à continuer votre progression vers la réussite ?
+                Heureux de vous revoir. Prêt à continuer votre progression sur <span className="font-semibold">{settings.appName}</span> ?
               </p>
 
               {/* Mini Stats Summary */}
@@ -97,7 +99,7 @@ export default function Home() {
           ) : (
             <>
               <h1 id="hero-heading" className="text-4xl md:text-6xl font-extrabold tracking-tight text-gray-900 mb-6">
-                Réussissez votre <span className="text-[var(--color-primary)]">Examen Civique</span>
+                Réussissez votre <span className="text-[var(--color-primary)]">{settings.appName}</span>
               </h1>
               <p className="max-w-2xl mx-auto text-lg text-gray-600 mb-8">
                 La plateforme complète pour préparer votre demande de titre de séjour, carte de résident ou naturalisation française.

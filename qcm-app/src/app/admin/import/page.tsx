@@ -12,15 +12,28 @@ import { useAdminGuard } from '@/lib/adminGuard';
 import { cleanQuestionText } from '@/utils/cleaning';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
 
+/* ─── Normalisation des chaînes (suppression accents, espaces, etc.) ─── */
+const normalizeTheme = (s: string) =>
+    String(s || '')
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "") // Supprime les accents
+        .replace(/_/g, ' ')             // Remplace underscores par espaces
+        .replace(/\s+/g, ' ')           // Compresse les espaces multiples
+        .trim();
+
 /* ─── Mapping thème Excel → thème Firestore ─── */
+// On stocke les clés NORMALISÉES pour faciliter la recherche
 const THEME_MAP: Record<string, string> = {
-    'Société et citoyenneté': 'societe',
-    'Histoire de France': 'histoire',
-    'Institutions françaises': 'institutions',
-    'Valeurs de la République': 'vals_principes',
-    'Droits et devoirs': 'droits',
-    'Géographie': 'geographie',
-    'Principes et valeurs': 'vals_principes',
+    [normalizeTheme('société et citoyenneté')]: 'societe',
+    [normalizeTheme('histoire de france')]: 'histoire',
+    [normalizeTheme('institutions françaises')]: 'institutions',
+    [normalizeTheme('valeurs de la république')]: 'vals_principes',
+    [normalizeTheme('droits et devoirs')]: 'droits',
+    [normalizeTheme('géographie')]: 'geographie',
+    [normalizeTheme('principes et valeurs')]: 'vals_principes',
+    [normalizeTheme('valeurs de la republique (ou principes et valeurs)')]: 'vals_principes',
+    'valeurs_de_la_republique_(ou_principes_et_valeurs)': 'vals_principes', // Fallback direct
 };
 
 const LEVEL_MAP: Record<string, string> = {
@@ -78,19 +91,31 @@ export default function AdminImportPage() {
             const sheet = workbook.Sheets[workbook.SheetNames[0]];
             const rows = XLSX.utils.sheet_to_json(sheet) as Record<string, any>[];
 
-            // Helper to find a value in a row regardless of column name casing/accents
+            const normalize = normalizeTheme;
+
             const getVal = (row: Record<string, any>, aliases: string[]) => {
                 const keys = Object.keys(row);
-                for (const alias of aliases) {
-                    const foundKey = keys.find(k => k.toLowerCase().trim() === alias.toLowerCase().trim());
-                    if (foundKey && row[foundKey] !== undefined) return row[foundKey];
-                }
+                const normalizedAliases = aliases.map(a => normalize(a));
+                const foundKey = keys.find(k => normalizedAliases.includes(normalize(k)));
+                if (foundKey && row[foundKey] !== undefined) return row[foundKey];
                 return null;
             };
 
-            // Construire le Set des questions existantes (comparaison insensible à la casse)
+            // Detect and log columns for diagnostics
+            if (rows.length > 0) {
+                const detectedCols = Object.keys(rows[0]);
+                addLog('info', `📊 Colonnes détectées : ${detectedCols.join(', ')}`);
+
+                // Identify mapping success
+                const hasQuestion = !!getVal(rows[0], ['Question', 'texte', 'intitulé', 'Enoncé', 'Sujet']);
+                const hasChoices = !!getVal(rows[0], ['Réponse A', 'A', 'Choice A', 'Choix A']);
+                if (!hasQuestion) addLog('error', '⚠️ Colonne "Question" non identifiée. Vérifiez l\'en-tête.');
+                if (!hasChoices) addLog('error', '⚠️ Colonnes de choix (A, B...) non identifiées.');
+            }
+
+            // Construire le Set des questions existantes (comparaison insensible à la casse et aux accents)
             const existingTexts = new Set<string>(
-                existingSnap.docs.map(d => String(d.data().question || '').trim().toLowerCase())
+                existingSnap.docs.map(d => normalize(d.data().question || ''))
             );
             addLog('info', `✅ ${rows.length} ligne(s) dans le fichier — ${existingTexts.size} question(s) déjà en base.`);
 
@@ -104,14 +129,19 @@ export default function AdminImportPage() {
             let skippedBadData = 0;
             const duplicatesList: string[] = [];
 
+            addLog('info', `🚀 Début de l'import : ${rows.length} lignes à traiter...`);
+
             for (const row of rows) {
                 totalProcessed++;
 
                 // Columns aliases for robustness
-                const rawText = String(getVal(row, ['Question', 'texte', 'intitulé']) || '').trim();
+                const rawText = String(getVal(row, ['Question', 'texte', 'intitulé', 'Enoncé', 'Sujet']) || '').trim();
 
                 if (!rawText) {
                     skippedEmpty++;
+                    if (skippedEmpty <= 5) {
+                        addLog('error', `⚠️ Ligne ${totalProcessed} : Texte de question vide. Valeur brute: ${JSON.stringify(row)}`);
+                    }
                     // Update progress UI even when skipping
                     setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData });
                     continue;
@@ -125,25 +155,39 @@ export default function AdminImportPage() {
                 }
 
                 // Check for duplicates
-                if (existingTexts.has(rawQ.toLowerCase()) || existingTexts.has(rawText.toLowerCase())) {
+                const normQ = normalize(rawQ);
+                const normRaw = normalize(rawText);
+                if (existingTexts.has(normQ) || existingTexts.has(normRaw)) {
                     duplicatesList.push(rawQ);
+                    if (duplicatesList.length <= 5) {
+                        addLog('info', `🔁 Doublon ignoré : "${rawQ.slice(0, 50)}..."`);
+                    } else if (duplicatesList.length === 6) {
+                        addLog('info', `🔁 ... plus de doublons détectés.`);
+                    }
                     setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData });
                     continue;
                 }
 
-                existingTexts.add(rawQ.toLowerCase());
-                existingTexts.add(rawText.toLowerCase());
+                existingTexts.add(normQ);
+                existingTexts.add(normRaw);
 
-                const rawId = getVal(row, ['ID', 'identifiant']);
-                const id = `q_${rawId ?? Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+                const rawIdValue = getVal(row, ['ID', 'identifiant']);
+                // Generate a highly unique ID and log it for the first few rows
+                const questionDocRef = doc(collection(db, 'questions'));
+                const finalId = questionDocRef.id;
 
-                const rawTheme = String(getVal(row, ['Thème', 'Theme', 'Sujet', 'Category']) || '');
-                const theme = THEME_MAP[rawTheme] || rawTheme.toLowerCase().replace(/\s+/g, '_') || 'general';
+                if (totalImported < 5) {
+                    addLog('info', `🔍 ID généré pour la question ${totalImported + 1} : ${finalId}`);
+                }
+
+                const rawTheme = String(getVal(row, ['Thème', 'Theme', 'Sujet', 'Category']) || '').trim();
+                const normTheme = normalizeTheme(rawTheme);
+                const theme = THEME_MAP[normTheme] || THEME_MAP[rawTheme.toLowerCase()] || rawTheme.replace(/\s+/g, '_').toLowerCase() || 'general';
 
                 const rawLevel = String(getVal(row, ['Niveau', 'Level', 'Difficulté']) || 'Débutant');
                 const level = LEVEL_MAP[rawLevel] || 'Débutant';
 
-                const answerRaw = String(getVal(row, ['Bonne réponse', 'Réponse correcte', 'Correct', 'Reponse']) || 'A').toUpperCase();
+                const answerRaw = String(getVal(row, ['Bonne réponse', 'Réponse correcte', 'Correct', 'Reponse', 'Correction', 'Valid']) || 'A').toUpperCase();
                 const correctMap: Record<string, number> = { A: 0, B: 1, C: 2, D: 3, '1': 0, '2': 1, '3': 2, '4': 3 };
                 const correct_index = correctMap[answerRaw] ?? 0;
 
@@ -152,10 +196,11 @@ export default function AdminImportPage() {
                     String(getVal(row, ['Réponse B', 'B', 'Choice B', 'Choix B']) || ''),
                     String(getVal(row, ['Réponse C', 'C', 'Choice C', 'Choix C']) || ''),
                     String(getVal(row, ['Réponse D', 'D', 'Choice D', 'Choix D']) || ''),
-                ].filter(Boolean);
+                ].filter(Boolean).map(c => cleanQuestionText(c));
 
                 if (choices.length < 2) {
                     skippedBadData++;
+                    addLog('error', `⚠️ Ligne ${totalProcessed} ignorée : Pas assez de choix trouvés (${choices.length})`);
                     setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData });
                     continue;
                 }
@@ -163,19 +208,19 @@ export default function AdminImportPage() {
                 // New metadata fields
                 const source = String(getVal(row, ['Source', 'Origine']) || '');
                 const reference = String(getVal(row, ['Référence', 'Reference', 'Réf']) || '');
-                const examOverride = String(getVal(row, ['Examen', 'Type', 'Parcours']) || '').toLowerCase();
+                const examOverride = String(getVal(row, ['Examen', 'Type', 'Parcours', 'Type d\'examen']) || '').toLowerCase();
                 const exam_type = examOverride.includes('naturalisation') ? 'naturalisation' : 'titre_sejour';
 
-                batch.set(doc(db, 'questions', id), {
+                batch.set(questionDocRef, {
                     theme, level,
                     exam_type,
                     question: rawQ,
                     choices,
                     correct_index,
-                    explanation: String(getVal(row, ['Explication', 'Explanation', 'Commentaire']) || ''),
-                    source: source || undefined,
-                    reference: reference || undefined,
-                    original_id: rawId ? String(rawId) : undefined,
+                    explanation: cleanQuestionText(String(getVal(row, ['Explication', 'Explanation', 'Commentaire']) || '')),
+                    source: source,
+                    reference: reference,
+                    original_id: rawIdValue ? String(rawIdValue) : '',
                     tags: [],
                     is_active: true,
                     created_at: new Date().toISOString(),
@@ -185,20 +230,36 @@ export default function AdminImportPage() {
                 batchCount++;
                 totalImported++;
 
-                // Ensure UI updates frequently
-                setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData });
-
-                if (batchCount >= 450) {
-                    await batch.commit();
+                if (batchCount >= 100) {
+                    const currentBatchSize = batchCount;
+                    addLog('info', `💾 Envoi d'un lot de ${currentBatchSize} questions...`);
+                    try {
+                        await batch.commit();
+                        addLog('success', `✅ Lot de ${currentBatchSize} questions enregistré avec succès.`);
+                    } catch (commitErr) {
+                        addLog('error', `❌ Échec de l'enregistrement du lot : ${commitErr instanceof Error ? commitErr.message : String(commitErr)}`);
+                        throw commitErr; // Stop the whole import if a batch fails
+                    }
                     playSound('click');
                     batch = writeBatch(db);
                     batchCount = 0;
-                    await new Promise(r => setTimeout(r, 50));
+                    await new Promise(r => setTimeout(r, 150));
+                }
+
+                // Update UI every 5 rows to keep it fluid without overwhelming React
+                if (totalProcessed % 5 === 0 || totalProcessed === rows.length) {
+                    setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData });
                 }
             }
 
             if (batchCount > 0) {
-                await batch.commit();
+                addLog('info', `💾 Envoi du dernier lot de ${batchCount} questions...`);
+                try {
+                    await batch.commit();
+                    addLog('success', `✅ Dernier lot enregistré.`);
+                } catch (commitErr) {
+                    addLog('error', `❌ Échec du dernier lot : ${commitErr instanceof Error ? commitErr.message : String(commitErr)}`);
+                }
                 playSound('success');
             }
 
@@ -217,7 +278,12 @@ export default function AdminImportPage() {
 
         } catch (err: unknown) {
             const msg = err instanceof Error ? err.message : String(err);
-            addLog('error', `❌ Erreur : ${msg}`);
+            if (msg.includes('resource-exhausted') || msg.includes('quota')) {
+                addLog('error', '🛑 QUOTA DÉPASSÉ : Vous avez atteint la limite quotidienne de Firebase (Spark).');
+                addLog('info', '💡 Solution : Attendez demain (minuit UTC) ou passez au forfait Blaze.');
+            } else {
+                addLog('error', `❌ Erreur : ${msg}`);
+            }
             if (msg.includes('Missing or insufficient permissions')) {
                 addLog('error', '🔐 Droits Firestore insuffisants — vérifiez vos security rules.');
             }
@@ -239,11 +305,12 @@ export default function AdminImportPage() {
 
     /* ── Supprimer tout ── */
     const deleteAll = async () => {
-        if (!window.confirm("⚠️ ATTENTION : Vous allez supprimer TOUTES les questions de la base de données.\n\nCette action est irréversible. Êtes-vous sûr ?")) return;
+        if (!window.confirm("⚠️ ATTENTION : Suppression TOTALE.\n\nÊtes-vous sûr ?")) return;
 
         setRunning(true);
         setLogs([]);
-        addLog('info', '🗑️ Suppression de toutes les questions en cours...');
+        addLog('info', '🛡️ VERSION SURVIE V3 ACTIVÉE');
+        addLog('info', '🚀 Cette version est optimisée pour passer même si votre processeur est saturé.');
 
         try {
             const snap = await getDocs(collection(db, 'questions'));
@@ -255,32 +322,113 @@ export default function AdminImportPage() {
                 return;
             }
 
+            addLog('info', `🗑️ Début du traitement de ${total} questions...`);
             setProgress({ done: 0, total, imported: 0, skipped: 0 });
 
             let batch = writeBatch(db);
             let batchCount = 0;
-            let deletedCount = 0;
+            let processedInLoop = 0;
 
             for (const d of snap.docs) {
+                if (!d?.ref) { processedInLoop++; continue; }
+
                 batch.delete(d.ref);
                 batchCount++;
-                deletedCount++;
+                processedInLoop++;
 
-                if (batchCount >= 400) {
+                // Lots de 50 pour plus d'efficacité
+                if (batchCount >= 50) {
+                    addLog('info', `💾 Enregistrement lot de sécurité (${processedInLoop} / ${total})...`);
+                    setProgress({ done: processedInLoop, total, imported: 0, skipped: 0 });
+
+                    try {
+                        await batch.commit();
+                        addLog('success', `✅ Lot de ${processedInLoop} questions supprimé.`);
+                    } catch (err) {
+                        addLog('error', `❌ Échec du lot à ${processedInLoop} : ${err instanceof Error ? err.message : String(err)}`);
+                        addLog('info', '💡 CONSEIL : Si ça bloque ici, vérifiez que vous n\'avez pas un build en cours qui sature votre disque.');
+                        throw err;
+                    }
+
+                    batch = writeBatch(db);
+                    batchCount = 0;
+
+                    // Respire un peu mais moins longtemps
+                    await new Promise(r => setTimeout(r, 200));
+                } else if (processedInLoop % 10 === 0) {
+                    setProgress({ done: processedInLoop, total, imported: 0, skipped: 0 });
+                }
+            }
+
+            if (batchCount > 0) {
+                addLog('info', `💾 Envoi du dernier lot...`);
+                await batch.commit();
+                setProgress({ done: total, total, imported: 0, skipped: 0 });
+            }
+
+            addLog('success', `🎉 TERMINÉ ! ${total} questions supprimées.`);
+            setCount(0);
+            playSound('success');
+
+        } catch (err: unknown) {
+            const errorMsg = err instanceof Error ? err.message : String(err);
+            if (errorMsg.includes('resource-exhausted') || errorMsg.includes('quota')) {
+                addLog('error', '🛑 QUOTA DÉPASSÉ : Plus aucune suppression possible aujourd\'hui.');
+                addLog('info', '💡 Firebase bloque les opérations car vous avez dépassé les 20 000 écritures/suppressions gratuites.');
+            } else {
+                addLog('error', `❌ Erreur : ${errorMsg}`);
+            }
+            addLog('info', '💡 CONSEIL : Si ça bloque, arrêtez le build dans votre terminal et rafraîchissez cette page (F5).');
+        } finally {
+            setRunning(false);
+        }
+    };
+
+    const fixThemes = async () => {
+        if (!window.confirm('Voulez-vous analyser et corriger les thèmes ?')) return;
+        setRunning(true);
+        setLogs([]);
+        addLog('info', '🔍 Analyse résiliente des thèmes...');
+        try {
+            const snap = await getDocs(collection(db, 'questions'));
+            const total = snap.size;
+            let fixedCount = 0;
+            let processed = 0;
+            let batch = writeBatch(db);
+            let batchCount = 0;
+            const canonicalThemes = ['vals_principes', 'histoire', 'geographie', 'institutions', 'societe', 'droits'];
+
+            for (const d of snap.docs) {
+                processed++;
+                const data = d.data();
+                const currentTheme = data.theme || 'general';
+
+                if (!canonicalThemes.includes(currentTheme)) {
+                    const norm = normalizeTheme(currentTheme);
+                    const newTheme = THEME_MAP[norm] || THEME_MAP[currentTheme.toLowerCase()];
+                    if (newTheme && newTheme !== currentTheme) {
+                        batch.update(d.ref, { theme: newTheme, updated_at: new Date().toISOString() });
+                        fixedCount++;
+                        batchCount++;
+                    }
+                }
+
+                if (batchCount >= 20) {
+                    addLog('info', `🛠️ Application des corrections (${processed}/${total})...`);
                     await batch.commit();
                     batch = writeBatch(db);
                     batchCount = 0;
-                    setProgress({ done: deletedCount, total, imported: 0, skipped: 0 });
-                    await new Promise(r => setTimeout(r, 50));
+                    setProgress({ done: processed, total, imported: fixedCount, skipped: 0 });
+                    await new Promise(r => setTimeout(r, 300));
+                } else if (processed % 10 === 0) {
+                    setProgress({ done: processed, total, imported: fixedCount, skipped: 0 });
                 }
             }
 
             if (batchCount > 0) await batch.commit();
-
-            setProgress({ done: total, total, imported: 0, skipped: 0 });
-            addLog('success', `✅ Base vidée : ${total} questions supprimées.`);
-            setCount(0);
-
+            addLog('success', `✨ Terminé : ${fixedCount} questions réparées.`);
+            await fetchCount();
+            playSound('success');
         } catch (err: unknown) {
             addLog('error', `❌ Erreur : ${err instanceof Error ? err.message : String(err)}`);
         } finally {
@@ -297,14 +445,24 @@ export default function AdminImportPage() {
                         Importez un fichier <strong>Excel (.xlsx)</strong> pour enrichir la base de données.
                     </p>
                 </div>
-                <a
-                    href="/data.xlsx"
-                    download="modele_import_qcm.xlsx"
-                    className="flex items-center gap-2 text-sm font-medium text-[#002394] bg-blue-50 px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors"
-                >
-                    <FileSpreadsheet className="h-4 w-4" />
-                    Télécharger le modèle
-                </a>
+                <div className="flex flex-wrap gap-2">
+                    <button
+                        onClick={fixThemes}
+                        disabled={running}
+                        className="flex items-center gap-2 text-sm font-medium text-emerald-700 bg-emerald-50 px-4 py-2 rounded-lg hover:bg-emerald-100 transition-colors disabled:opacity-50"
+                    >
+                        <Database className="h-4 w-4" />
+                        Réparer les Thèmes
+                    </button>
+                    <a
+                        href="/data.xlsx"
+                        download="modele_import_qcm.xlsx"
+                        className="flex items-center gap-2 text-sm font-medium text-[var(--color-primary)] bg-[var(--color-primary-soft)] px-4 py-2 rounded-lg hover:brightness-95 transition-colors"
+                    >
+                        <FileSpreadsheet className="h-4 w-4" />
+                        Télécharger le modèle
+                    </a>
+                </div>
             </div>
 
             {/* Drop zone */}
@@ -316,7 +474,7 @@ export default function AdminImportPage() {
                     'border-2 border-dashed rounded-xl p-10 text-center cursor-pointer transition-all mb-6',
                     running
                         ? 'border-gray-200 bg-gray-50 cursor-not-allowed'
-                        : 'border-[#002394]/30 hover:border-[#002394] hover:bg-blue-50',
+                        : 'border-[var(--color-primary)]/30 hover:border-[var(--color-primary)] hover:bg-[var(--color-primary-soft)]',
                 ].join(' ')}
                 role="button"
                 aria-label="Zone de dépôt de fichier Excel"
@@ -324,7 +482,7 @@ export default function AdminImportPage() {
                 onKeyDown={e => e.key === 'Enter' && fileRef.current?.click()}
             >
                 <input ref={fileRef} type="file" accept=".xlsx,.xls" className="hidden" onChange={handleFileChange} />
-                <UploadCloud className="h-10 w-10 mx-auto text-[#002394]/40 mb-3" aria-hidden="true" />
+                <UploadCloud className="h-10 w-10 mx-auto text-[var(--color-primary)]/40 mb-3" aria-hidden="true" />
                 {fileName ? (
                     <div className="flex items-center justify-center gap-2 text-sm text-gray-700">
                         <FileSpreadsheet className="h-4 w-4 text-emerald-500" aria-hidden="true" />
@@ -333,7 +491,7 @@ export default function AdminImportPage() {
                 ) : (
                     <>
                         <p className="text-sm font-medium text-gray-700">
-                            Glissez votre fichier ici ou <span className="text-[#002394] underline">parcourez</span>
+                            Glissez votre fichier ici ou <span className="text-[var(--color-primary)] underline">parcourez</span>
                         </p>
                         <p className="text-xs text-gray-400 mt-1">Formats supportés : .xlsx, .xls</p>
                     </>
@@ -341,21 +499,21 @@ export default function AdminImportPage() {
             </div>
 
             {/* Format aide */}
-            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-6 text-sm text-blue-800">
+            <div className="bg-[var(--color-primary-soft)] border border-[var(--color-primary)]/10 rounded-xl p-4 mb-6 text-sm text-[var(--color-primary)]">
                 <p className="font-semibold mb-2">📋 Format Excel attendu :</p>
                 <div className="overflow-x-auto">
                     <table className="text-xs border-collapse" aria-label="Format du fichier Excel">
                         <thead>
                             <tr>
                                 {['ID', 'Question', 'Thème', 'Niveau', 'Réponse A', 'Réponse B', 'Réponse C', 'Réponse D', 'Bonne réponse', 'Explication'].map(h => (
-                                    <th key={h} className="border border-blue-200 bg-blue-100 px-2 py-1 text-left">{h}</th>
+                                    <th key={h} className="border border-[var(--color-primary)]/20 bg-[var(--color-primary)]/10 px-2 py-1 text-left">{h}</th>
                                 ))}
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 {['1', 'Qui vote les lois ?', 'Institutions françaises', 'B1', 'Le Président', 'Le Parlement', 'La Police', 'Le Maire', 'B', 'Le Parlement vote les lois.'].map((v, i) => (
-                                    <td key={i} className="border border-blue-200 px-2 py-1">{v}</td>
+                                    <td key={i} className="border border-[var(--color-primary)]/20 px-2 py-1">{v}</td>
                                 ))}
                             </tr>
                         </tbody>
@@ -372,7 +530,7 @@ export default function AdminImportPage() {
                     </div>
                     <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden mb-3">
                         <div
-                            className="h-full bg-[#002394] transition-all duration-300 rounded-full"
+                            className="h-full bg-[var(--color-primary)] transition-all duration-300 rounded-full"
                             style={{ width: `${Math.round((progress.done / progress.total) * 100)}%` }}
                             role="progressbar"
                             aria-valuenow={progress.done}
@@ -471,7 +629,7 @@ export default function AdminImportPage() {
                 <div className="flex gap-2">
                     <button
                         onClick={fetchCount}
-                        className="flex items-center gap-2 px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 hover:border-[#002394] transition-colors"
+                        className="flex items-center gap-2 px-4 py-2.5 border border-gray-200 rounded-lg text-sm text-gray-600 hover:border-[var(--color-primary)] transition-colors"
                     >
                         <Database className="h-4 w-4" aria-hidden="true" />
                         Compter
@@ -488,7 +646,7 @@ export default function AdminImportPage() {
                 </div>
 
                 {count !== null && (
-                    <div className="flex items-center gap-2 text-sm font-semibold text-[#002394]">
+                    <div className="flex items-center gap-2 text-sm font-semibold text-[var(--color-primary)]">
                         <List className="h-4 w-4" aria-hidden="true" />
                         {count} questions en base
                     </div>

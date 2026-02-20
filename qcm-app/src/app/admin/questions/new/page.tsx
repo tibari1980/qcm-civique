@@ -194,7 +194,7 @@ export default function AdminNewQuestionPage() {
             {/* Back */}
             <button
                 onClick={() => router.back()}
-                className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#002394] mb-6 transition-colors"
+                className="flex items-center gap-2 text-sm text-gray-500 hover:text-[var(--color-primary)] mb-6 transition-colors"
             >
                 <ArrowLeft className="h-4 w-4" aria-hidden="true" /> Retour
             </button>
@@ -207,7 +207,7 @@ export default function AdminNewQuestionPage() {
                 </div>
                 <button
                     onClick={() => setPreview(v => !v)}
-                    className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:border-[#002394] transition-colors"
+                    className="flex items-center gap-2 px-3 py-2 border border-gray-200 rounded-lg text-sm text-gray-600 hover:border-[var(--color-primary)] transition-colors"
                     aria-pressed={preview}
                 >
                     {preview
@@ -280,7 +280,7 @@ export default function AdminNewQuestionPage() {
                                     value={form.theme}
                                     onChange={e => set('theme', e.target.value)}
                                     className={[
-                                        'w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#002394]/30',
+                                        'w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30',
                                         errors.theme ? 'border-red-400 bg-red-50' : 'border-gray-200',
                                     ].join(' ')}
                                     aria-describedby={errors.theme ? 'err-theme' : undefined}
@@ -301,7 +301,7 @@ export default function AdminNewQuestionPage() {
                                     id="field-level"
                                     value={form.level}
                                     onChange={e => set('level', e.target.value)}
-                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#002394]/30"
+                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30"
                                 >
                                     {LEVELS.map(l => <option key={l} value={l}>{l}</option>)}
                                 </select>
@@ -314,7 +314,7 @@ export default function AdminNewQuestionPage() {
                                     id="field-exam-type"
                                     value={form.exam_type}
                                     onChange={e => set('exam_type', e.target.value)}
-                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#002394]/30"
+                                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30"
                                 >
                                     {EXAM_TYPES.map(e => <option key={e.value} value={e.value}>{e.label}</option>)}
                                 </select>
@@ -328,7 +328,7 @@ export default function AdminNewQuestionPage() {
                                 id="field-is-active"
                                 checked={form.is_active}
                                 onChange={e => set('is_active', e.target.checked)}
-                                className="w-4 h-4 accent-[#002394]"
+                                className="w-4 h-4 accent-[var(--color-primary)]"
                             />
                             <label htmlFor="field-is-active" className="text-sm text-gray-600">
                                 Question active (visible pour les utilisateurs)
@@ -354,7 +354,7 @@ export default function AdminNewQuestionPage() {
                             placeholder="Rédigez votre question ici… (min. 10 caractères)"
                             maxLength={MAX_QUESTION_LENGTH + 10}
                             className={[
-                                'w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#002394]/30 resize-none',
+                                'w-full border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30 resize-none',
                                 errors.question ? 'border-red-400 bg-red-50' : 'border-gray-200',
                             ].join(' ')}
                             aria-describedby={errors.question ? 'err-question' : undefined}
@@ -392,7 +392,7 @@ export default function AdminNewQuestionPage() {
                                             id={`choice-radio-${i}`}
                                             checked={form.correct_index === i}
                                             onChange={() => set('correct_index', i)}
-                                            className="w-4 h-4 accent-[#002394] flex-shrink-0"
+                                            className="w-4 h-4 accent-[var(--color-primary)] flex-shrink-0"
                                             aria-label={`Définir la réponse ${LETTERS[i]} comme bonne réponse`}
                                         />
                                         <label
@@ -409,7 +409,7 @@ export default function AdminNewQuestionPage() {
                                             aria-label={`Texte de la réponse ${LETTERS[i]}`}
                                             aria-describedby={errors[`choice_${i}`] ? `err-choice-${i}` : undefined}
                                             className={[
-                                                'flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#002394]/30',
+                                                'flex-1 border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30',
                                                 errors[`choice_${i}`] ? 'border-red-400 bg-red-50' : 'border-gray-200',
                                                 form.correct_index === i ? 'border-emerald-400 bg-emerald-50/50' : '',
                                             ].filter(Boolean).join(' ')}
@@ -436,7 +436,7 @@ export default function AdminNewQuestionPage() {
                         {form.choices.length < 6 && (
                             <button
                                 onClick={addChoice}
-                                className="mt-4 flex items-center gap-1.5 text-sm text-[#002394] hover:underline"
+                                className="mt-4 flex items-center gap-1.5 text-sm text-[var(--color-primary)] hover:underline"
                             >
                                 <Plus className="h-4 w-4" aria-hidden="true" /> Ajouter un choix
                             </button>
@@ -454,7 +454,7 @@ export default function AdminNewQuestionPage() {
                             onChange={e => set('explanation', e.target.value)}
                             rows={2}
                             placeholder="Expliquez pourquoi cette réponse est correcte…"
-                            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#002394]/30 resize-none"
+                            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30 resize-none"
                         />
                     </section>
 
@@ -471,11 +471,11 @@ export default function AdminNewQuestionPage() {
                                 onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), addTag())}
                                 placeholder="Ajouter un tag et appuyer sur Entrée…"
                                 aria-label="Nouveau tag"
-                                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#002394]/30"
+                                className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/30"
                             />
                             <button
                                 onClick={addTag}
-                                className="px-3 py-2 bg-blue-50 text-[#002394] rounded-lg text-sm hover:bg-blue-100 transition-colors"
+                                className="px-3 py-2 bg-blue-50 text-[var(--color-primary)] rounded-lg text-sm hover:bg-blue-100 transition-colors"
                             >
                                 Ajouter
                             </button>
@@ -516,7 +516,7 @@ export default function AdminNewQuestionPage() {
                     onClick={handleSubmit}
                     disabled={saving}
                     aria-busy={saving}
-                    className="flex items-center gap-2 px-6 py-3 bg-[#002394] text-white rounded-xl font-semibold text-sm hover:bg-blue-800 transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 px-6 py-3 bg-[var(--color-primary)] text-white rounded-xl font-semibold text-sm hover:brightness-110 transition-colors disabled:opacity-50"
                 >
                     {saving ? (
                         <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" aria-hidden="true" />
