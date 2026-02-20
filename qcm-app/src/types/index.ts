@@ -1,5 +1,10 @@
 
-export type ExamType = 'titre_sejour' | 'carte_resident' | 'naturalisation';
+export interface FirestoreTimestamp {
+    seconds: number;
+    nanoseconds: number;
+}
+
+export type ExamType = 'titre_sejour' | 'carte_resident' | 'naturalisation' | 'ai_qcm';
 export type Level = 'Débutant' | 'Intermédiaire' | 'Avancé';
 
 export interface Question {
@@ -12,6 +17,9 @@ export interface Question {
     correct_index: number;
     explanation: string;
     tags: string[];
+    source?: string;
+    reference?: string;
+    original_id?: string;
     is_active: boolean;
     created_at: string;
     updated_at: string;
@@ -21,7 +29,7 @@ export interface UserProgress {
     total_attempts: number;
     average_score: number;
     last_activity: string;
-    theme_stats: Record<string, { attempts: number; success_rate: number }>;
+    theme_stats: Record<string, { attempts: number; success_rate: number; last_score: number }>;
 }
 
 export interface User {
@@ -51,5 +59,5 @@ export interface Attempt {
     answers: Array<{ question_id: string; choice_index: number; correct: boolean }>;
     theme?: string; // specific theme if training
     created_at: string;
-    timestamp?: any; // eslint-disable-line @typescript-eslint/no-explicit-any
+    timestamp?: FirestoreTimestamp;
 }

@@ -206,10 +206,9 @@ export const UserService = {
             );
             let attempts = snap.docs.map(d => ({ id: d.id, ...d.data() } as Attempt));
 
-            // ── Recent activity (avant filtrage par track) ──
             const sortedDesc = [...attempts].sort((a, b) => {
-                const tA = (a as any).timestamp?.seconds ? (a as any).timestamp.seconds * 1000 : new Date(a.created_at).getTime();
-                const tB = (b as any).timestamp?.seconds ? (b as any).timestamp.seconds * 1000 : new Date(b.created_at).getTime();
+                const tA = a.timestamp?.seconds ? a.timestamp.seconds * 1000 : new Date(a.created_at).getTime();
+                const tB = b.timestamp?.seconds ? b.timestamp.seconds * 1000 : new Date(b.created_at).getTime();
                 return tB - tA;
             });
             const recentActivity = sortedDesc.slice(0, maxRecent);

@@ -9,6 +9,9 @@ export interface Question {
     choices: string[];
     correct_index: number;
     explanation: string;
+    source?: string;
+    reference?: string;
+    original_id?: string;
 }
 
 /* ── Shuffle Fisher-Yates ── */

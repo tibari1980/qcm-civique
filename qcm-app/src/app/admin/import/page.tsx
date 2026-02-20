@@ -76,8 +76,17 @@ export default function AdminImportPage() {
 
             const workbook = XLSX.read(arrayBuffer);
             const sheet = workbook.Sheets[workbook.SheetNames[0]];
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const rows: any[] = XLSX.utils.sheet_to_json(sheet);
+            const rows = XLSX.utils.sheet_to_json(sheet) as Record<string, any>[];
+
+            // Helper to find a value in a row regardless of column name casing/accents
+            const getVal = (row: Record<string, any>, aliases: string[]) => {
+                const keys = Object.keys(row);
+                for (const alias of aliases) {
+                    const foundKey = keys.find(k => k.toLowerCase().trim() === alias.toLowerCase().trim());
+                    if (foundKey && row[foundKey] !== undefined) return row[foundKey];
+                }
+                return null;
+            };
 
             // Construire le Set des questions existantes (comparaison insensible à la casse)
             const existingTexts = new Set<string>(
@@ -90,54 +99,59 @@ export default function AdminImportPage() {
             let batch = writeBatch(db);
             let batchCount = 0;
             let totalImported = 0;
-            let totalProcessed = 0;  // lignes traitées (importées + ignorées)
-            let skippedEmpty = 0;    // lignes vides / données manquantes
-            let skippedBadData = 0;  // lignes avec < 2 choix
+            let totalProcessed = 0;
+            let skippedEmpty = 0;
+            let skippedBadData = 0;
             const duplicatesList: string[] = [];
 
             for (const row of rows) {
                 totalProcessed++;
 
-                const rawText = String(row['Question'] || row['question'] || '').trim();
-                if (!rawText) { skippedEmpty++; setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData }); continue; }
+                // Columns aliases for robustness
+                const rawText = String(getVal(row, ['Question', 'texte', 'intitulé']) || '').trim();
 
-                // ── Nettoyage du texte de la question pour le STOCKAGE ──
+                if (!rawText) {
+                    skippedEmpty++;
+                    // Update progress UI even when skipping
+                    setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData });
+                    continue;
+                }
+
                 const rawQ = cleanQuestionText(rawText);
+                if (!rawQ) {
+                    skippedEmpty++;
+                    setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData });
+                    continue;
+                }
 
-                if (!rawQ) { skippedEmpty++; setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData }); continue; }
-
-                // ── Vérification doublon contre la base Firestore (texte nettoyé) ──
-                if (existingTexts.has(rawQ.toLowerCase())) {
+                // Check for duplicates
+                if (existingTexts.has(rawQ.toLowerCase()) || existingTexts.has(rawText.toLowerCase())) {
                     duplicatesList.push(rawQ);
                     setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData });
                     continue;
                 }
-                // Déduplication intra-fichier sur le TEXTE BRUT (avant nettoyage)
-                // → évite de confondre "Variante 1 : Q" et "Variante 2 : Q" avec le même Q
-                if (existingTexts.has(rawText.toLowerCase())) {
-                    duplicatesList.push(rawQ);
-                    setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData });
-                    continue;
-                }
-                // Ajouter les deux formes pour couvrir tous les cas de doublons
+
                 existingTexts.add(rawQ.toLowerCase());
                 existingTexts.add(rawText.toLowerCase());
 
-                const id = `q_${row['ID'] ?? row['id'] ?? Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
-                const rawTheme = String(row['Thème'] || row['Theme'] || row['theme'] || '');
+                const rawId = getVal(row, ['ID', 'identifiant']);
+                const id = `q_${rawId ?? Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+
+                const rawTheme = String(getVal(row, ['Thème', 'Theme', 'Sujet', 'Category']) || '');
                 const theme = THEME_MAP[rawTheme] || rawTheme.toLowerCase().replace(/\s+/g, '_') || 'general';
-                const rawLevel = String(row['Niveau'] || row['level'] || 'Débutant');
+
+                const rawLevel = String(getVal(row, ['Niveau', 'Level', 'Difficulté']) || 'Débutant');
                 const level = LEVEL_MAP[rawLevel] || 'Débutant';
 
-                const answerLetter = String(row['Bonne réponse'] || row['Réponse correcte'] || row['correct'] || 'A').toUpperCase();
-                const correctMap: Record<string, number> = { A: 0, B: 1, C: 2, D: 3 };
-                const correct_index = correctMap[answerLetter] ?? 0;
+                const answerRaw = String(getVal(row, ['Bonne réponse', 'Réponse correcte', 'Correct', 'Reponse']) || 'A').toUpperCase();
+                const correctMap: Record<string, number> = { A: 0, B: 1, C: 2, D: 3, '1': 0, '2': 1, '3': 2, '4': 3 };
+                const correct_index = correctMap[answerRaw] ?? 0;
 
                 const choices = [
-                    String(row['Réponse A'] || row['A'] || ''),
-                    String(row['Réponse B'] || row['B'] || ''),
-                    String(row['Réponse C'] || row['C'] || ''),
-                    String(row['Réponse D'] || row['D'] || ''),
+                    String(getVal(row, ['Réponse A', 'A', 'Choice A', 'Choix A']) || ''),
+                    String(getVal(row, ['Réponse B', 'B', 'Choice B', 'Choix B']) || ''),
+                    String(getVal(row, ['Réponse C', 'C', 'Choice C', 'Choix C']) || ''),
+                    String(getVal(row, ['Réponse D', 'D', 'Choice D', 'Choix D']) || ''),
                 ].filter(Boolean);
 
                 if (choices.length < 2) {
@@ -146,13 +160,22 @@ export default function AdminImportPage() {
                     continue;
                 }
 
+                // New metadata fields
+                const source = String(getVal(row, ['Source', 'Origine']) || '');
+                const reference = String(getVal(row, ['Référence', 'Reference', 'Réf']) || '');
+                const examOverride = String(getVal(row, ['Examen', 'Type', 'Parcours']) || '').toLowerCase();
+                const exam_type = examOverride.includes('naturalisation') ? 'naturalisation' : 'titre_sejour';
+
                 batch.set(doc(db, 'questions', id), {
                     theme, level,
-                    exam_type: 'titre_sejour',
+                    exam_type,
                     question: rawQ,
                     choices,
                     correct_index,
-                    explanation: String(row['Explication'] || row['explanation'] || ''),
+                    explanation: String(getVal(row, ['Explication', 'Explanation', 'Commentaire']) || ''),
+                    source: source || undefined,
+                    reference: reference || undefined,
+                    original_id: rawId ? String(rawId) : undefined,
                     tags: [],
                     is_active: true,
                     created_at: new Date().toISOString(),
@@ -162,13 +185,15 @@ export default function AdminImportPage() {
                 batchCount++;
                 totalImported++;
 
+                // Ensure UI updates frequently
+                setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData });
+
                 if (batchCount >= 450) {
                     await batch.commit();
-                    playSound('click'); // "Bip" sound after each batch
-                    setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData });
+                    playSound('click');
                     batch = writeBatch(db);
                     batchCount = 0;
-                    await new Promise(r => setTimeout(r, 100));
+                    await new Promise(r => setTimeout(r, 50));
                 }
             }
 

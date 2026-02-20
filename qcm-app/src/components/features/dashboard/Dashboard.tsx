@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Clock, Trophy, Target, TrendingUp, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
@@ -20,7 +19,7 @@ export default function Dashboard() {
         completedThemes: 0,
     });
 
-    const [recentActivity, setRecentActivity] = useState<any[]>([]);
+    const [recentActivity, setRecentActivity] = useState<{ id: string; theme: string; date: string; score: string; status: string }[]>([]);
 
     useEffect(() => {
         const loadDashboardData = async () => {
@@ -30,7 +29,7 @@ export default function Dashboard() {
                     setStats({
                         totalTests: statsData.total_attempts,
                         averageScore: statsData.average_score,
-                        completedThemes: Object.values(statsData.theme_stats).filter((s: any) => s.success_rate >= 75 || s.last_score >= 80).length, // eslint-disable-line @typescript-eslint/no-explicit-any
+                        completedThemes: Object.values(statsData.theme_stats).filter((s) => s.success_rate >= 75 || s.last_score >= 80).length,
                     });
 
                     const activity = await UserService.getRecentActivity(user.uid);

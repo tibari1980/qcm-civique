@@ -11,12 +11,10 @@ import { Question, QuestionService } from '@/services/question.service';
 import { UserService } from '@/services/user.service';
 import { Loader2 } from 'lucide-react';
 
-import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 export default function ExamSession() {
     const { user, userProfile, loading } = useAuth();
     const router = useRouter();
-    // const { playSound } = useSoundEffects();
 
     const [questions, setQuestions] = useState<Question[]>([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);

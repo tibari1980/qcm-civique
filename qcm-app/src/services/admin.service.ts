@@ -3,6 +3,7 @@ import {
     orderBy, limit, where, Timestamp, deleteDoc, addDoc, setDoc
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
+import { Attempt } from '@/types';
 
 /* --------------------------------------------------
    Types
@@ -28,6 +29,9 @@ export interface AdminQuestion {
     correct_index: number;
     explanation: string;
     tags: string[];
+    source?: string;
+    reference?: string;
+    original_id?: string;
     is_active: boolean;
     created_at: string;
 }
@@ -177,10 +181,8 @@ export class AdminService {
             getDocs(attemptsQuery)
         ]);
 
-        // Process attempts client-side: Sort by timestamp desc, take top 20
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const attempts = attemptsSnap.docs
-            .map(d => ({ id: d.id, ...d.data() } as any))
+            .map(d => ({ id: d.id, ...d.data() } as Attempt))
             .sort((a, b) => { // Sort descending
                 const dateA = a.timestamp?.seconds ? a.timestamp.seconds * 1000 : new Date(a.created_at || 0).getTime();
                 const dateB = b.timestamp?.seconds ? b.timestamp.seconds * 1000 : new Date(b.created_at || 0).getTime();
