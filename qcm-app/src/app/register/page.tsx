@@ -195,7 +195,7 @@ export default function RegisterPage() {
                                     <span aria-hidden="true">⏳</span>
                                     {' '}Inscription en cours...
                                 </>
-                            ) : "S'inscrire"}
+                            ) : "S&apos;inscrire"}
                         </Button>
                     </form>
                 </CardContent>

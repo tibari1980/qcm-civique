@@ -19,6 +19,73 @@ const NAV_ITEMS = [
     { href: '/admin/settings', label: 'Paramètres', icon: Settings },
 ];
 
+interface SidebarContentProps {
+    setMobileOpen: (open: boolean) => void;
+    isActive: (href: string, exact?: boolean) => boolean;
+    userProfile: any;
+    user: any;
+    handleSignOut: () => void;
+}
+
+const SidebarContent = ({ setMobileOpen, isActive, userProfile, user, handleSignOut }: SidebarContentProps) => (
+    <div className="flex flex-col h-full">
+        {/* Logo / Brand */}
+        <div className="flex items-center gap-3 px-6 py-5 border-b border-white/10">
+            <ShieldCheck className="h-7 w-7 text-white" aria-hidden="true" />
+            <div>
+                <p className="text-white font-bold text-base leading-none">Admin</p>
+                <p className="text-blue-200 text-xs mt-0.5">Prépa Civique</p>
+            </div>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 px-3 py-4 space-y-1" aria-label="Navigation administration">
+            {NAV_ITEMS.map(({ href, label, icon: Icon, exact }) => (
+                <Link
+                    key={href}
+                    href={href}
+                    onClick={() => setMobileOpen(false)}
+                    className={[
+                        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
+                        isActive(href, exact)
+                            ? 'bg-white/20 text-white'
+                            : 'text-blue-100 hover:bg-white/10 hover:text-white',
+                    ].join(' ')}
+                    aria-current={isActive(href, exact) ? 'page' : undefined}
+                >
+                    <Icon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
+                    {label}
+                    {isActive(href, exact) && (
+                        <ChevronRight className="h-4 w-4 ml-auto" aria-hidden="true" />
+                    )}
+                </Link>
+            ))}
+        </nav>
+
+        {/* User + Logout */}
+        <div className="px-3 py-4 border-t border-white/10">
+            <div className="flex items-center gap-3 px-3 py-2 mb-2">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                    {(userProfile?.displayName || user?.email || 'A').charAt(0).toUpperCase()}
+                </div>
+                <div className="overflow-hidden">
+                    <p className="text-white text-xs font-medium truncate">
+                        {userProfile?.displayName || 'Administrateur'}
+                    </p>
+                    <p className="text-blue-200 text-xs truncate">{user?.email}</p>
+                </div>
+            </div>
+            <button
+                onClick={handleSignOut}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-blue-100 hover:bg-white/10 hover:text-white transition-all"
+            >
+                <LogOut className="h-4 w-4" aria-hidden="true" />
+                Déconnexion
+            </button>
+        </div>
+    </div>
+);
+
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const { loading, isAdmin } = useAdminGuard();
     const { user, userProfile, signOut } = useAuth();
@@ -47,65 +114,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         router.push('/');
     };
 
-    const SidebarContent = () => (
-        <div className="flex flex-col h-full">
-            {/* Logo / Brand */}
-            <div className="flex items-center gap-3 px-6 py-5 border-b border-white/10">
-                <ShieldCheck className="h-7 w-7 text-white" aria-hidden="true" />
-                <div>
-                    <p className="text-white font-bold text-base leading-none">Admin</p>
-                    <p className="text-blue-200 text-xs mt-0.5">Prépa Civique</p>
-                </div>
-            </div>
-
-            {/* Navigation */}
-            <nav className="flex-1 px-3 py-4 space-y-1" aria-label="Navigation administration">
-                {NAV_ITEMS.map(({ href, label, icon: Icon, exact }) => (
-                    <Link
-                        key={href}
-                        href={href}
-                        onClick={() => setMobileOpen(false)}
-                        className={[
-                            'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
-                            isActive(href, exact)
-                                ? 'bg-white/20 text-white'
-                                : 'text-blue-100 hover:bg-white/10 hover:text-white',
-                        ].join(' ')}
-                        aria-current={isActive(href, exact) ? 'page' : undefined}
-                    >
-                        <Icon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
-                        {label}
-                        {isActive(href, exact) && (
-                            <ChevronRight className="h-4 w-4 ml-auto" aria-hidden="true" />
-                        )}
-                    </Link>
-                ))}
-            </nav>
-
-            {/* User + Logout */}
-            <div className="px-3 py-4 border-t border-white/10">
-                <div className="flex items-center gap-3 px-3 py-2 mb-2">
-                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
-                        {(userProfile?.displayName || user?.email || 'A').charAt(0).toUpperCase()}
-                    </div>
-                    <div className="overflow-hidden">
-                        <p className="text-white text-xs font-medium truncate">
-                            {userProfile?.displayName || 'Administrateur'}
-                        </p>
-                        <p className="text-blue-200 text-xs truncate">{user?.email}</p>
-                    </div>
-                </div>
-                <button
-                    onClick={handleSignOut}
-                    className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-blue-100 hover:bg-white/10 hover:text-white transition-all"
-                >
-                    <LogOut className="h-4 w-4" aria-hidden="true" />
-                    Déconnexion
-                </button>
-            </div>
-        </div>
-    );
-
     return (
         <div className="flex h-screen bg-gray-50 overflow-hidden">
             {/* Sidebar desktop */}
@@ -113,7 +121,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 className="hidden md:flex flex-col w-60 bg-[#002394] flex-shrink-0"
                 aria-label="Panneau d'administration"
             >
-                <SidebarContent />
+                <SidebarContent
+                    setMobileOpen={setMobileOpen}
+                    isActive={isActive}
+                    userProfile={userProfile}
+                    user={user}
+                    handleSignOut={handleSignOut}
+                />
             </aside>
 
             {/* Mobile overlay */}
@@ -132,7 +146,13 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     mobileOpen ? 'translate-x-0' : '-translate-x-full',
                 ].join(' ')}
             >
-                <SidebarContent />
+                <SidebarContent
+                    setMobileOpen={setMobileOpen}
+                    isActive={isActive}
+                    userProfile={userProfile}
+                    user={user}
+                    handleSignOut={handleSignOut}
+                />
             </aside>
 
             {/* Main content */}

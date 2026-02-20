@@ -44,7 +44,7 @@ export default function Home() {
               </p>
 
               {/* Mini Stats Summary */}
-              {stats && (
+              {stats ? (
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-8" aria-label="Résumé de vos statistiques">
                   <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100">
                     <div className="text-3xl font-bold text-[var(--color-primary)]">{stats.total_attempts}</div>
@@ -61,6 +61,21 @@ export default function Home() {
                   <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center">
                     <Link href={dashboardLink} className="text-[var(--color-primary)] font-bold flex items-center hover:underline focus:ring-2 focus:ring-blue-300 rounded px-2 py-1" aria-label="Aller au tableau de bord">
                       {isAdmin ? "Admin Dashboard" : "Go Dashboard"} <ArrowRight className="ml-1 w-4 h-4" aria-hidden="true" />
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                /* Skeleton mini-stats pendant le fetch */
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto mb-8" aria-hidden="true">
+                  {[...Array(3)].map((_, i) => (
+                    <div key={i} className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 animate-pulse">
+                      <div className="h-8 w-12 rounded bg-gray-100 mb-2" />
+                      <div className="h-3 w-16 rounded bg-gray-100" />
+                    </div>
+                  ))}
+                  <div className="bg-white p-4 rounded-xl shadow-sm border border-gray-100 flex items-center justify-center">
+                    <Link href={dashboardLink} className="text-[var(--color-primary)] font-bold flex items-center hover:underline focus:ring-2 focus:ring-blue-300 rounded px-2 py-1" aria-label="Aller au tableau de bord">
+                      {isAdmin ? "Admin" : "Dashboard"} <ArrowRight className="ml-1 w-4 h-4" aria-hidden="true" />
                     </Link>
                   </div>
                 </div>

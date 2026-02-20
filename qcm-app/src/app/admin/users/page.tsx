@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { Search, ShieldCheck, ShieldOff, Eye } from 'lucide-react';
 import Link from 'next/link';
 import { AdminService, type AdminUserRow } from '@/services/admin.service';
@@ -14,27 +14,31 @@ const TRACK_LABEL: Record<string, string> = {
 export default function AdminUsersPage() {
     useAdminGuard();
     const [users, setUsers] = useState<AdminUserRow[]>([]);
-    const [filtered, setFiltered] = useState<AdminUserRow[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [updatingUid, setUpdatingUid] = useState<string | null>(null);
 
     const loadUsers = useCallback(async () => {
-        setLoading(true);
-        const data = await AdminService.getAllUsers(100);
-        setUsers(data);
-        setFiltered(data);
-        setLoading(false);
+        try {
+            const data = await AdminService.getAllUsers(100);
+            setUsers(data);
+        } catch (error) {
+            console.error("Failed to load users:", error);
+        } finally {
+            setLoading(false);
+        }
     }, []);
 
-    useEffect(() => { loadUsers(); }, [loadUsers]);
-
     useEffect(() => {
+        loadUsers();
+    }, [loadUsers]);
+
+    const filtered = useMemo(() => {
         const q = search.toLowerCase();
-        setFiltered(users.filter(u =>
+        return users.filter(u =>
             u.displayName.toLowerCase().includes(q) ||
             u.email.toLowerCase().includes(q)
-        ));
+        );
     }, [search, users]);
 
     const toggleRole = async (uid: string, current: string) => {

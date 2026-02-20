@@ -7,6 +7,7 @@ import { db } from '@/lib/firebase';
 import { collection, getDocs, writeBatch, doc } from 'firebase/firestore';
 import { useAuth } from '@/context/AuthContext';
 import { Loader2, CheckCircle, AlertTriangle } from 'lucide-react';
+import { cleanQuestionText } from '@/utils/cleaning';
 
 export default function CleanupPage() {
     const { user, loading: authLoading } = useAuth();
@@ -45,12 +46,7 @@ export default function CleanupPage() {
 
                 if (!originalQuestion) continue;
 
-                const newQuestion = originalQuestion
-                    .replace(/\(Variante\s*\d*\)/gi, '')
-                    .replace(/^Variante\s*\d*\s*[:.-]?\s*/gi, '')
-                    .replace(/Variante\s*\d*/gi, '')
-                    .replace(/\s+/g, ' ')
-                    .trim();
+                const newQuestion = cleanQuestionText(originalQuestion);
 
                 if (newQuestion !== originalQuestion) {
                     // addLog(`Updating: "${originalQuestion}" -> "${newQuestion}"`);

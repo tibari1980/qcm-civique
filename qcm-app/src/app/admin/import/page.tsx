@@ -9,6 +9,8 @@ import { doc, writeBatch, collection, getCountFromServer, getDocs } from 'fireba
 import { db } from '@/lib/firebase';
 import * as XLSX from 'xlsx';
 import { useAdminGuard } from '@/lib/adminGuard';
+import { cleanQuestionText } from '@/utils/cleaning';
+import { useSoundEffects } from '@/hooks/useSoundEffects';
 
 /* ─── Mapping thème Excel → thème Firestore ─── */
 const THEME_MAP: Record<string, string> = {
@@ -31,13 +33,16 @@ type LogLine = { type: 'info' | 'success' | 'error'; text: string };
 
 export default function AdminImportPage() {
     useAdminGuard();
+    const { playSound } = useSoundEffects();
     const [logs, setLogs] = useState<LogLine[]>([]);
-    const [progress, setProgress] = useState<{ done: number; total: number } | null>(null);
+    const [progress, setProgress] = useState<{ done: number; total: number; imported: number; skipped: number } | null>(null);
     const [running, setRunning] = useState(false);
     const [count, setCount] = useState<number | null>(null);
     const fileRef = useRef<HTMLInputElement>(null);
     const [fileName, setFileName] = useState<string | null>(null);
     const logRef = useRef<HTMLDivElement>(null);
+    const [skippedDuplicates, setSkippedDuplicates] = useState<string[]>([]);
+    const [summary, setSummary] = useState<{ imported: number; duplicates: number; empty: number; badData: number; total: number } | null>(null);
 
     const addLog = (type: LogLine['type'], text: string) => {
         setLogs(prev => [...prev, { type, text }]);
@@ -57,26 +62,66 @@ export default function AdminImportPage() {
         setRunning(true);
         setLogs([]);
         setProgress(null);
+        setSkippedDuplicates([]);
+        setSummary(null);
         addLog('info', `📂 Lecture du fichier "${file.name}"…`);
 
         try {
-            const arrayBuffer = await file.arrayBuffer();
+            // ── Parallélisation : parsing Excel + fetch Firestore simultanés ──
+            addLog('info', '⚡ Lecture du fichier et chargement de la base en parallèle…');
+            const [arrayBuffer, existingSnap] = await Promise.all([
+                file.arrayBuffer(),
+                getDocs(collection(db, 'questions')),
+            ]);
+
             const workbook = XLSX.read(arrayBuffer);
             const sheet = workbook.Sheets[workbook.SheetNames[0]];
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const rows: any[] = XLSX.utils.sheet_to_json(sheet);
 
-            addLog('info', `✅ ${rows.length} lignes trouvées. Import Firestore…`);
-            setProgress({ done: 0, total: rows.length });
+            // Construire le Set des questions existantes (comparaison insensible à la casse)
+            const existingTexts = new Set<string>(
+                existingSnap.docs.map(d => String(d.data().question || '').trim().toLowerCase())
+            );
+            addLog('info', `✅ ${rows.length} ligne(s) dans le fichier — ${existingTexts.size} question(s) déjà en base.`);
+
+            setProgress({ done: 0, total: rows.length, imported: 0, skipped: 0 });
 
             let batch = writeBatch(db);
             let batchCount = 0;
             let totalImported = 0;
-            let skipped = 0;
+            let totalProcessed = 0;  // lignes traitées (importées + ignorées)
+            let skippedEmpty = 0;    // lignes vides / données manquantes
+            let skippedBadData = 0;  // lignes avec < 2 choix
+            const duplicatesList: string[] = [];
 
             for (const row of rows) {
-                const rawQ = String(row['Question'] || row['question'] || '').trim();
-                if (!rawQ) { skipped++; continue; }
+                totalProcessed++;
+
+                const rawText = String(row['Question'] || row['question'] || '').trim();
+                if (!rawText) { skippedEmpty++; setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData }); continue; }
+
+                // ── Nettoyage du texte de la question pour le STOCKAGE ──
+                const rawQ = cleanQuestionText(rawText);
+
+                if (!rawQ) { skippedEmpty++; setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData }); continue; }
+
+                // ── Vérification doublon contre la base Firestore (texte nettoyé) ──
+                if (existingTexts.has(rawQ.toLowerCase())) {
+                    duplicatesList.push(rawQ);
+                    setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData });
+                    continue;
+                }
+                // Déduplication intra-fichier sur le TEXTE BRUT (avant nettoyage)
+                // → évite de confondre "Variante 1 : Q" et "Variante 2 : Q" avec le même Q
+                if (existingTexts.has(rawText.toLowerCase())) {
+                    duplicatesList.push(rawQ);
+                    setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData });
+                    continue;
+                }
+                // Ajouter les deux formes pour couvrir tous les cas de doublons
+                existingTexts.add(rawQ.toLowerCase());
+                existingTexts.add(rawText.toLowerCase());
 
                 const id = `q_${row['ID'] ?? row['id'] ?? Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
                 const rawTheme = String(row['Thème'] || row['Theme'] || row['theme'] || '');
@@ -95,7 +140,11 @@ export default function AdminImportPage() {
                     String(row['Réponse D'] || row['D'] || ''),
                 ].filter(Boolean);
 
-                if (choices.length < 2) { skipped++; continue; }
+                if (choices.length < 2) {
+                    skippedBadData++;
+                    setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData });
+                    continue;
+                }
 
                 batch.set(doc(db, 'questions', id), {
                     theme, level,
@@ -113,20 +162,32 @@ export default function AdminImportPage() {
                 batchCount++;
                 totalImported++;
 
-                if (batchCount >= 400) {
+                if (batchCount >= 450) {
                     await batch.commit();
-                    setProgress({ done: totalImported, total: rows.length });
+                    playSound('click'); // "Bip" sound after each batch
+                    setProgress({ done: totalProcessed, total: rows.length, imported: totalImported, skipped: duplicatesList.length + skippedEmpty + skippedBadData });
                     batch = writeBatch(db);
                     batchCount = 0;
-                    await new Promise(r => setTimeout(r, 80));
+                    await new Promise(r => setTimeout(r, 100));
                 }
             }
 
-            if (batchCount > 0) await batch.commit();
-            setProgress({ done: totalImported, total: rows.length });
+            if (batchCount > 0) {
+                await batch.commit();
+                playSound('success');
+            }
 
-            addLog('success', `🎉 ${totalImported} question(s) importées avec succès !`);
-            if (skipped > 0) addLog('info', `⚠️ ${skipped} ligne(s) ignorée(s) (données manquantes).`);
+
+            const totalIgnored = duplicatesList.length + skippedEmpty + skippedBadData;
+            // Barre à 100%
+            setProgress({ done: rows.length, total: rows.length, imported: totalImported, skipped: totalIgnored });
+
+            // Récap visuel
+            setSummary({ imported: totalImported, duplicates: duplicatesList.length, empty: skippedEmpty, badData: skippedBadData, total: rows.length });
+
+            addLog('success', `🎉 Import terminé — ${totalImported} importées, ${totalIgnored} ignorées sur ${rows.length} lignes.`);
+
+            if (duplicatesList.length > 0) setSkippedDuplicates(duplicatesList);
             await fetchCount();
 
         } catch (err: unknown) {
@@ -169,7 +230,7 @@ export default function AdminImportPage() {
                 return;
             }
 
-            setProgress({ done: 0, total });
+            setProgress({ done: 0, total, imported: 0, skipped: 0 });
 
             let batch = writeBatch(db);
             let batchCount = 0;
@@ -184,14 +245,14 @@ export default function AdminImportPage() {
                     await batch.commit();
                     batch = writeBatch(db);
                     batchCount = 0;
-                    setProgress({ done: deletedCount, total });
+                    setProgress({ done: deletedCount, total, imported: 0, skipped: 0 });
                     await new Promise(r => setTimeout(r, 50));
                 }
             }
 
             if (batchCount > 0) await batch.commit();
 
-            setProgress({ done: total, total });
+            setProgress({ done: total, total, imported: 0, skipped: 0 });
             addLog('success', `✅ Base vidée : ${total} questions supprimées.`);
             setCount(0);
 
@@ -280,11 +341,11 @@ export default function AdminImportPage() {
             {/* Progress */}
             {progress && (
                 <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-4 mb-4">
-                    <div className="flex justify-between text-sm text-gray-600 mb-2">
-                        <span>Progression</span>
-                        <span>{progress.done} / {progress.total}</span>
+                    <div className="flex justify-between text-sm text-gray-600 mb-1">
+                        <span className="font-medium">Lignes traitées</span>
+                        <span className="font-bold">{progress.done} / {progress.total}</span>
                     </div>
-                    <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden mb-3">
                         <div
                             className="h-full bg-[#002394] transition-all duration-300 rounded-full"
                             style={{ width: `${Math.round((progress.done / progress.total) * 100)}%` }}
@@ -292,6 +353,49 @@ export default function AdminImportPage() {
                             aria-valuenow={progress.done}
                             aria-valuemax={progress.total}
                         />
+                    </div>
+                    <div className="flex gap-4 text-xs">
+                        <span className="flex items-center gap-1 text-emerald-700 font-semibold">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
+                            Importées : {progress.imported}
+                        </span>
+                        <span className="flex items-center gap-1 text-amber-700 font-semibold">
+                            <span className="w-2 h-2 rounded-full bg-amber-400 inline-block" />
+                            Ignorées : {progress.skipped}
+                        </span>
+                    </div>
+                </div>
+            )}
+
+            {/* ── Récapitulatif visuel post-import ── */}
+            {summary && (
+                <div className="rounded-xl border-2 border-emerald-200 bg-emerald-50 p-4 mb-4">
+                    <p className="text-sm font-bold text-emerald-800 mb-3">📊 Résumé de l&apos;import</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <div className="bg-white rounded-lg p-3 text-center border border-emerald-100 shadow-sm">
+                            <span className="block text-2xl font-extrabold text-emerald-600">{summary.imported}</span>
+                            <span className="text-xs text-emerald-700 font-medium">✅ Importées</span>
+                        </div>
+                        <div className="bg-white rounded-lg p-3 text-center border border-amber-100 shadow-sm">
+                            <span className="block text-2xl font-extrabold text-amber-600">{summary.duplicates}</span>
+                            <span className="text-xs text-amber-700 font-medium">🔁 Doublons ignorés</span>
+                        </div>
+                        {summary.empty > 0 && (
+                            <div className="bg-white rounded-lg p-3 text-center border border-gray-200 shadow-sm">
+                                <span className="block text-2xl font-extrabold text-gray-500">{summary.empty}</span>
+                                <span className="text-xs text-gray-600 font-medium">📭 Lignes vides</span>
+                            </div>
+                        )}
+                        {summary.badData > 0 && (
+                            <div className="bg-white rounded-lg p-3 text-center border border-red-100 shadow-sm">
+                                <span className="block text-2xl font-extrabold text-red-500">{summary.badData}</span>
+                                <span className="text-xs text-red-600 font-medium">⚠️ Données invalides</span>
+                            </div>
+                        )}
+                        <div className="bg-white rounded-lg p-3 text-center border border-gray-200 shadow-sm col-span-2 sm:col-span-1">
+                            <span className="block text-2xl font-extrabold text-gray-700">{summary.total}</span>
+                            <span className="text-xs text-gray-600 font-medium">📋 Total lignes</span>
+                        </div>
                     </div>
                 </div>
             )}
@@ -313,6 +417,28 @@ export default function AdminImportPage() {
                         </div>
                     ))}
                 </div>
+            )}
+
+            {/* Questions ignorées (doublons) */}
+            {skippedDuplicates.length > 0 && (
+                <details className="mb-4 border border-amber-200 bg-amber-50 rounded-xl overflow-hidden">
+                    <summary
+                        className="px-4 py-3 text-sm font-semibold text-amber-800 cursor-pointer flex items-center gap-2 select-none hover:bg-amber-100 transition-colors"
+                        aria-label={`${skippedDuplicates.length} questions ignorées car déjà présentes en base`}
+                    >
+                        <span className="text-base">🔁</span>
+                        {skippedDuplicates.length} question(s) ignorée(s) — déjà présente(s) dans la base
+                        <span className="ml-auto text-xs text-amber-600 font-normal">(cliquez pour afficher)</span>
+                    </summary>
+                    <ul className="px-4 pb-4 pt-2 space-y-1 max-h-60 overflow-y-auto" aria-label="Liste des questions ignorées">
+                        {skippedDuplicates.map((q, i) => (
+                            <li key={i} className="text-xs text-amber-900 flex items-start gap-2">
+                                <span className="mt-0.5 text-amber-400 shrink-0">•</span>
+                                <span>{q}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </details>
             )}
 
             {/* Footer actions */}

@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Clock, Sparkles, CheckCircle2, XCircle, RotateCcw, LayoutDashboard } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { useAIQCM, type AIQuestion, type AIQCMSession } from '@/hooks/useAIQCM';
+import { useAIQCM, type AIQCMSession } from '@/hooks/useAIQCM';
 import { UserService } from '@/services/user.service';
 import Link from 'next/link';
 
@@ -317,10 +317,12 @@ export default function AIQuizSessionPage() {
 
     useEffect(() => {
         if (!authLoading && !user) { router.push('/login'); return; }
-        const stored = getLastSession();
-        if (!stored) { router.push('/ai-quiz'); return; }
-        setSession(stored);
-    }, [authLoading, user, router, getLastSession]);
+        if (!session) {
+            const stored = getLastSession();
+            if (!stored) { router.push('/ai-quiz'); return; }
+            setSession(stored);
+        }
+    }, [authLoading, user, router, getLastSession, session]);
 
     const handleFinish = useCallback(async (finalAnswers: Record<number, number>, timeSpent: number) => {
         if (!session || !user) return;

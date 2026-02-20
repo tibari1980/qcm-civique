@@ -9,10 +9,7 @@ import {
     getDoc,
     query,
     where,
-    orderBy,
-    limit,
     Timestamp,
-    increment
 } from 'firebase/firestore';
 import { Attempt, UserProfile, UserProgress } from '@/types';
 
@@ -190,53 +187,101 @@ export const UserService = {
         }
     },
 
-    // Get IDs of questions answered incorrectly
-    getIncorrectQuestionIds: async (uid: string): Promise<string[]> => {
+    // ── NOUVELLE méthode unifiée : 1 seul appel Firestore ──────────────────
+    // Remplace getUserStats + getRecentActivity + getIncorrectQuestionIds
+    // pour éviter 3 round-trips Firestore sur la même collection.
+    getAllUserData: async (uid: string, options: {
+        track?: 'residence' | 'naturalisation';
+        maxRecent?: number;
+    } = {}): Promise<{
+        stats: UserProgress;
+        recentActivity: Attempt[];
+        incorrectIds: string[];
+    }> => {
+        const { track, maxRecent = 5 } = options;
+
         try {
-            const q = query(
-                collection(db, 'attempts'),
-                where('user_id', '==', uid)
+            const snap = await getDocs(
+                query(collection(db, 'attempts'), where('user_id', '==', uid))
             );
+            let attempts = snap.docs.map(d => ({ id: d.id, ...d.data() } as Attempt));
 
-            const snapshot = await getDocs(q);
-            const attempts = snapshot.docs.map(doc => doc.data() as Attempt);
-
-            const incorrectIds = new Set<string>();
-            attempts.forEach(attempt => {
-                attempt.answers.forEach(ans => {
-                    if (!ans.correct) {
-                        incorrectIds.add(ans.question_id);
-                    }
-                });
+            // ── Recent activity (avant filtrage par track) ──
+            const sortedDesc = [...attempts].sort((a, b) => {
+                const tA = (a as any).timestamp?.seconds ? (a as any).timestamp.seconds * 1000 : new Date(a.created_at).getTime();
+                const tB = (b as any).timestamp?.seconds ? (b as any).timestamp.seconds * 1000 : new Date(b.created_at).getTime();
+                return tB - tA;
             });
+            const recentActivity = sortedDesc.slice(0, maxRecent);
 
-            // Optional: Remove IDs that were subsequently answered correctly? 
-            // For now, let's keep it simple: "Questions you have struggled with".
-            // A more advanced logic would be: check if the *latest* attempt for this ID was correct.
-            // Let's implement that optimization for a better UX.
-
-            const finalIncorrectIds = new Set<string>();
-            const latestStatusMap = new Map<string, boolean>(); // id -> isCorrect
-
-            // We need to process attempts in chronological order
-            const sortedAttempts = attempts.sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime());
-
-            sortedAttempts.forEach(attempt => {
-                attempt.answers.forEach(ans => {
-                    latestStatusMap.set(ans.question_id, ans.correct);
+            // ── Questions incorrectes ──
+            const latestStatus = new Map<string, boolean>();
+            [...attempts]
+                .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+                .forEach(attempt => {
+                    (attempt.answers || []).forEach(ans => {
+                        latestStatus.set(ans.question_id, ans.correct);
+                    });
                 });
-            });
+            const incorrectIds = Array.from(latestStatus.entries())
+                .filter(([, ok]) => !ok)
+                .map(([id]) => id);
 
-            latestStatusMap.forEach((isCorrect, id) => {
-                if (!isCorrect) {
-                    finalIncorrectIds.add(id);
+            // ── Stats (avec filtre track optionnel) ──
+            if (track) {
+                const targetType = track === 'residence' ? 'titre_sejour' : 'naturalisation';
+                attempts = attempts.filter(a => a.exam_type === targetType);
+            }
+            const total_attempts = attempts.length;
+            if (total_attempts === 0) {
+                return {
+                    stats: { total_attempts: 0, average_score: 0, last_activity: '', theme_stats: {} },
+                    recentActivity,
+                    incorrectIds,
+                };
+            }
+
+            let totalScorePercent = 0;
+            const theme_stats: Record<string, { attempts: number; success_rate: number; last_score: number }> = {};
+
+            attempts.forEach(a => {
+                const pct = a.total_questions > 0 ? (a.score / a.total_questions) * 100 : 0;
+                totalScorePercent += pct;
+                if (a.theme) {
+                    if (!theme_stats[a.theme]) theme_stats[a.theme] = { attempts: 0, success_rate: 0, last_score: 0 };
+                    const t = theme_stats[a.theme];
+                    t.attempts += 1;
+                    t.success_rate = ((t.success_rate * (t.attempts - 1)) + pct) / t.attempts;
+                    t.last_score = pct;
                 }
             });
 
-            return Array.from(finalIncorrectIds);
+            const sorted = [...attempts].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+
+            return {
+                stats: {
+                    total_attempts,
+                    average_score: Math.round(totalScorePercent / total_attempts),
+                    last_activity: sorted[0]?.created_at || '',
+                    theme_stats,
+                },
+                recentActivity,
+                incorrectIds,
+            };
         } catch (error) {
-            console.error("Error fetching incorrect questions:", error);
-            return [];
+            console.error('Error in getAllUserData:', error);
+            return {
+                stats: { total_attempts: 0, average_score: 0, last_activity: '', theme_stats: {} },
+                recentActivity: [],
+                incorrectIds: [],
+            };
         }
+    },
+
+    // Get IDs of questions answered incorrectly (conservé pour compat, utilise getAllUserData)
+    getIncorrectQuestionIds: async (uid: string): Promise<string[]> => {
+        const { incorrectIds } = await UserService.getAllUserData(uid);
+        return incorrectIds;
     }
 };
+

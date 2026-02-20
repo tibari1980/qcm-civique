@@ -3,168 +3,216 @@
 > eslint
 
 
-D:\Antigravity-project\QCM-Application\qcm-app\scripts\analyze_excel_data.js
-  1:14  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
-  2:7   warning  'path' is assigned a value but never used  @typescript-eslint/no-unused-vars
-  2:14  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
-  3:12  error    A `require()` style import is forbidden    @typescript-eslint/no-require-imports
+D:\Antigravity-project\QCM-Application\qcm-app\middleware.ts
+  4:28  warning  'request' is defined but never used  @typescript-eslint/no-unused-vars
 
-D:\Antigravity-project\QCM-Application\qcm-app\scripts\check_excel.js
-  1:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
-  2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
-  3:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+D:\Antigravity-project\QCM-Application\qcm-app\src\app\admin\layout.tsx
+  116:18  error  Error: Cannot create components during render
 
-D:\Antigravity-project\QCM-Application\qcm-app\scripts\check_excel.mjs
-  2:13  warning  'fs' is defined but never used  @typescript-eslint/no-unused-vars
+Components created during render will reset their state each time they are created. Declare components outside of render.
 
-D:\Antigravity-project\QCM-Application\qcm-app\scripts\import_firestore.js
-  1:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
-  2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
-  3:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
-  4:27  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
-  5:43  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
-  6:40  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+D:\Antigravity-project\QCM-Application\qcm-app\src\app\admin\layout.tsx:116:18
+  114 |                 aria-label="Panneau d'administration"
+  115 |             >
+> 116 |                 <SidebarContent />
+      |                  ^^^^^^^^^^^^^^ This component is created during render
+  117 |             </aside>
+  118 |
+  119 |             {/* Mobile overlay */}
 
-D:\Antigravity-project\QCM-Application\qcm-app\scripts\read_excel_debug.js
-  1:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
-  2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
-  3:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+D:\Antigravity-project\QCM-Application\qcm-app\src\app\admin\layout.tsx:50:28
+   48 |     };
+   49 |
+>  50 |     const SidebarContent = () => (
+      |                            ^^^^^^^
+>  51 |         <div className="flex flex-col h-full">
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  52 |             {/* Logo / Brand */}
+      ÔÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 106 |         </div>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 107 |     );
+      | ^^^^^^ The component is created during render here
+  108 |
+  109 |     return (
+  110 |         <div className="flex h-screen bg-gray-50 overflow-hidden">  react-hooks/static-components
+  135:18  error  Error: Cannot create components during render
 
-D:\Antigravity-project\QCM-Application\qcm-app\scripts\read_excel_v2.js
-  1:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
-  2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
-  3:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+Components created during render will reset their state each time they are created. Declare components outside of render.
 
-D:\Antigravity-project\QCM-Application\qcm-app\scripts\test_firebase.mjs
-  12:7  warning  'app' is assigned a value but never used  @typescript-eslint/no-unused-vars
+D:\Antigravity-project\QCM-Application\qcm-app\src\app\admin\layout.tsx:135:18
+  133 |                 ].join(' ')}
+  134 |             >
+> 135 |                 <SidebarContent />
+      |                  ^^^^^^^^^^^^^^ This component is created during render
+  136 |             </aside>
+  137 |
+  138 |             {/* Main content */}
 
-D:\Antigravity-project\QCM-Application\qcm-app\src\app\admin-import\page.tsx
-    7:27  warning  'getFirestore' is defined but never used                         @typescript-eslint/no-unused-vars
-   41:25  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
-  112:25  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
-  138:21  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
-  164:63  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
-  170:49  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
-  170:57  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
-  170:63  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+D:\Antigravity-project\QCM-Application\qcm-app\src\app\admin\layout.tsx:50:28
+   48 |     };
+   49 |
+>  50 |     const SidebarContent = () => (
+      |                            ^^^^^^^
+>  51 |         <div className="flex flex-col h-full">
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>  52 |             {/* Logo / Brand */}
+      ÔÇª
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 106 |         </div>
+      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 107 |     );
+      | ^^^^^^ The component is created during render here
+  108 |
+  109 |     return (
+  110 |         <div className="flex h-screen bg-gray-50 overflow-hidden">                             react-hooks/static-components
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\app\admin\questions\page.tsx
+  31:23  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\app\admin\questions\page.tsx:31:23
+  29 |     }, []);
+  30 |
+> 31 |     useEffect(() => { load(); }, [load]);
+     |                       ^^^^ Avoid calling setState() directly within an effect
+  32 |
+  33 |     useEffect(() => {
+  34 |         let list = questions;                                                                                                              react-hooks/set-state-in-effect
+  41:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\app\admin\questions\page.tsx:41:9
+  39 |             list = list.filter(q => q.question.toLowerCase().includes(s));
+  40 |         }
+> 41 |         setFiltered(list);
+     |         ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  42 |     }, [search, filterTheme, filterLevel, questions]);
+  43 |
+  44 |     const toggleActive = async (q: AdminQuestion) => {  react-hooks/set-state-in-effect
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\app\admin\users\page.tsx
+  30:23  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\app\admin\users\page.tsx:30:23
+  28 |     }, []);
+  29 |
+> 30 |     useEffect(() => { loadUsers(); }, [loadUsers]);
+     |                       ^^^^^^^^^ Avoid calling setState() directly within an effect
+  31 |
+  32 |     useEffect(() => {
+  33 |         const q = search.toLowerCase();                                                                            react-hooks/set-state-in-effect
+  34:9   error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\app\admin\users\page.tsx:34:9
+  32 |     useEffect(() => {
+  33 |         const q = search.toLowerCase();
+> 34 |         setFiltered(users.filter(u =>
+     |         ^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  35 |             u.displayName.toLowerCase().includes(q) ||
+  36 |             u.email.toLowerCase().includes(q)
+  37 |         ));  react-hooks/set-state-in-effect
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\app\ai-quiz\session\page.tsx
+    9:25  warning  'AIQuestion' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+   16:7   warning  'NIVEAU_LABELS' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+  322:9   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\app\ai-quiz\session\page.tsx:322:9
+  320 |         const stored = getLastSession();
+  321 |         if (!stored) { router.push('/ai-quiz'); return; }
+> 322 |         setSession(stored);
+      |         ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  323 |     }, [authLoading, user, router, getLastSession]);
+  324 |
+  325 |     const handleFinish = useCallback(async (finalAnswers: Record<number, number>, timeSpent: number) => {  react-hooks/set-state-in-effect
 
 D:\Antigravity-project\QCM-Application\qcm-app\src\app\cleanup\page.tsx
-   15:12  warning  'total' is assigned a value but never used                       @typescript-eslint/no-unused-vars
-   48:21  error    'newQuestion' is never reassigned. Use 'const' instead           prefer-const
-  107:43  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
-  107:52  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
-
-D:\Antigravity-project\QCM-Application\qcm-app\src\app\login\page.tsx
-  38:23  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
-  97:30  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
-
-D:\Antigravity-project\QCM-Application\qcm-app\src\app\page.tsx
-   13:38  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
-   69:86  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
-  131:28  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
-
-D:\Antigravity-project\QCM-Application\qcm-app\src\app\register\page.tsx
-  60:23  error  Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
-  78:64  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  16:12  warning  'total' is assigned a value but never used  @typescript-eslint/no-unused-vars
 
 D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\dashboard\Dashboard.tsx
-    5:10  warning  'Button' is defined but never used                               @typescript-eslint/no-unused-vars
-   23:58  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
-   33:90  error    Unexpected any. Specify a different type                         @typescript-eslint/no-explicit-any
-  163:57  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
-  181:50  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
-  181:64  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+   5:10  warning  'Button' is defined but never used        @typescript-eslint/no-unused-vars
+  23:58  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
 
 D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\exam\ExamSession.tsx
-    6:30  warning  'CheckCircle' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
-    6:43  warning  'XCircle' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
-   19:13  warning  'playSound' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
-   54:21  error    Error: Cannot access variable before it is declared
-
-`finishExam` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
-
-D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\exam\ExamSession.tsx:54:21
-  52 |                 if (prev <= 1) {
-  53 |                     clearInterval(timer);
-> 54 |                     finishExam();
-     |                     ^^^^^^^^^^ `finishExam` accessed before it is declared
-  55 |                     return 0;
-  56 |                 }
-  57 |                 return prev - 1;
-
-D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\exam\ExamSession.tsx:81:5
-   79 |     }, [isFinished]);
-   80 |
->  81 |     const finishExam = useCallback(async () => {
-      |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->  82 |         setIsFinished(true);
-      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->  83 |         if (user) {
-      ÔÇª
-      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 106 |         }
-      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 107 |     }, [user, questions, answers, userProfile, timeLeft]);
-      | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ `finishExam` is declared here
-  108 |
-  109 |     const handleAnswerSelect = useCallback((choiceIndex: number) => {
-  110 |         setAnswers(prev => ({ ...prev, [currentQuestionIndex]: choiceIndex }));  react-hooks/immutability
-   61:8   warning  React Hook useEffect has a missing dependency: 'finishExam'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                react-hooks/exhaustive-deps
-  147:8   warning  React Hook useEffect has a missing dependency: 'handleAnswerSelect'. Either include it or remove the dependency array                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        react-hooks/exhaustive-deps
-  160:74  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              react/no-unescaped-entities
-  174:98  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              react/no-unescaped-entities
-  282:42  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              react/no-unescaped-entities
-
-D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\interview\InterviewSimulator.tsx
-    4:16  warning  'CardContent' is defined but never used                          @typescript-eslint/no-unused-vars
-  100:68  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
-
-D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\onboarding\OnboardingFlow.tsx
-    8:10   warning  'Card' is defined but never used                                 @typescript-eslint/no-unused-vars
-   65:104  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
-  127:96   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
-  132:55   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
-
-D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\profile\ProfilePage.tsx
-   55:86  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
-  102:77  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
-
-D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\review\ReviewSession.tsx
-   91:60  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                react/no-unescaped-entities
-  101:29  error  React Hook "useCallback" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
-  109:32  error  React Hook "useCallback" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
-  114:28  error  React Hook "useCallback" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
-  130:24  error  React Hook "useCallback" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
-  149:5   error  React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?    react-hooks/rules-of-hooks
-
-D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\training\CultureGeneral.tsx
-  72:91  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  14:10  warning  'useSoundEffects' is defined but never used  @typescript-eslint/no-unused-vars
 
 D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\training\TrainingSession.tsx
-  107:29  error  React Hook "useCallback" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
-  116:32  error  React Hook "useCallback" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
-  121:28  error  React Hook "useCallback" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
-  138:24  error  React Hook "useCallback" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?  react-hooks/rules-of-hooks
-  171:5   error  React Hook "useEffect" is called conditionally. React Hooks must be called in the exact same order in every component render. Did you accidentally call a React Hook after an early return?    react-hooks/rules-of-hooks
+  40:12  warning  'reviewQuestions' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  64:30  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\training\TrainingSession.tsx:64:30
+  62 |
+  63 |     useEffect(() => {
+> 64 |         if (user && themeId) loadQuestions();
+     |                              ^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  65 |     }, [user, themeId, loadQuestions]);
+  66 |
+  67 |     // ÔöÇÔöÇ Audio ÔöÇÔöÇ  react-hooks/set-state-in-effect
 
 D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\training\TrainingThemeList.tsx
-  58:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  90:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
 
-D:\Antigravity-project\QCM-Application\qcm-app\src\hooks\useSoundEffects.ts
-  11:69  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
 
-D:\Antigravity-project\QCM-Application\qcm-app\src\services\question.service.ts
-   2:52  warning  'orderBy' is defined but never used                  @typescript-eslint/no-unused-vars
-  37:17  error    'snapshot' is never reassigned. Use 'const' instead  prefer-const
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\training\TrainingThemeList.tsx:90:9
+  88 |         if (!user) return;
+  89 |
+> 90 |         setStatsLoading(true);
+     |         ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  91 |         setCountsLoading(true);
+  92 |
+  93 |         Promise.all([  react-hooks/set-state-in-effect
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\services\admin.service.ts
+  181:9   warning  Unused eslint-disable directive (no problems were reported from '@typescript-eslint/no-explicit-any')
+  183:53  error    Unexpected any. Specify a different type                                                               @typescript-eslint/no-explicit-any
 
 D:\Antigravity-project\QCM-Application\qcm-app\src\services\user.service.ts
-  12:5  warning  'orderBy' is defined but never used    @typescript-eslint/no-unused-vars
-  13:5  warning  'limit' is defined but never used      @typescript-eslint/no-unused-vars
-  15:5  warning  'increment' is defined but never used  @typescript-eslint/no-unused-vars
+  211:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  211:66  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  212:34  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  212:66  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
 
-D:\Antigravity-project\QCM-Application\qcm-app\src\types\index.ts
-  53:17  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
-
-Ô£û 83 problems (66 errors, 17 warnings)
-  2 errors and 0 warnings potentially fixable with the `--fix` option.
+Ô£û 23 problems (15 errors, 8 warnings)
+  0 errors and 1 warning potentially fixable with the `--fix` option.
 

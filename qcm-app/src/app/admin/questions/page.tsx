@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import { Plus, Search, Pencil, Trash2, ToggleLeft, ToggleRight } from 'lucide-react';
 import { AdminService, type AdminQuestion } from '@/services/admin.service';
@@ -12,7 +12,6 @@ const LEVELS = ['Débutant', 'Intermédiaire', 'Avancé'];
 export default function AdminQuestionsPage() {
     useAdminGuard();
     const [questions, setQuestions] = useState<AdminQuestion[]>([]);
-    const [filtered, setFiltered] = useState<AdminQuestion[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [filterTheme, setFilterTheme] = useState('');
@@ -21,16 +20,21 @@ export default function AdminQuestionsPage() {
     const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
 
     const load = useCallback(async () => {
-        setLoading(true);
-        const data = await AdminService.getQuestions({}, 200);
-        setQuestions(data);
-        setFiltered(data);
-        setLoading(false);
+        try {
+            const data = await AdminService.getQuestions({}, 200);
+            setQuestions(data);
+        } catch (error) {
+            console.error("Failed to load questions:", error);
+        } finally {
+            setLoading(false);
+        }
     }, []);
 
-    useEffect(() => { load(); }, [load]);
-
     useEffect(() => {
+        load();
+    }, [load]);
+
+    const filtered = useMemo(() => {
         let list = questions;
         if (filterTheme) list = list.filter(q => q.theme === filterTheme);
         if (filterLevel) list = list.filter(q => q.level === filterLevel);
@@ -38,7 +42,7 @@ export default function AdminQuestionsPage() {
             const s = search.toLowerCase();
             list = list.filter(q => q.question.toLowerCase().includes(s));
         }
-        setFiltered(list);
+        return list;
     }, [search, filterTheme, filterLevel, questions]);
 
     const toggleActive = async (q: AdminQuestion) => {
