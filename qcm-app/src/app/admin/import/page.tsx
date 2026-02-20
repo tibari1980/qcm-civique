@@ -5,7 +5,7 @@ import {
     UploadCloud, FileSpreadsheet, CheckCircle2,
     AlertCircle, List, Database
 } from 'lucide-react';
-import { doc, writeBatch, collection, getCountFromServer, getDocs } from 'firebase/firestore';
+import { doc, writeBatch, collection, getCountFromServer, getDocs, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import * as XLSX from 'xlsx';
 import { useAdminGuard } from '@/lib/adminGuard';
