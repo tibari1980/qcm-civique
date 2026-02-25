@@ -1,7 +1,7 @@
 name = "qcm-app"
 pages_build_output_dir = ".vercel/output/static"
-compatibility_date = "2024-04-03"
-compatibility_flags = [ "nodejs_compat" ]
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
 
 [vars]
 # Configurez vos variables (BREVO_API_KEY, etc.) dans le Dashboard Cloudflare.
