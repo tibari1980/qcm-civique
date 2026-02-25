@@ -1,0 +1,21 @@
+﻿[master ec89f8d] fix: prevent triple welcome email - send only once at registration
+ 2 files changed, 5 insertions(+), 40 deletions(-)
+cmd : To https://github.com/
+tibari1980/qcm-civique.git
+Au caractère Ligne:1 : 1
++ cmd /c "cd /d d:\Antigravi
+ty-project\QCM-Application\q
+cm-app && ""C:\ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~
+    + CategoryInfo          
+    : NotSpecified: (To ht  
+  tps://gith...qcm-civiqu   
+ e.git:String) [], Remot    
+eException
+    + FullyQualifiedErrorId 
+    : NativeCommandError
+ 
+   81f65c5..ec89f8d  master 
+-> principal

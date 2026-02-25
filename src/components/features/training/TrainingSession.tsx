@@ -133,7 +133,13 @@ export default function TrainingSession() {
     const handleAnswerSelect = useCallback((index: number) => {
         if (isAnswered) return;
         setSelectedAnswer(index);
-    }, [isAnswered]);
+        // Announce selection to screen readers
+        const announcement = document.getElementById('global-announcement');
+        if (announcement) {
+            const currentQ = questions[currentQuestionIndex];
+            if (currentQ) announcement.textContent = `Réponse ${String.fromCharCode(65 + index)} sélectionnée : ${currentQ.choices[index]}`;
+        }
+    }, [isAnswered, questions, currentQuestionIndex]);
 
     const handleValidate = useCallback(() => {
         if (selectedAnswer === null) return;
@@ -221,7 +227,8 @@ export default function TrainingSession() {
 
     if (loading || isLoadingData) {
         return (
-            <div className="container mx-auto px-4 py-12 max-w-4xl space-y-10">
+            <div className="container mx-auto px-4 py-12 max-w-4xl space-y-10" role="status" aria-busy="true" aria-live="polite">
+                <p className="sr-only">Chargement des questions en cours, veuillez patienter…</p>
                 <header className="flex justify-between items-center">
                     <Skeleton width="150px" height="2rem" className="rounded-full" />
                     <div className="flex gap-2">
@@ -264,8 +271,8 @@ export default function TrainingSession() {
         const wrongQuestions = questions.filter((_, i) => correctFlags[i] === false);
 
         return (
-            <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 bg-gray-50/50" role="main">
-                <Card className="w-full max-w-2xl border-none shadow-xl bg-white/80 backdrop-blur-sm overflow-hidden" tabIndex={-1} ref={resultRef}>
+            <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 bg-gray-50/50" role="main" aria-label="Résultats de la session">
+                <Card className="w-full max-w-2xl border-none shadow-xl bg-white/80 backdrop-blur-sm overflow-hidden" tabIndex={-1} ref={resultRef} aria-label={`Résultats : ${percentage} pourcent de réussite, ${score} sur ${questions.length} questions correctes`}>
                     <CardHeader className="text-center pb-2 pt-8">
                         <CardTitle className="text-3xl font-bold mb-1">
                             {reviewMode ? 'Révision terminée !' : isSuccess ? 'Félicitations ! 🎉' : 'Séance terminée'}
@@ -273,37 +280,38 @@ export default function TrainingSession() {
                         <p className="text-muted-foreground">Voici le récapitulatif de votre session</p>
                     </CardHeader>
                     <CardContent className="flex flex-col items-center py-8">
-                        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className={`relative w-44 h-44 flex flex-col items-center justify-center rounded-full border-[6px] ${isSuccess ? 'border-green-500 bg-green-50 text-green-700' : 'border-orange-500 bg-orange-50 text-orange-700'} mb-6 shadow-inner`}>
-                            <span className="text-5xl font-extrabold tracking-tighter">{percentage}%</span>
-                            <span className="text-xs font-semibold mt-1 uppercase tracking-wide opacity-80">De réussite</span>
+                        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className={`relative w-44 h-44 flex flex-col items-center justify-center rounded-full border-[6px] ${isSuccess ? 'border-green-500 bg-green-50 text-green-700' : 'border-orange-500 bg-orange-50 text-orange-700'} mb-6 shadow-inner`} role="img" aria-label={`Score : ${percentage} pourcent de réussite`}>
+                            <span className="text-5xl font-extrabold tracking-tighter" aria-hidden="true">{percentage}%</span>
+                            <span className="text-xs font-semibold mt-1 uppercase tracking-wide opacity-80" aria-hidden="true">De réussite</span>
                         </motion.div>
-                        <div className="grid grid-cols-3 gap-3 w-full max-w-md mt-4 mb-6">
-                            <div className="bg-blue-50 p-3 rounded-xl text-center border border-blue-100">
+                        <div className="grid grid-cols-3 gap-3 w-full max-w-md mt-4 mb-6" role="list" aria-label="Statistiques de la session">
+                            <div className="bg-blue-50 p-3 rounded-xl text-center border border-blue-100" role="listitem">
                                 <span className="block text-2xl font-bold text-blue-700">{questions.length}</span>
                                 <span className="text-xs font-semibold text-blue-600 uppercase">Questions</span>
                             </div>
-                            <div className="bg-purple-50 p-3 rounded-xl text-center border border-purple-100">
+                            <div className="bg-purple-50 p-3 rounded-xl text-center border border-purple-100" role="listitem">
                                 <span className="block text-2xl font-bold text-purple-700">{score * 10}</span>
                                 <span className="text-xs font-semibold text-purple-600 uppercase">Points XP</span>
                             </div>
-                            <div className="bg-orange-50 p-3 rounded-xl text-center border border-orange-100">
-                                <span className="block text-2xl font-bold text-orange-600">🔥{maxStreak}</span>
+                            <div className="bg-orange-50 p-3 rounded-xl text-center border border-orange-100" role="listitem">
+                                <span className="sr-only">Série maximale : {maxStreak}</span>
+                                <span className="block text-2xl font-bold text-orange-600" aria-hidden="true">🔥{maxStreak}</span>
                                 <span className="text-xs font-semibold text-orange-600 uppercase">Streak max</span>
                             </div>
                         </div>
                     </CardContent>
                     <CardFooter className="flex flex-col sm:flex-row justify-center gap-3 bg-gray-50/80 p-6 border-t">
-                        <Button onClick={resetSession} variant="outline" size="lg" className="w-full sm:w-auto border-2 hover:bg-white">
-                            <RotateCcw className="mr-2 h-4 w-4" /> Réessayer
+                        <Button onClick={resetSession} variant="outline" size="lg" className="w-full sm:w-auto border-2 hover:bg-white" aria-label="Réessayer avec de nouvelles questions">
+                            <RotateCcw className="mr-2 h-4 w-4" aria-hidden="true" /> Réessayer
                         </Button>
                         {wrongQuestions.length > 0 && !reviewMode && (
-                            <Button onClick={startReview} variant="outline" size="lg" className="w-full sm:w-auto border-2 border-orange-300 text-orange-700 hover:bg-orange-50">
-                                <Eye className="mr-2 h-4 w-4" /> Revoir mes erreurs
+                            <Button onClick={startReview} variant="outline" size="lg" className="w-full sm:w-auto border-2 border-orange-300 text-orange-700 hover:bg-orange-50" aria-label={`Revoir les ${wrongQuestions.length} erreurs`}>
+                                <Eye className="mr-2 h-4 w-4" aria-hidden="true" /> Revoir mes erreurs
                             </Button>
                         )}
                         <Link href="/dashboard" className="w-full sm:w-auto">
-                            <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 shadow-lg">
-                                <Home className="mr-2 h-4 w-4" /> Dashboard
+                            <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 shadow-lg" aria-label="Retour au tableau de bord">
+                                <Home className="mr-2 h-4 w-4" aria-hidden="true" /> Dashboard
                             </Button>
                         </Link>
                     </CardFooter>
@@ -316,44 +324,46 @@ export default function TrainingSession() {
 
     return (
         <div className="min-h-[calc(100vh-4rem)] bg-gray-50/30 flex flex-col">
-            <div className="fixed top-[4rem] left-0 right-0 h-1 bg-gray-200 z-10">
+            {/* Live region for answer feedback */}
+            <div className="sr-only" aria-live="assertive" aria-atomic="true" id="training-feedback" />
+            <div className="fixed top-[4rem] left-0 right-0 h-1 bg-gray-200 z-10" role="progressbar" aria-valuenow={currentQuestionIndex + 1} aria-valuemin={1} aria-valuemax={questions.length} aria-label={`Question ${currentQuestionIndex + 1} sur ${questions.length}`}>
                 <motion.div className="h-full bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,0.5)]" initial={{ width: 0 }} animate={{ width: `${(currentQuestionIndex / questions.length) * 100}%` }} transition={{ duration: 0.5 }} />
             </div>
 
             <div className="container mx-auto px-4 py-8 max-w-4xl flex-1 flex flex-col">
-                <header className="flex justify-between items-center mb-8 mt-4">
+                <header className="flex justify-between items-center mb-8 mt-4" aria-label="Progression de l'entraînement">
                     <div className="flex items-center gap-3">
-                        <span className="bg-white px-3 py-1 rounded-full text-sm font-bold text-blue-600 shadow-sm border border-blue-100">
+                        <span className="bg-white px-3 py-1 rounded-full text-sm font-bold text-blue-600 shadow-sm border border-blue-100" aria-live="polite" aria-atomic="true">
                             Question {currentQuestionIndex + 1} <span className="text-gray-400 font-normal">/ {questions.length}</span>
                         </span>
-                        {reviewMode && <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-xs font-bold">Mode Révision</span>}
+                        {reviewMode && <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-xs font-bold" role="status">Mode Révision</span>}
                     </div>
                     <div className="flex items-center gap-3">
                         {streak >= 2 && (
-                            <motion.div key={streak} initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex items-center gap-1 bg-orange-50 text-orange-600 px-2.5 py-1 rounded-full text-sm font-bold">
-                                <Flame className="h-4 w-4" /> {streak}
+                            <motion.div key={streak} initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex items-center gap-1 bg-orange-50 text-orange-600 px-2.5 py-1 rounded-full text-sm font-bold" role="status" aria-label={`Série de ${streak} bonnes réponses consécutives`}>
+                                <Flame className="h-4 w-4" aria-hidden="true" /> {streak}
                             </motion.div>
                         )}
-                        <Button variant="ghost" size="icon" onClick={() => setIsAudioEnabled(!isAudioEnabled)} className={`rounded-full ${isAudioEnabled ? 'text-blue-600 bg-blue-50' : 'text-gray-400'}`}>
-                            {isAudioEnabled ? <Volume2 className="h-5 w-5" /> : <VolumeX className="h-5 w-5" />}
+                        <Button variant="ghost" size="icon" onClick={() => setIsAudioEnabled(!isAudioEnabled)} className={`rounded-full ${isAudioEnabled ? 'text-blue-600 bg-blue-50' : 'text-gray-400'}`} aria-label={isAudioEnabled ? 'Désactiver la lecture audio de la question' : 'Activer la lecture audio de la question'} aria-pressed={isAudioEnabled}>
+                            {isAudioEnabled ? <Volume2 className="h-5 w-5" aria-hidden="true" /> : <VolumeX className="h-5 w-5" aria-hidden="true" />}
                         </Button>
-                        <Link href="/dashboard">
-                            <Button variant="ghost" size="icon" className="rounded-full text-gray-400 hover:text-red-500">
-                                <XCircle className="h-5 w-5" />
+                        <Link href="/dashboard" aria-label="Quitter l'entraînement et retourner au tableau de bord">
+                            <Button variant="ghost" size="icon" className="rounded-full text-gray-400 hover:text-red-500" aria-label="Quitter">
+                                <XCircle className="h-5 w-5" aria-hidden="true" />
                             </Button>
                         </Link>
                     </div>
                 </header>
 
-                <main className="flex-1">
+                <main className="flex-1" aria-label="Zone de quiz">
                     <AnimatePresence mode="wait">
                         <motion.div key={currentQuestion.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
                             <Card className="border-none shadow-lg bg-white overflow-hidden mb-24">
                                 <CardContent className="p-6 md:p-8">
-                                    <h2 className="text-2xl md:text-3xl font-bold text-gray-800 leading-tight mb-8" ref={questionRef} tabIndex={-1}>
+                                    <h2 className="text-2xl md:text-3xl font-bold text-gray-800 leading-tight mb-8" ref={questionRef} tabIndex={-1} id="current-question">
                                         {currentQuestion.question}
                                     </h2>
-                                    <div className="grid grid-cols-1 gap-3">
+                                    <div className="grid grid-cols-1 gap-3" role="radiogroup" aria-labelledby="current-question" aria-describedby="training-feedback">
                                         {currentQuestion.choices.map((choice, index) => {
                                             const isSelected = selectedAnswer === index;
                                             const isCorrectChoice = index === currentQuestion.correct_index;
@@ -368,18 +378,32 @@ export default function TrainingSession() {
                                                 styleClass += 'border-gray-100 hover:border-gray-200 bg-white';
                                             }
 
+                                            // Build accessible label
+                                            let accessibleLabel = `Réponse ${String.fromCharCode(65 + index)} : ${choice}`;
+                                            if (isAnswered && isCorrectChoice) accessibleLabel += ' — Bonne réponse';
+                                            if (isAnswered && isSelected && !isCorrectChoice) accessibleLabel += ' — Mauvaise réponse';
+
                                             return (
-                                                <button key={index} onClick={() => handleAnswerSelect(index)} disabled={isAnswered} className={styleClass}>
-                                                    <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center font-bold border transition-colors ${isSelected ? 'bg-blue-600 text-white' : 'bg-gray-50 text-gray-400'}`}>
+                                                <button key={index} onClick={() => handleAnswerSelect(index)} disabled={isAnswered} className={styleClass} role="radio" aria-checked={isSelected} aria-label={accessibleLabel}>
+                                                    <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center font-bold border transition-colors ${isSelected ? 'bg-blue-600 text-white' : 'bg-gray-50 text-gray-400'}`} aria-hidden="true">
                                                         {String.fromCharCode(65 + index)}
                                                     </div>
                                                     <span className="text-lg font-medium">{choice}</span>
-                                                    {isAnswered && isCorrectChoice && <CheckCircle className="ml-auto h-6 w-6 text-green-500" />}
-                                                    {isAnswered && isSelected && !isCorrectChoice && <XCircle className="ml-auto h-6 w-6 text-red-500" />}
+                                                    {isAnswered && isCorrectChoice && <CheckCircle className="ml-auto h-6 w-6 text-green-500" aria-hidden="true" />}
+                                                    {isAnswered && isSelected && !isCorrectChoice && <XCircle className="ml-auto h-6 w-6 text-red-500" aria-hidden="true" />}
                                                 </button>
                                             );
                                         })}
                                     </div>
+                                    {/* Screen reader feedback after answer */}
+                                    {isAnswered && (
+                                        <div className="sr-only" role="status" aria-live="assertive">
+                                            {status === 'correct'
+                                                ? `Bonne réponse ! La réponse correcte est ${currentQuestion.choices[currentQuestion.correct_index]}.`
+                                                : `Mauvaise réponse. La bonne réponse était ${currentQuestion.choices[currentQuestion.correct_index]}.`
+                                            }
+                                        </div>
+                                    )}
                                 </CardContent>
                             </Card>
                         </motion.div>
@@ -390,7 +414,7 @@ export default function TrainingSession() {
             <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-gray-100 z-50">
                 <div className="container mx-auto max-w-4xl flex justify-end">
                     {!isAnswered ? (
-                        <Button size="lg" onClick={handleValidate} disabled={selectedAnswer === null} className="w-full sm:w-auto min-w-[180px] font-bold shadow-blue-500/20">
+                        <Button size="lg" onClick={handleValidate} disabled={selectedAnswer === null} className="w-full sm:w-auto min-w-[180px] font-bold shadow-blue-500/20" aria-label={selectedAnswer === null ? 'Sélectionnez une réponse avant de vérifier' : 'Vérifier ma réponse'}>
                             Vérifier
                         </Button>
                     ) : (
@@ -407,7 +431,7 @@ export default function TrainingSession() {
                             </div>
                             <span className="flex items-center gap-2">
                                 {currentQuestionIndex < questions.length - 1 ? 'Continuer' : 'Voir Résultats'}
-                                <ArrowRight className="h-5 w-5" />
+                                <ArrowRight className="h-5 w-5" aria-hidden="true" />
                             </span>
                         </Button>
                     )}

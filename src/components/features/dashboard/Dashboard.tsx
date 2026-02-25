@@ -91,7 +91,8 @@ export default function Dashboard() {
     // Shell rendering while auth is loading or user is being redirected
     if (authLoading || (!user && !authLoading)) {
         return (
-            <div className="container mx-auto px-4 py-8 space-y-8">
+            <div className="container mx-auto px-4 py-8 space-y-8" role="status" aria-busy="true" aria-live="polite">
+                <p className="sr-only">Chargement du tableau de bord, veuillez patienter…</p>
                 <Skeleton width="40%" height="2.5rem" className="mb-4" />
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <StatsCardSkeleton />
@@ -147,17 +148,17 @@ export default function Dashboard() {
                         </>
                     ) : (
                         <>
-                            <Card role="region" aria-label="Total Attempts" className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
+                            <Card role="region" aria-label="Nombre total de tests" className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                                     <CardTitle className="text-sm font-medium text-gray-500 uppercase tracking-wider">Tests Total</CardTitle>
-                                    <FileText className="h-4 w-4 text-blue-500" />
+                                    <FileText className="h-4 w-4 text-blue-500" aria-hidden="true" />
                                 </CardHeader>
                                 <CardContent>
                                     <div className="text-3xl font-bold">{stats.totalTests}</div>
                                     <p className="text-xs text-green-600 font-medium mt-1">En progression</p>
                                 </CardContent>
                             </Card>
-                            <Card role="region" aria-label="Average Score" className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
+                            <Card role="region" aria-label="Score moyen" className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                                     <CardTitle className="text-sm font-medium text-gray-500 uppercase tracking-wider">Score Moyen</CardTitle>
                                     <Award className="h-4 w-4 text-green-500" aria-hidden="true" />
@@ -167,7 +168,7 @@ export default function Dashboard() {
                                     <p className="text-xs text-gray-400 mt-1">Objectif: 80%</p>
                                 </CardContent>
                             </Card>
-                            <Card role="region" aria-label="Themes Mastered" className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
+                            <Card role="region" aria-label="Thèmes maîtrisés" className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                                     <CardTitle className="text-sm font-medium text-gray-500 uppercase tracking-wider">Maîtrise</CardTitle>
                                     <CheckCircle2 className="h-4 w-4 text-purple-500" aria-hidden="true" />
@@ -203,7 +204,7 @@ export default function Dashboard() {
                         </div>
                         <CardContent className="p-6 flex flex-col md:flex-row items-center justify-between gap-6">
                             <div className="flex items-center gap-4">
-                                <div className={`p-4 rounded-2xl ${certificateInfo.eligible ? 'bg-amber-100 text-amber-600' : 'bg-gray-100 text-gray-400'}`}>
+                                <div className={`p-4 rounded-2xl ${certificateInfo.eligible ? 'bg-amber-100 text-amber-600' : 'bg-gray-100 text-gray-400'}`} aria-hidden="true">
                                     <Trophy className="h-8 w-8" />
                                 </div>
                                 <div>
@@ -226,7 +227,7 @@ export default function Dashboard() {
                                     {['histoire', 'institutions', 'societe', 'vals_principes', 'droits'].map((t, idx) => {
                                         const isMastered = !certificateInfo.missingThemes.includes(t);
                                         return (
-                                            <div key={t} className={`w-10 h-10 rounded-full border-2 border-white flex items-center justify-center text-[8px] font-bold shadow-sm ${isMastered ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-400'}`} title={t}>
+                                            <div key={t} className={`w-10 h-10 rounded-full border-2 border-white flex items-center justify-center text-[8px] font-bold shadow-sm ${isMastered ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-400'}`} title={t} role="img" aria-label={`${t}: ${isMastered ? 'maîtrisé' : 'non maîtrisé'}`}>
                                                 {t.substring(0, 3).toUpperCase()}
                                             </div>
                                         );
@@ -244,8 +245,8 @@ export default function Dashboard() {
                             <Skeleton height="400px" className="rounded-2xl" />
                         ) : (
                             <Card className="border-none shadow-lg bg-gradient-to-br from-blue-600 to-indigo-700 text-white overflow-hidden relative min-h-[350px]">
-                                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl" />
-                                <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-400/20 rounded-full -ml-24 -mb-24 blur-3xl" />
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl" aria-hidden="true" />
+                                <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-400/20 rounded-full -ml-24 -mb-24 blur-3xl" aria-hidden="true" />
 
                                 <CardHeader className="relative z-10">
                                     <CardTitle className="text-2xl sm:text-4xl font-black mb-2">
@@ -255,10 +256,10 @@ export default function Dashboard() {
                                 </CardHeader>
 
                                 <CardContent className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <Link href="/training" className="group">
+                                    <Link href="/training" className="group" aria-label="Entraînement — Pratique par thématique avec corrections détaillées">
                                         <div className="bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all p-5 rounded-2xl border border-white/20 h-full flex flex-col justify-between">
                                             <div>
-                                                <Target className="h-8 w-8 mb-4 text-blue-200" />
+                                                <Target className="h-8 w-8 mb-4 text-blue-200" aria-hidden="true" />
                                                 <h3 className="text-xl font-bold mb-1">Entraînement</h3>
                                                 <p className="text-sm text-blue-100/80 mb-6">Pratique par thématique avec corrections détaillées.</p>
                                             </div>
@@ -269,10 +270,10 @@ export default function Dashboard() {
                                     </Link>
 
                                     {userProfile?.track === 'residence' ? (
-                                        <Link href="/exam" className="group">
+                                        <Link href="/exam" className="group" aria-label="Examen Blanc — 40 questions en conditions réelles, timer 45 minutes">
                                             <div className="bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all p-5 rounded-2xl border border-white/20 h-full flex flex-col justify-between">
                                                 <div>
-                                                    <Clock className="h-8 w-8 mb-4 text-red-200" />
+                                                    <Clock className="h-8 w-8 mb-4 text-red-200" aria-hidden="true" />
                                                     <h3 className="text-xl font-bold mb-1">Examen Blanc</h3>
                                                     <p className="text-sm text-blue-100/80 mb-6">Conditions réelles : 40 questions, timer 45 min.</p>
                                                 </div>
@@ -282,10 +283,10 @@ export default function Dashboard() {
                                             </div>
                                         </Link>
                                     ) : (
-                                        <Link href="/training/culture" className="group">
+                                        <Link href="/training/culture" className="group" aria-label="Quiz Culture G — Maîtrisez les dates clés et les symboles républicains">
                                             <div className="bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all p-5 rounded-2xl border border-white/20 h-full flex flex-col justify-between">
                                                 <div>
-                                                    <Trophy className="h-8 w-8 mb-4 text-yellow-200" />
+                                                    <Trophy className="h-8 w-8 mb-4 text-yellow-200" aria-hidden="true" />
                                                     <h3 className="text-xl font-bold mb-1">Quiz Culture G</h3>
                                                     <p className="text-sm text-blue-100/80 mb-6">Maîtrisez les dates clés et les symboles républicains.</p>
                                                 </div>
@@ -302,10 +303,10 @@ export default function Dashboard() {
                         {/* Secondary Navigation Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             {/* Review Card */}
-                            <Link href="/training" className="group">
+                            <Link href="/training" className="group" aria-label="Réviser mes erreurs — Reprenez les questions manquées">
                                 <Card className="border-none shadow-sm hover:shadow-md transition-all overflow-hidden bg-orange-50/50">
                                     <CardContent className="p-6 flex items-center gap-4">
-                                        <div className="p-3 bg-orange-100 rounded-xl text-orange-600">
+                                        <div className="p-3 bg-orange-100 rounded-xl text-orange-600" aria-hidden="true">
                                             <AlertCircle className="h-6 w-6" />
                                         </div>
                                         <div className="min-w-0">
@@ -317,10 +318,10 @@ export default function Dashboard() {
                             </Link>
 
                             {/* Stats Card */}
-                            <Link href="/profile" className="group">
+                            <Link href="/profile" className="group" aria-label="Ma Progression — Voir mes scores détaillés">
                                 <Card className="border-none shadow-sm hover:shadow-md transition-all overflow-hidden bg-indigo-50/50">
                                     <CardContent className="p-6 flex items-center gap-4">
-                                        <div className="p-3 bg-indigo-100 rounded-xl text-indigo-600">
+                                        <div className="p-3 bg-indigo-100 rounded-xl text-indigo-600" aria-hidden="true">
                                             <TrendingUp className="h-6 w-6" />
                                         </div>
                                         <div className="min-w-0">
@@ -334,7 +335,7 @@ export default function Dashboard() {
                     </div>
 
                     {/* Sidebar Area */}
-                    <aside className="space-y-6">
+                    <aside className="space-y-6" aria-label="Informations complémentaires">
                         <Card className="border-none shadow-sm overflow-hidden bg-white">
                             <CardHeader className="pb-3 flex flex-row items-center justify-between">
                                 <CardTitle className="text-lg font-bold" id="recent-activity-title">Activité Récente</CardTitle>
@@ -366,7 +367,7 @@ export default function Dashboard() {
                                     </ul>
                                 ) : (
                                     <div className="text-center py-10">
-                                        <div className="p-3 bg-gray-50 rounded-full w-fit mx-auto mb-3">
+                                        <div className="p-3 bg-gray-50 rounded-full w-fit mx-auto mb-3" aria-hidden="true">
                                             <AlertCircle className="h-6 w-6 text-gray-300" />
                                         </div>
                                         <p className="text-sm text-gray-400 italic">Aucune activité enregistrée.</p>
@@ -379,8 +380,8 @@ export default function Dashboard() {
                         </Card>
 
                         {/* Tip Card */}
-                        <Card className="border-none shadow-sm bg-[var(--color-primary)] text-white overflow-hidden p-6 relative">
-                            <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 blur-2xl" />
+                        <Card className="border-none shadow-sm bg-[var(--color-primary)] text-white overflow-hidden p-6 relative" role="complementary" aria-label="Conseil pratique">
+                            <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 blur-2xl" aria-hidden="true" />
                             <h4 className="font-black text-sm uppercase tracking-widest mb-2 text-blue-200">Conseil Pro</h4>
                             <p className="text-sm font-medium leading-relaxed">
                                 Un score de 80% ou plus indique une bonne maîtrise du sujet. Concentrez-vous sur les thèmes en dessous de 50%.

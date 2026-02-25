@@ -39,3 +39,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Build logs (generated locally)
+build-log.txt
+
+# Firebase service account keys (CRITIQUE — ne jamais committer)
+firebase-adminsdk*.json
+service-account*.json
+*-credentials.json

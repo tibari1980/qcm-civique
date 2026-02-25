@@ -269,6 +269,13 @@ main a:not([class]) {
     box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
   }
 
+  :is(.dark *) .glass-card,
+  .dark .glass-card {
+    background-color: rgba(30, 30, 40, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+  }
+
   .text-gradient-republic {
     background: linear-gradient(to right, #002395, #0055ff, #ed2939);
     -webkit-background-clip: text;
@@ -283,6 +290,15 @@ main a:not([class]) {
       radial-gradient(at 0% 0%, rgba(0, 35, 149, 0.12) 0px, transparent 50%),
       radial-gradient(at 100% 100%, rgba(237, 41, 57, 0.12) 0px, transparent 50%),
       radial-gradient(at 50% 50%, rgba(37, 99, 235, 0.04) 0px, transparent 50%);
+  }
+
+  :is(.dark *) .bg-mesh-republic,
+  .dark .bg-mesh-republic {
+    background-color: oklch(0.145 0 0);
+    background-image:
+      radial-gradient(at 0% 0%, rgba(0, 35, 149, 0.25) 0px, transparent 50%),
+      radial-gradient(at 100% 100%, rgba(237, 41, 57, 0.20) 0px, transparent 50%),
+      radial-gradient(at 50% 50%, rgba(37, 99, 235, 0.08) 0px, transparent 50%);
   }
 
   .animate-float {

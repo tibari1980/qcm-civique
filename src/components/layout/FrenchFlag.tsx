@@ -10,6 +10,8 @@ export function FrenchFlag({ className = "" }: { className?: string }) {
             initial={{ rotate: -2, scale: 0.9, opacity: 0 }}
             animate={{ rotate: 1, scale: 1, opacity: 1 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
+            aria-hidden="true"
+            role="presentation"
         >
             {/* Animated waving effect using SVG filters if needed, but a simple skew/float is better for perf */}
             <motion.div

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Menu, X, BookOpen, GraduationCap, LayoutDashboard, Home, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { TricolorLogo } from './TricolorLogo';
+import { ThemeToggle } from './ThemeToggle';
 import { useAuth } from '@/context/AuthContext';
 import { useSettings } from '@/context/SettingsContext';
 import { NotificationBell } from './NotificationBell';
@@ -72,31 +73,34 @@ export function Header() {
     };
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md">
+        <header className="sticky top-0 z-50 w-full border-b border-gray-200 dark:border-gray-700 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
                     <div className="flex items-center gap-2">
                         <Link
                             href="/"
-                            className="flex items-center gap-3 font-bold text-xl text-gray-900 group"
+                            className="flex items-center gap-3 font-bold text-xl text-gray-900 dark:text-white group"
                             aria-label={`${settings.appName} — Accueil`}
                         >
                             <TricolorLogo className="h-10 w-10 rounded-md overflow-hidden shadow-md group-hover:scale-110 transition-transform" />
-                            <span className="hidden sm:inline bg-gradient-to-r from-blue-900 to-red-900 bg-clip-text text-transparent">{settings.appName}</span>
+                            <span className="hidden sm:inline bg-gradient-to-r from-blue-900 to-red-900 dark:from-blue-300 dark:to-red-300 bg-clip-text text-transparent">{settings.appName}</span>
                         </Link>
                     </div>
 
                     {/* Navigation desktop */}
                     <nav aria-label="Navigation principale" className="hidden md:flex items-center gap-6">
-                        <Link href="/" className="text-sm font-medium text-gray-700 hover:text-[var(--color-primary)] transition-colors">
+                        <Link href="/" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-[var(--color-primary)] transition-colors">
                             Accueil
                         </Link>
-                        <Link href="/training" className="text-sm font-medium text-gray-700 hover:text-[var(--color-primary)] transition-colors">
+                        <Link href="/training" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-[var(--color-primary)] transition-colors">
                             Entraînement
                         </Link>
-                        <Link href="/exam" className="text-sm font-medium text-gray-700 hover:text-[var(--color-primary)] transition-colors">
+                        <Link href="/exam" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-[var(--color-primary)] transition-colors">
                             Examen Blanc
+                        </Link>
+                        <Link href="/guide" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-[var(--color-primary)] transition-colors">
+                            Guide
                         </Link>
                         {settings.enableInterview && (
                             <Link href="/interview" className="text-sm font-medium text-gray-700 hover:text-[var(--color-primary)] transition-colors">
@@ -118,12 +122,13 @@ export function Header() {
 
                     {/* Actions desktop */}
                     <div className="hidden md:flex items-center gap-4">
+                        <ThemeToggle />
                         {user ? (
                             <div className="flex items-center gap-4">
                                 <NotificationBell />
                                 <Link
                                     href="/profile"
-                                    className="text-sm font-medium text-gray-700 hover:text-[var(--color-primary)] transition-colors mr-2"
+                                    className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-[var(--color-primary)] transition-colors mr-2"
                                     aria-label={`Mon profil : ${user.displayName || 'Utilisateur'}`}
                                 >
                                     {user.displayName || 'Mon Profil'}
@@ -194,7 +199,7 @@ export function Header() {
                         role="dialog"
                         aria-modal="true"
                         aria-label="Menu de navigation"
-                        className="md:hidden fixed top-16 left-0 right-0 z-50 border-t border-gray-200 bg-white p-4 space-y-4 shadow-lg"
+                        className="md:hidden fixed top-16 left-0 right-0 z-50 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 space-y-4 shadow-lg"
                     >
                         <nav aria-label="Navigation mobile" className="flex flex-col gap-4">
                             <Link href="/" className="flex items-center gap-2 text-sm font-medium py-2" onClick={closeMenu}>
@@ -208,6 +213,10 @@ export function Header() {
                             <Link href="/exam" className="flex items-center gap-2 text-sm font-medium py-2" onClick={closeMenu}>
                                 <GraduationCap className="h-4 w-4" aria-hidden="true" />
                                 Examen Blanc
+                            </Link>
+                            <Link href="/guide" className="flex items-center gap-2 text-sm font-medium py-2" onClick={closeMenu}>
+                                <BookOpen className="h-4 w-4" aria-hidden="true" />
+                                Guide
                             </Link>
                             {settings.enableInterview && (
                                 <Link href="/interview" className="flex items-center gap-2 text-sm font-medium py-2" onClick={closeMenu}>

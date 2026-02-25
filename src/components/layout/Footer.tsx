@@ -98,6 +98,11 @@ export function Footer() {
                                     <span>•</span> Support & Contact
                                 </Link>
                             </li>
+                            <li>
+                                <Link href="/guide" className="hover:text-blue-400 transition-colors flex items-center gap-2">
+                                    <span>📖</span> Guide d'utilisation
+                                </Link>
+                            </li>
                         </ul>
                     </nav>
 

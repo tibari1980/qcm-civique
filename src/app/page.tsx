@@ -45,10 +45,10 @@ export default function Home() {
         <div className="absolute bottom-20 right-10 w-72 h-72 bg-red-100 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-float" style={{ animationDelay: '2s' }} />
 
         {/* Floating patriotic flag element */}
-        <div className="absolute top-40 right-[10%] hidden lg:block transform rotate-6 z-0 opacity-20">
+        <div className="absolute top-40 right-[10%] hidden lg:block transform rotate-6 z-0 opacity-20" aria-hidden="true">
           <FrenchFlag className="w-64 h-40" />
         </div>
-        <div className="absolute top-60 left-[5%] hidden lg:block transform -rotate-12 z-0 opacity-10">
+        <div className="absolute top-60 left-[5%] hidden lg:block transform -rotate-12 z-0 opacity-10" aria-hidden="true">
           <FrenchFlag className="w-48 h-32" />
         </div>
 
@@ -75,6 +75,7 @@ export default function Home() {
                     transition={{ delay: 0.3, duration: 0.5 }}
                     className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mb-12"
                     aria-label="Résumé de vos statistiques"
+                    role="list"
                   >
                     {[
                       { label: "Tests", value: stats.total_attempts, color: "text-blue-600" },
@@ -82,10 +83,10 @@ export default function Home() {
                       { label: "Thèmes", value: Object.keys(stats.theme_stats).length, color: "text-purple-600" },
                       { label: "Dashboard", value: null, isLink: true }
                     ].map((item, idx) => (
-                      <div key={idx} className="glass-card p-6 rounded-2xl transition-transform hover:scale-105">
+                      <div key={idx} className="glass-card p-6 rounded-2xl transition-transform hover:scale-105" role="listitem">
                         {item.isLink ? (
-                          <Link href={dashboardLink} className="h-full flex flex-col items-center justify-center text-blue-600 group">
-                            <ArrowRight className="w-8 h-8 mb-2 group-hover:translate-x-2 transition-transform" />
+                          <Link href={dashboardLink} className="h-full flex flex-col items-center justify-center text-blue-600 group" aria-label="Accéder à votre espace personnel">
+                            <ArrowRight className="w-8 h-8 mb-2 group-hover:translate-x-2 transition-transform" aria-hidden="true" />
                             <span className="text-sm font-bold uppercase tracking-widest">Espace Personnel</span>
                           </Link>
                         ) : (
@@ -109,11 +110,11 @@ export default function Home() {
                   >
                     <div className="flex justify-between items-center mb-2 px-1">
                       <span className="text-xs font-bold text-gray-500 uppercase tracking-widest flex items-center gap-2">
-                        <GraduationCap className="h-3 w-3 text-blue-600" /> Progression Certification
+                        <GraduationCap className="h-3 w-3 text-blue-600" aria-hidden="true" /> Progression Certification
                       </span>
                       <span className="text-sm font-black text-blue-700">{Math.round(certInfo.progress)}%</span>
                     </div>
-                    <div className="h-2 w-full bg-gray-200/50 rounded-full overflow-hidden">
+                    <div className="h-2 w-full bg-gray-200/50 rounded-full overflow-hidden" role="progressbar" aria-valuenow={Math.round(certInfo.progress)} aria-valuemin={0} aria-valuemax={100} aria-label={`Progression certification : ${Math.round(certInfo.progress)} pourcent`}>
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${certInfo.progress}%` }}
@@ -122,16 +123,17 @@ export default function Home() {
                       />
                     </div>
                     {certInfo.eligible && (
-                      <p className="text-[10px] text-green-600 font-bold mt-2 flex items-center justify-center gap-1">
-                        <CheckCircle className="h-3 w-3" /> Certificat débloqué !
+                      <p className="text-[10px] text-green-600 font-bold mt-2 flex items-center justify-center gap-1" role="status">
+                        <CheckCircle className="h-3 w-3" aria-hidden="true" /> Certificat débloqué !
                       </p>
                     )}
                   </motion.div>
                 )}
 
                 {!stats && !certInfo && (
-                  <div className="h-40 mb-12 flex items-center justify-center">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                  <div className="h-40 mb-12 flex items-center justify-center" role="status" aria-live="polite">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" aria-hidden="true"></div>
+                    <span className="sr-only">Chargement de vos statistiques…</span>
                   </div>
                 )}
 
@@ -202,12 +204,12 @@ export default function Home() {
                 whileHover={{ y: -10 }}
                 className="p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all group overflow-hidden relative"
               >
-                <div className={`w-16 h-16 ${value.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
+                <div className={`w-16 h-16 ${value.color} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`} aria-hidden="true">
                   <value.icon className="w-8 h-8" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4">{value.title}</h3>
                 <p className="text-gray-500 leading-relaxed">{value.desc}</p>
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gray-50 rounded-bl-full -z-10 opacity-50" />
+                <div className="absolute top-0 right-0 w-32 h-32 bg-gray-50 rounded-bl-full -z-10 opacity-50" aria-hidden="true" />
               </motion.div>
             ))}
           </div>
@@ -224,7 +226,7 @@ export default function Home() {
             </div>
             <Link href="/register">
               <Button variant="link" className="text-blue-600 font-bold text-lg group">
-                Voir toutes les options <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                Voir toutes les options <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
               </Button>
             </Link>
           </div>
@@ -295,7 +297,7 @@ export default function Home() {
             whileInView={{ opacity: 1 }}
             className="mb-12"
           >
-            <Heart className="w-12 h-12 text-red-500 mx-auto mb-6 animate-pulse" />
+            <Heart className="w-12 h-12 text-red-500 mx-auto mb-6 animate-pulse" aria-hidden="true" />
             <h2 id="cta-heading" className="text-4xl md:text-6xl font-black text-gray-900 mb-6 uppercase tracking-tighter">Devenir Citoyen.</h2>
             <p className="max-w-2xl mx-auto text-xl text-gray-500 font-light mb-12">
               Chaque année, plus de 100 000 personnes rejoignent la communauté nationale. <br />
@@ -321,18 +323,18 @@ export default function Home() {
 
 function FeatureCard({ href, icon: Icon, title, desc }: { href: string, icon: any, title: string, desc: string }) {
   return (
-    <Link href={href} className="block h-full group focus:outline-none">
+    <Link href={href} className="block h-full group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-3xl" aria-label={`${title} — ${desc}`}>
       <motion.div
         whileHover={{ scale: 1.03 }}
         transition={{ type: "spring", stiffness: 300 }}
         className="h-full bg-white p-8 rounded-3xl border border-gray-100 hover:border-blue-200 shadow-sm hover:shadow-xl transition-all cursor-pointer flex flex-col items-start gap-4"
       >
-        <div className="p-3 bg-blue-50 rounded-2xl group-hover:bg-blue-600 group-hover:text-white transition-colors">
+        <div className="p-3 bg-blue-50 rounded-2xl group-hover:bg-blue-600 group-hover:text-white transition-colors" aria-hidden="true">
           <Icon className="h-8 w-8 text-blue-600 group-hover:text-white transition-colors" />
         </div>
         <h3 className="text-2xl font-bold text-gray-900">{title}</h3>
         <p className="text-gray-500 flex-grow">{desc}</p>
-        <div className="pt-4 text-blue-600 font-bold flex items-center gap-1 group-hover:gap-3 transition-all">
+        <div className="pt-4 text-blue-600 font-bold flex items-center gap-1 group-hover:gap-3 transition-all" aria-hidden="true">
           Commencer <ArrowRight className="w-5 h-5" />
         </div>
       </motion.div>
