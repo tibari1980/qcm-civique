@@ -1,0 +1,174 @@
+'use client';
+
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import {
+    LayoutDashboard, Users, FileQuestion, BarChart2,
+    Settings, ChevronRight, LogOut, ShieldCheck, Menu, X, Upload, Copy, MessageSquare
+} from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { useAdminGuard } from '@/lib/adminGuard';
+import { useSettings } from '@/context/SettingsContext';
+
+const NAV_ITEMS = [
+    { href: '/admin/', label: 'Dashboard', icon: LayoutDashboard, exact: true },
+    { href: '/admin/users/', label: 'Utilisateurs', icon: Users },
+    { href: '/admin/questions/', label: 'Questions', icon: FileQuestion },
+    { href: '/admin/import/', label: 'Import', icon: Upload },
+    { href: '/admin/deduplicate/', label: 'Nettoyage', icon: Copy },
+    { href: '/admin/reviews/', label: 'Avis', icon: MessageSquare },
+    { href: '/admin/stats/', label: 'Statistiques', icon: BarChart2 },
+    { href: '/admin/settings/', label: 'Paramètres', icon: Settings },
+];
+
+interface SidebarContentProps {
+    setMobileOpen: (open: boolean) => void;
+    isActive: (href: string, exact?: boolean) => boolean;
+    userProfile: any;
+    user: any;
+    handleSignOut: () => void;
+    appName: string;
+}
+
+const SidebarContent = ({ setMobileOpen, isActive, userProfile, user, handleSignOut, appName }: SidebarContentProps) => (
+    <div className="flex flex-col h-full">
+        <div className="flex items-center gap-3 px-6 py-5 border-b border-white/10">
+            <ShieldCheck className="h-7 w-7 text-white" aria-hidden="true" />
+            <div>
+                <p className="text-white font-bold text-base leading-none">Admin</p>
+                <p className="text-blue-200 text-xs mt-0.5 truncate max-w-[140px]">{appName}</p>
+            </div>
+        </div>
+
+        <nav className="flex-1 px-3 py-4 space-y-1" aria-label="Navigation administration">
+            {NAV_ITEMS.map(({ href, label, icon: Icon, exact }) => (
+                <Link
+                    key={href}
+                    href={href}
+                    onClick={() => setMobileOpen(false)}
+                    className={[
+                        'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all',
+                        isActive(href, exact)
+                            ? 'bg-white/20 text-white'
+                            : 'text-blue-100 hover:bg-white/10 hover:text-white',
+                    ].join(' ')}
+                    aria-current={isActive(href, exact) ? 'page' : undefined}
+                >
+                    <Icon className="h-5 w-5 flex-shrink-0" aria-hidden="true" />
+                    {label}
+                    {isActive(href, exact) && (
+                        <ChevronRight className="h-4 w-4 ml-auto" aria-hidden="true" />
+                    )}
+                </Link>
+            ))}
+        </nav>
+
+        <div className="px-3 py-4 border-t border-white/10">
+            <div className="flex items-center gap-3 px-3 py-2 mb-2">
+                <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+                    {(userProfile?.displayName || user?.email || 'A').charAt(0).toUpperCase()}
+                </div>
+                <div className="overflow-hidden">
+                    <p className="text-white text-xs font-medium truncate">
+                        {userProfile?.displayName || 'Administrateur'}
+                    </p>
+                    <p className="text-blue-200 text-xs truncate">{user?.email}</p>
+                </div>
+            </div>
+            <button
+                onClick={handleSignOut}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-blue-100 hover:bg-white/10 hover:text-white transition-all"
+            >
+                <LogOut className="h-4 w-4" aria-hidden="true" />
+                Déconnexion
+            </button>
+        </div>
+    </div>
+);
+
+export default function AdminClientLayout({ children }: { children: React.ReactNode }) {
+    const { loading: guardLoading, isAdmin } = useAdminGuard();
+    const { user, userProfile, signOut } = useAuth();
+    const { settings, loading: settingsLoading } = useSettings();
+    const pathname = usePathname();
+    const router = useRouter();
+    const [mobileOpen, setMobileOpen] = useState(false);
+
+    if (guardLoading || settingsLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="flex flex-col items-center gap-3 text-gray-500">
+                    <div className="w-8 h-8 border-4 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin" />
+                    <span className="text-sm">Chargement…</span>
+                </div>
+            </div>
+        );
+    }
+
+    if (!isAdmin && !guardLoading) return null;
+
+    const isActive = (href: string, exact?: boolean) => {
+        if (exact) return pathname === href || pathname === href.replace(/\/$/, '');
+        return pathname.startsWith(href) || pathname.startsWith(href.replace(/\/$/, ''));
+    };
+
+    const handleSignOut = async () => {
+        await signOut();
+        router.push('/');
+    };
+
+    return (
+        <div className="flex h-screen bg-gray-50 overflow-hidden">
+            <aside
+                className="hidden md:flex flex-col w-60 flex-shrink-0 shadow-xl"
+                style={{ backgroundColor: settings.brandColor || '#002394' }}
+            >
+                <SidebarContent
+                    setMobileOpen={setMobileOpen}
+                    isActive={isActive}
+                    userProfile={userProfile}
+                    user={user}
+                    handleSignOut={handleSignOut}
+                    appName={settings.appName}
+                />
+            </aside>
+
+            {mobileOpen && (
+                <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={() => setMobileOpen(false)} />
+            )}
+
+            <aside
+                className={[
+                    'fixed top-0 left-0 h-full w-60 z-50 transition-transform duration-300 md:hidden shadow-2xl',
+                    mobileOpen ? 'translate-x-0' : '-translate-x-full',
+                ].join(' ')}
+                style={{ backgroundColor: settings.brandColor || '#002394' }}
+            >
+                <SidebarContent
+                    setMobileOpen={setMobileOpen}
+                    isActive={isActive}
+                    userProfile={userProfile}
+                    user={user}
+                    handleSignOut={handleSignOut}
+                    appName={settings.appName}
+                />
+            </aside>
+
+            <div className="flex-1 flex flex-col overflow-hidden">
+                <div className="md:hidden flex items-center gap-3 px-4 py-3 text-white"
+                    style={{ backgroundColor: settings.brandColor || '#002394' }}>
+                    <button onClick={() => setMobileOpen(v => !v)}>
+                        {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+                    </button>
+                    <ShieldCheck className="h-5 w-5" />
+                    <span className="font-semibold">Admin</span>
+                </div>
+
+                <main id="admin-main" className="flex-1 overflow-y-auto" tabIndex={-1}>
+                    {children}
+                </main>
+            </div>
+        </div>
+    );
+}

@@ -1,0 +1,31 @@
+{
+  "total": 5000,
+  "themes": [
+    "Société et citoyenneté",
+    "Histoire de France",
+    "Institutions françaises",
+    "Valeurs de la République",
+    "Droits et devoirs"
+  ],
+  "levels": [
+    "Débutant",
+    "Intermédiaire",
+    "Avancé"
+  ],
+  "answerFormats": [
+    "B",
+    "C",
+    "A"
+  ],
+  "sample": {
+    "ID": 1,
+    "Thème": "Société et citoyenneté",
+    "Niveau": "Débutant",
+    "Question": "L'école en France est obligatoire jusqu'à : (Variante 1)",
+    "Réponse A": "14 ans",
+    "Réponse B": "16 ans",
+    "Réponse C": "18 ans",
+    "Réponse D": "12 ans",
+    "Bonne réponse": "B"
+  }
+}

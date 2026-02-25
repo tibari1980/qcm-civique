@@ -1,0 +1,7 @@
+Searching for user with email: tibarinewdzign@gmail.com
+❌ Error updating user: [FirebaseError: Missing or insufficient permissions.] {
+  code: 'permission-denied',
+  customData: undefined,
+  toString: [Function (anonymous)]
+}
+Script finished.

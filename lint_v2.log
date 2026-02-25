@@ -1,0 +1,65 @@
+﻿
+> qcm-app@0.1.0 lint
+> eslint
+
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\app\admin-import\page.tsx
+  7:27  warning  'getFirestore' is defined but never used  @typescript-eslint/no-unused-vars
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\app\cleanup\page.tsx
+  15:12  warning  'total' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\app\login\page.tsx
+  97:30  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\app\register\page.tsx
+  79:64  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\dashboard\Dashboard.tsx
+   5:10  warning  'Button' is defined but never used        @typescript-eslint/no-unused-vars
+  23:58  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\exam\ExamSession.tsx
+    6:30  warning  'CheckCircle' is defined but never used                                                                                @typescript-eslint/no-unused-vars
+    6:43  warning  'XCircle' is defined but never used                                                                                    @typescript-eslint/no-unused-vars
+   19:13  warning  'playSound' is assigned a value but never used                                                                         @typescript-eslint/no-unused-vars
+  149:8   warning  React Hook useEffect has a missing dependency: 'handleAnswerSelect'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+  162:74  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                        react/no-unescaped-entities
+  176:98  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                        react/no-unescaped-entities
+  284:42  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                        react/no-unescaped-entities
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\interview\InterviewSimulator.tsx
+    4:16  warning  'CardContent' is defined but never used                          @typescript-eslint/no-unused-vars
+  100:68  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\onboarding\OnboardingFlow.tsx
+    8:10   warning  'Card' is defined but never used                                 @typescript-eslint/no-unused-vars
+   65:104  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  127:96   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  132:55   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\profile\ProfilePage.tsx
+   55:86  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  102:77  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\review\ReviewSession.tsx
+  163:60  error  `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\components\features\training\TrainingThemeList.tsx
+  58:46  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\hooks\useSoundEffects.ts
+  11:69  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\services\question.service.ts
+   2:52  warning  'orderBy' is defined but never used                  @typescript-eslint/no-unused-vars
+  37:17  error    'snapshot' is never reassigned. Use 'const' instead  prefer-const
+
+D:\Antigravity-project\QCM-Application\qcm-app\src\services\user.service.ts
+  12:5  warning  'orderBy' is defined but never used    @typescript-eslint/no-unused-vars
+  13:5  warning  'limit' is defined but never used      @typescript-eslint/no-unused-vars
+  15:5  warning  'increment' is defined but never used  @typescript-eslint/no-unused-vars
+
+Ô£û 29 problems (16 errors, 13 warnings)
+  1 error and 0 warnings potentially fixable with the `--fix` option.
+

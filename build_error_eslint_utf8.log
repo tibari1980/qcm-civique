@@ -1,0 +1,571 @@
+﻿
+> qcm-app@0.1.0 build
+> next build
+
+   Ôû▓ Next.js 15.1.6
+   - Environments: .env.local
+
+   Creating an optimized production build ...
+ Ô£ô Compiled successfully
+   Linting and checking validity of types ...
+npm : 
+Au caractère Ligne:1 
+: 1
++ npm run build > buil
+d_error_eslint.log 
+2>&1
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: (:String) [   
+ ], RemoteExceptio    
+n
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+ ÔÜá The Next.js 
+plugin was not 
+detected in your 
+ESLint configuration. 
+See https://nextjs.org
+/docs/app/api-referenc
+e/config/eslint#migrat
+ing-existing-config
+
+Failed to compile.
+
+./src/app/about/page.t
+sx
+1:13  Error: Parsing 
+error: Unexpected 
+token {
+
+./src/app/admin/clean-
+variantes/page.tsx
+10:6  Error: Parsing 
+error: Unexpected 
+token LogLine
+
+./src/app/admin/dedupl
+icate/page.tsx
+11:6  Error: Parsing 
+error: Unexpected 
+token LogLine
+
+./src/app/admin/import
+/page.tsx
+16:26  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/app/admin/layout
+.tsx
+25:1  Error: Parsing 
+error: The keyword 
+'interface' is 
+reserved
+
+./src/app/admin/page.t
+sx
+22:29  Error: Parsing 
+error: Unexpected 
+token GlobalStats
+
+./src/app/admin/questi
+ons/edit/page.tsx
+6:29  Error: Parsing 
+error: Unexpected 
+token AdminQuestion
+
+./src/app/admin/questi
+ons/new/page.tsx
+8:29  Error: Parsing 
+error: Unexpected 
+token QuestionFormData
+
+./src/app/admin/questi
+ons/page.tsx
+9:29  Error: Parsing 
+error: Unexpected 
+token AdminQuestion
+
+./src/app/admin/review
+s/page.tsx
+25:51  Error: Parsing 
+error: Unexpected 
+token ]
+
+./src/app/admin/settin
+gs/page.tsx
+9:1  Error: Parsing 
+error: The keyword 
+'interface' is 
+reserved
+
+./src/app/admin/stats/
+page.tsx
+12:19  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/app/admin/users/
+details/page.tsx
+9:18  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/app/admin/users/
+page.tsx
+6:29  Error: Parsing 
+error: Unexpected 
+token AdminUserRow
+
+./src/app/ai-quiz/page
+.tsx
+15:10  Error: Parsing 
+error: Unexpected 
+token AIQCMParams
+
+./src/app/ai-quiz/sess
+ion/page.tsx
+9:25  Error: Parsing 
+error: Unexpected 
+token AIQCMSession
+
+./src/app/api/admin/de
+lete-user/route.ts
+4:35  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/app/api/admin/sy
+nc-users/route.ts
+4:35  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/app/api/admin/te
+st-email/route.ts
+4:35  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/app/api/welcome/
+route.ts
+4:35  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/app/contact/Cont
+actForm.tsx
+65:34  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/app/contact/page
+.tsx
+1:13  Error: Parsing 
+error: Unexpected 
+token {
+
+./src/app/dashboard/pa
+ge.tsx
+4:12  Error: Parsing 
+error: Unexpected 
+token <
+
+./src/app/exam/page.ts
+x
+4:12  Error: Parsing 
+error: Unexpected 
+token <
+
+./src/app/forgot-passw
+ord/page.tsx
+28:34  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/app/interview/pa
+ge.tsx
+4:12  Error: Parsing 
+error: Unexpected 
+token <
+
+./src/app/layout.tsx
+1:13  Error: Parsing 
+error: Unexpected 
+token {
+
+./src/app/login/page.t
+sx
+49:34  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/app/not-found.ts
+x
+19:9  Error: Parsing 
+error: Unexpected 
+token <
+
+./src/app/onboarding/p
+age.tsx
+4:12  Error: Parsing 
+error: Unexpected 
+token <
+
+./src/app/page.tsx
+40:5  Error: Parsing 
+error: Unexpected 
+token <
+
+./src/app/privacy/page
+.tsx
+1:13  Error: Parsing 
+error: Unexpected 
+token {
+
+./src/app/profile/page
+.tsx
+6:12  Error: Parsing 
+error: Unexpected 
+token <
+
+./src/app/register/pag
+e.tsx
+50:34  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/app/resetpasswor
+d/page.tsx
+13:48  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/app/review/page.
+tsx
+4:12  Error: Parsing 
+error: Unexpected 
+token <
+
+./src/app/reviews/page
+.tsx
+17:51  Error: Parsing 
+error: Unexpected 
+token ]
+
+./src/app/terms/page.t
+sx
+1:13  Error: Parsing 
+error: Unexpected 
+token {
+
+./src/app/training/cul
+ture/page.tsx
+20:12  Error: Parsing 
+error: Unexpected 
+token <
+
+./src/app/training/pag
+e.tsx
+4:12  Error: Parsing 
+error: Unexpected 
+token <
+
+./src/app/training/[th
+emeId]/page.tsx
+11:12  Error: Parsing 
+error: Unexpected 
+token <
+
+./src/components/featu
+res/dashboard/Dashboar
+d.tsx
+25:70  Error: Parsing 
+error: Unexpected 
+token ;
+
+./src/components/featu
+res/exam/ExamSession.t
+sx
+19:57  Error: Parsing 
+error: Unexpected 
+token ]
+
+./src/components/featu
+res/interview/Intervie
+wSimulator.tsx
+53:16  Error: Parsing 
+error: Unexpected 
+token <
+
+./src/components/featu
+res/onboarding/Onboard
+ingFlow.tsx
+36:30  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/components/featu
+res/profile/Certificat
+eGenerator.tsx
+9:1  Error: Parsing 
+error: The keyword 
+'interface' is 
+reserved
+
+./src/components/featu
+res/profile/ProfilePag
+e.tsx
+16:111  Error: 
+Parsing error: 
+Unexpected token ]
+
+./src/components/featu
+res/review/ReviewSessi
+on.tsx
+21:57  Error: Parsing 
+error: Unexpected 
+token ]
+
+./src/components/featu
+res/reviews/ReviewForm
+.tsx
+12:70  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/components/featu
+res/training/CultureGe
+neral.tsx
+14:9  Error: Parsing 
+error: Unexpected 
+token <
+
+./src/components/featu
+res/training/TrainingS
+ession.tsx
+22:37  Error: Parsing 
+error: Unexpected 
+token as
+
+./src/components/featu
+res/training/TrainingT
+hemeList.tsx
+16:20  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/components/layou
+t/AnnouncementBanner.t
+sx
+16:9  Error: Parsing 
+error: Unexpected 
+token <
+
+./src/components/layou
+t/Footer.tsx
+23:9  Error: Parsing 
+error: Unexpected 
+token <
+
+./src/components/layou
+t/FrenchFlag.tsx
+6:46  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/components/layou
+t/GlobalA11yRoot.tsx
+6:44  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/components/layou
+t/Header.tsx
+26:33  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/components/layou
+t/NotificationBell.tsx
+13:72  Error: Parsing 
+error: Unexpected 
+token ]
+
+./src/components/layou
+t/PageTransition.tsx
+7:44  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/components/layou
+t/SkipLink.tsx
+9:9  Error: Parsing 
+error: Unexpected 
+token <
+
+./src/components/layou
+t/TricolorBar.tsx
+7:9  Error: Parsing 
+error: Unexpected 
+token <
+
+./src/components/layou
+t/TricolorLogo.tsx
+5:55  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/components/ui/bu
+tton.tsx
+3:21  Error: Parsing 
+error: Unexpected 
+token ClassValue
+
+./src/components/ui/ca
+rd.tsx
+3:21  Error: Parsing 
+error: Unexpected 
+token ClassValue
+
+./src/components/ui/in
+put.tsx
+3:21  Error: Parsing 
+error: Unexpected 
+token ClassValue
+
+./src/components/ui/Pa
+gination.tsx
+5:1  Error: Parsing 
+error: The keyword 
+'interface' is 
+reserved
+
+./src/components/ui/Sk
+eleton.tsx
+5:1  Error: Parsing 
+error: The keyword 
+'interface' is 
+reserved
+
+./src/components/ui/ta
+bs.tsx
+4:20  Error: Parsing 
+error: Unexpected 
+token VariantProps
+
+./src/components/ui/te
+xtarea.tsx
+4:8  Error: Parsing 
+error: Unexpected 
+token interface
+
+./src/constants/app-co
+nstants.ts
+1:8  Error: Parsing 
+error: Unexpected 
+token type
+
+./src/constants/emailT
+emplates.ts
+1:37  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/context/AuthCont
+ext.tsx
+11:1  Error: Parsing 
+error: The keyword 
+'interface' is 
+reserved
+
+./src/context/Settings
+Context.tsx
+6:1  Error: Parsing 
+error: The keyword 
+'interface' is 
+reserved
+
+./src/hooks/useAIQCM.t
+s
+10:8  Error: Parsing 
+error: Unexpected 
+token type
+
+./src/hooks/useSoundEf
+fects.ts
+12:66  Error: Parsing 
+error: Unexpected 
+token as
+
+./src/lib/adminGuard.t
+s
+11:32  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/lib/exportUtils.
+ts
+11:19  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/lib/utils.ts
+1:21  Error: Parsing 
+error: Unexpected 
+token ClassValue
+
+./src/services/admin.s
+ervice.ts
+12:8  Error: Parsing 
+error: Unexpected 
+token interface
+
+./src/services/notific
+ation.service.ts
+21:33  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/services/questio
+n.service.ts
+5:8  Error: Parsing 
+error: Unexpected 
+token interface
+
+./src/services/review.
+service.ts
+19:8  Error: Parsing 
+error: Unexpected 
+token interface
+
+./src/services/user.se
+rvice.ts
+16:12  Error: Parsing 
+error: Unexpected 
+token :
+
+./src/types/index.ts
+2:8  Error: Parsing 
+error: Unexpected 
+token interface
+
+./src/utils/cleaning.t
+s
+4:39  Error: Parsing 
+error: Unexpected 
+token :
+
+info  - Need to 
+disable some ESLint 
+rules? Learn more 
+here: https://nextjs.o
+rg/docs/app/api-refere
+nce/config/eslint#disa
+bling-rules
