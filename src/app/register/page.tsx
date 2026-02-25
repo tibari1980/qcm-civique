@@ -68,6 +68,7 @@ export default function RegisterPage() {
                 uid: userCredential.user.uid,
                 email: email,
                 displayName: name,
+                role: 'user',
                 track: null,
                 createdAt: Date.now(),
                 welcomeEmailSent: false

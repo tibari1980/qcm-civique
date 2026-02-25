@@ -55,8 +55,6 @@ export const UserService = {
 
             await setDoc(userRef, {
                 uid,
-                createdAt: Date.now(),
-                role: 'user',
                 ...cleanData
             }, { merge: true });
 

@@ -32,7 +32,7 @@ export async function POST(request: Request) {
                 email: senderEmail
             },
             to: [{ email, name }],
-            subject: 'Bienvenue sur CiviQ Quiz !',
+            subject: '🇫🇷 Bienvenue sur CiviQ Quiz !',
             htmlContent: htmlContent
         };
 

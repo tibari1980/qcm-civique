@@ -4,7 +4,7 @@ export const welcomeTemplate = (name: string) => `
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bienvenue sur CiviQ Quiz</title>
+    <title>🇫🇷 Bienvenue sur CiviQ Quiz</title>
 </head>
 <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f9; color: #333;">
     <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #f4f7f9; padding: 20px;">
@@ -44,7 +44,7 @@ export const welcomeTemplate = (name: string) => `
                     <!-- Contenu Principal -->
                     <tr>
                         <td style="padding: 40px;">
-                            <h1 style="color: #002654; font-size: 24px; margin-bottom: 20px;">Bienvenue parmi nous !</h1>
+                            <h1 style="color: #002654; font-size: 24px; margin-bottom: 20px;">🇫🇷 Bienvenue parmi nous !</h1>
                             <p style="font-size: 16px; line-height: 1.6; color: #555;">
                                 Bonjour <strong>${name}</strong>,<br><br>
                                 Nous sommes ravis de vous accueillir sur <strong>CiviQ Quiz</strong>, la plateforme officielle de préparation à la culture citoyenne et aux examens civiques.
