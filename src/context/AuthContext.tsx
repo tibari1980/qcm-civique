@@ -65,31 +65,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                             } else {
                                 setUserProfile(data);
                             }
-
-                            // Système de Garantie d'Email de Bienvenue
-                            if (data.welcomeEmailSent !== true && data.email) {
-                                (async () => {
-                                    try {
-                                        console.log("[AuthContext] Welcome email missing or unsent. Sending...");
-                                        const res = await fetch('/api/welcome', {
-                                            method: 'POST',
-                                            headers: { 'Content-Type': 'application/json' },
-                                            body: JSON.stringify({
-                                                email: data.email,
-                                                name: data.displayName || 'Utilisateur'
-                                            })
-                                        });
-
-                                        if (res.ok) {
-                                            console.log("[AuthContext] Welcome email backup success. Updating flag...");
-                                            const { updateDoc } = await import('firebase/firestore');
-                                            await updateDoc(docRef, { welcomeEmailSent: true });
-                                        }
-                                    } catch (err) {
-                                        console.error("[AuthContext] Welcome email trigger failed:", err);
-                                    }
-                                })();
-                            }
                         }
                     } else {
                         // AUTO-REPAIR: If user exists in Auth but not in Firestore, create it
