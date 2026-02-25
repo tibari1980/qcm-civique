@@ -1,0 +1,9 @@
+Script started...
+Reading env from: D:\Antigravity-project\QCM-Application\qcm-app\.env.local
+Project ID: qcm-civique
+Client Email: firebase-adminsdk-fbsvc@qcm-civique.iam.gserviceaccount.com
+Firestore initialized
+Reading CSV from: D:\Antigravity-project\QCM-Application\qcm-app\naturalisation_questions.csv
+Processing 90 questions...
+Committing batch of 90...
+Successfully imported 90 questions.

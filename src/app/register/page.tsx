@@ -75,9 +75,13 @@ export default function RegisterPage() {
             });
 
             // Envoi de l'email de bienvenue (en arrière-plan, non bloquant)
+            const token = await userCredential.user.getIdToken();
             fetch('/api/welcome', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 body: JSON.stringify({ email, name })
             }).catch(() => {
                 console.warn('[Register] Welcome email failed');

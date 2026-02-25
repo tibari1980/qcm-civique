@@ -2,8 +2,16 @@ import { NextResponse } from 'next/server';
 export const runtime = 'edge';
 import { welcomeTemplate } from '@/constants/emailTemplates';
 
+import { verifyUserRequest } from '@/lib/api-security';
+
 export async function POST(request: Request) {
     try {
+        // Security Check
+        const authStatus = await verifyUserRequest(request);
+        if (!authStatus.authorized) {
+            return NextResponse.json({ error: authStatus.error || 'Unauthorized' }, { status: 401 });
+        }
+
         const { email, name } = await request.json();
 
         if (!email || !name) {

@@ -1,9 +1,16 @@
+import { verifyAdminRequest } from '@/lib/api-security';
 import { NextResponse } from 'next/server';
 export const runtime = 'edge';
 import { getAccessToken } from '@/lib/firebase-rest';
 
 export async function POST(request: Request) {
     try {
+        // 0. Security Check
+        const authStatus = await verifyAdminRequest(request);
+        if (!authStatus.authorized) {
+            return NextResponse.json({ error: authStatus.error || 'Unauthorized' }, { status: 401 });
+        }
+
         const { uid: docId } = await request.json();
         const projectId = process.env.FIREBASE_PROJECT_ID?.replace(/"/g, '');
 
@@ -68,7 +75,7 @@ export async function POST(request: Request) {
         // On s'assure d'avoir au moins le docId s'il ressemble à un UID
         if (!docId.includes('@')) uidsToPurge.push(docId);
 
-        const finalUids = Array.from(new Set(uidsToPurge.filter(Boolean)));
+        const finalUids = Array.from(new Set(uidsToPurge.filter(Boolean))) as string[];
         console.log(`[ULTRA-DELETE] Target UIDs for Auth removal:`, finalUids);
 
         // 4. Exécution de la destruction (Individuelle pour la fiabilité maximale)

@@ -20,10 +20,16 @@ export default function Home() {
 
   useEffect(() => {
     const fetchStats = async () => {
-      if (user) {
+      if (user && userProfile) {
         try {
-          const data = await UserService.getUserStats(user.uid, userProfile?.track || undefined);
-          setStats(data);
+          // Optimization: Use pre-calculated stats from profile if they match the track
+          if (userProfile.stats && !userProfile.track) {
+            setStats(userProfile.stats);
+          } else {
+            const data = await UserService.getUserStats(user.uid, userProfile?.track || undefined);
+            setStats(data);
+          }
+
           const cert = await UserService.getCertificateStatus(user.uid);
           setCertInfo(cert);
         } catch (error) {

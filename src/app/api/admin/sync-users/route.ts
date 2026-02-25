@@ -1,9 +1,16 @@
+import { verifyAdminRequest } from '@/lib/api-security';
 import { NextResponse } from 'next/server';
 export const runtime = 'edge';
 import { getAccessToken } from '@/lib/firebase-rest';
 
 export async function POST(request: Request) {
     try {
+        // 0. Security Check
+        const authStatus = await verifyAdminRequest(request);
+        if (!authStatus.authorized) {
+            return NextResponse.json({ error: authStatus.error || 'Unauthorized' }, { status: 401 });
+        }
+
         const projectId = process.env.FIREBASE_PROJECT_ID?.replace(/"/g, '');
         if (!projectId) return NextResponse.json({ error: 'Project ID missing (FIREBASE_PROJECT_ID)' }, { status: 500 });
 

@@ -92,10 +92,48 @@ export const UserService = {
 
             const attemptRef = await addDoc(collection(db, 'attempts'), attemptData);
 
-            // Recalculate and update user stats in their profile
+            // OPTIMIZED: Incremental update of stats in user profile
+            // This avoids fetching all historical attempts every time
             if (attempt.user_id) {
-                const newStats = await UserService.getUserStats(attempt.user_id, undefined, true);
-                await setDoc(doc(db, 'users', attempt.user_id), { stats: newStats }, { merge: true });
+                const userRef = doc(db, 'users', attempt.user_id);
+                const userSnap = await getDoc(userRef);
+                const profile = userSnap.data() as UserProfile | undefined;
+
+                let oldStats: UserProgress = profile?.stats || {
+                    total_attempts: 0,
+                    average_score: 0,
+                    last_activity: '',
+                    theme_stats: {}
+                };
+
+                const newTotalAttempts = (oldStats.total_attempts || 0) + 1;
+                const attemptScorePct = (attempt.score / attempt.total_questions) * 100;
+
+                const newAvgScore = Math.round(
+                    ((oldStats.average_score || 0) * (oldStats.total_attempts || 0) + attemptScorePct) / newTotalAttempts
+                );
+
+                const newThemeStats = { ...(oldStats.theme_stats || {}) };
+                if (attempt.theme) {
+                    const targetTheme = attempt.theme;
+                    const oldTheme = newThemeStats[targetTheme] || { attempts: 0, success_rate: 0, last_score: 0 };
+
+                    const newThemeAttempts = oldTheme.attempts + 1;
+                    newThemeStats[targetTheme] = {
+                        attempts: newThemeAttempts,
+                        success_rate: ((oldTheme.success_rate * oldTheme.attempts) + attemptScorePct) / newThemeAttempts,
+                        last_score: attemptScorePct
+                    };
+                }
+
+                const updatedStats: UserProgress = {
+                    total_attempts: newTotalAttempts,
+                    average_score: newAvgScore,
+                    last_activity: attemptData.created_at,
+                    theme_stats: newThemeStats
+                };
+
+                await setDoc(userRef, { stats: updatedStats }, { merge: true });
                 clearUserCache(attempt.user_id);
             }
 

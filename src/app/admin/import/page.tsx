@@ -32,6 +32,7 @@ const THEME_MAP: Record<string, string> = {
     [normalizeTheme('droits et devoirs')]: 'droits',
     [normalizeTheme('géographie')]: 'geographie',
     [normalizeTheme('principes et valeurs')]: 'vals_principes',
+    [normalizeTheme('naturalisation')]: 'naturalisation',
     [normalizeTheme('valeurs de la republique (ou principes et valeurs)')]: 'vals_principes',
     'valeurs_de_la_republique_(ou_principes_et_valeurs)': 'vals_principes', // Fallback direct
 };

@@ -1,10 +1,15 @@
 import {
     collection, getDocs, doc, getDoc, updateDoc, query,
     orderBy, limit, where, Timestamp, deleteDoc, addDoc, setDoc,
-    writeBatch
+    writeBatch, getCountFromServer
 } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { auth, db } from '@/lib/firebase';
 import { Attempt } from '@/types';
+
+// Helper to get auth token
+const getAuthToken = async () => {
+    return await auth.currentUser?.getIdToken();
+};
 
 /* --------------------------------------------------
    Types
@@ -69,15 +74,19 @@ export class AdminService {
 
     /* ── Statistiques globales ── */
     static async getGlobalStats(): Promise<GlobalStats> {
-        const [usersSnap, questionsSnap, attemptsSnap] = await Promise.all([
-            getDocs(collection(db, 'users')),
-            getDocs(collection(db, 'questions')),
-            getDocs(collection(db, 'attempts')),
+        // Optimization: Use getCountFromServer to avoid fetching all documents
+        const [usersCount, questionsCount, attemptsCount, activeQuestionsCount] = await Promise.all([
+            getCountFromServer(collection(db, 'users')),
+            getCountFromServer(collection(db, 'questions')),
+            getCountFromServer(collection(db, 'attempts')),
+            getCountFromServer(query(collection(db, 'questions'), where('is_active', '!=', false)))
         ]);
 
-        const activeQuestions = questionsSnap.docs.filter(d => d.data().is_active !== false).length;
+        // For the average score, we still need some data, but we can limit it to recent attempts
+        // for better performance, or use a pre-calculated value if available.
+        const recentAttemptsSnap = await getDocs(query(collection(db, 'attempts'), orderBy('timestamp', 'desc'), limit(100)));
 
-        const scores = attemptsSnap.docs
+        const scores = recentAttemptsSnap.docs
             .map(d => {
                 const data = d.data();
                 return data.total_questions > 0 ? (data.score / data.total_questions) * 100 : 0;
@@ -89,10 +98,10 @@ export class AdminService {
             : 0;
 
         return {
-            totalUsers: usersSnap.size,
-            totalQuestions: questionsSnap.size,
-            activeQuestions,
-            totalAttempts: attemptsSnap.size,
+            totalUsers: usersCount.data().count,
+            totalQuestions: questionsCount.data().count,
+            activeQuestions: activeQuestionsCount.data().count,
+            totalAttempts: attemptsCount.data().count,
             averageScore,
         };
     }
@@ -221,9 +230,13 @@ export class AdminService {
     }
 
     static async deleteUser(uid: string): Promise<void> {
+        const token = await getAuthToken();
         const response = await fetch('/api/admin/delete-user', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({ uid }),
         });
 
@@ -241,9 +254,13 @@ export class AdminService {
     }
 
     static async syncUsers(): Promise<{ success: boolean; message: string; syncedCount: number }> {
+        const token = await getAuthToken();
         const response = await fetch('/api/admin/sync-users', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            }
         });
 
         if (!response.ok) {
@@ -262,9 +279,13 @@ export class AdminService {
     }
 
     static async testWelcomeEmail(email: string): Promise<any> {
+        const token = await getAuthToken();
         const response = await fetch('/api/admin/test-email', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
             body: JSON.stringify({ email })
         });
         return await response.json();
@@ -343,8 +364,9 @@ export class AdminService {
     }
 
     /* ── Stats par thème ── */
-    static async getThemeStats(): Promise<{ theme: string; avgScore: number; count: number }[]> {
-        const snap = await getDocs(collection(db, 'attempts'));
+    static async getThemeStats(maxHistory: number = 500): Promise<{ theme: string; avgScore: number; count: number }[]> {
+        // Optimization: Don't fetch all history, use most recent attempts
+        const snap = await getDocs(query(collection(db, 'attempts'), orderBy('timestamp', 'desc'), limit(maxHistory)));
         const themeData: Record<string, { total: number; count: number }> = {};
 
         snap.docs.forEach(d => {

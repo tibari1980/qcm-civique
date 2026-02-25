@@ -1,4 +1,4 @@
-export type FirestoreTheme = 'vals_principes' | 'histoire' | 'geographie' | 'institutions' | 'societe' | 'droits';
+export type FirestoreTheme = 'vals_principes' | 'histoire' | 'geographie' | 'institutions' | 'societe' | 'droits' | 'naturalisation';
 
 export const THEMES: FirestoreTheme[] = [
     'vals_principes',
@@ -6,7 +6,8 @@ export const THEMES: FirestoreTheme[] = [
     'geographie',
     'institutions',
     'societe',
-    'droits'
+    'droits',
+    'naturalisation'
 ];
 
 export const THEME_LABELS: Record<FirestoreTheme, string> = {
@@ -16,6 +17,7 @@ export const THEME_LABELS: Record<FirestoreTheme, string> = {
     institutions: 'Institutions',
     societe: 'Vie en Société',
     droits: 'Droits et Devoirs',
+    naturalisation: 'Naturalisation',
 };
 
 export const LEVELS = ['Débutant', 'Intermédiaire', 'Avancé'];
