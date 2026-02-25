@@ -73,6 +73,25 @@ export default function RegisterPage() {
                 welcomeEmailSent: false
             });
 
+            // Envoi automatique de l'email de bienvenue (en arrière-plan, non bloquant)
+            fetch('/api/welcome', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, name })
+            })
+                .then(async (res) => {
+                    if (res.ok) {
+                        // Mettre à jour le flag dans Firestore
+                        await setDoc(doc(db, 'users', userCredential.user.uid), {
+                            welcomeEmailSent: true
+                        }, { merge: true });
+                    }
+                })
+                .catch(() => {
+                    // L'échec de l'email ne doit pas bloquer l'inscription
+                    console.warn('[Register] Welcome email failed, will retry later');
+                });
+
             // On redirige vers onboarding avec replace pour écraser l'historique
             router.replace('/onboarding');
         } catch (err: unknown) {
