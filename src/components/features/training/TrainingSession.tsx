@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, XCircle, ArrowRight, RotateCcw, Home, Volume2, VolumeX, Loader2, Flame, Eye } from 'lucide-react';
+import { CheckCircle, XCircle, ArrowRight, RotateCcw, Home, Volume2, VolumeX, Loader2, Flame, Eye, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { Question, QuestionService } from '@/services/question.service';
@@ -395,6 +395,37 @@ export default function TrainingSession() {
                                             );
                                         })}
                                     </div>
+                                    {/* Explication (République Française design) */}
+                                    {isAnswered && currentQuestion.explanation && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: 10, height: 0 }}
+                                            animate={{ opacity: 1, y: 0, height: 'auto' }}
+                                            transition={{ duration: 0.4, ease: "easeOut" }}
+                                            className="mt-8 overflow-hidden"
+                                            role="region"
+                                            aria-label="Explication de la réponse"
+                                        >
+                                            <div className="bg-gradient-to-br from-slate-50 to-white border-l-4 border-l-blue-600 rounded-r-2xl p-6 shadow-sm relative border border-slate-100">
+                                                {/* Subtil liseré tricolore en haut pour rappeler la République Française */}
+                                                <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-blue-600 via-white to-red-600 opacity-80" aria-hidden="true" />
+
+                                                <div className="flex items-start gap-4">
+                                                    <div className="bg-blue-50 border border-blue-100 p-2.5 rounded-xl text-blue-700 flex-shrink-0 shadow-sm" aria-hidden="true">
+                                                        <BookOpen className="h-6 w-6" />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <h3 className="text-lg font-black text-slate-900 mb-2 tracking-tight">
+                                                            Le saviez-vous ?
+                                                        </h3>
+                                                        <p className="text-slate-700 leading-relaxed text-[1.05rem]">
+                                                            {currentQuestion.explanation}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </motion.div>
+                                    )}
+
                                     {/* Screen reader feedback after answer */}
                                     {isAnswered && (
                                         <div className="sr-only" role="status" aria-live="assertive">
@@ -402,6 +433,7 @@ export default function TrainingSession() {
                                                 ? `Bonne réponse ! La réponse correcte est ${currentQuestion.choices[currentQuestion.correct_index]}.`
                                                 : `Mauvaise réponse. La bonne réponse était ${currentQuestion.choices[currentQuestion.correct_index]}.`
                                             }
+                                            {currentQuestion.explanation ? ` Explication : ${currentQuestion.explanation}` : ''}
                                         </div>
                                     )}
                                 </CardContent>
