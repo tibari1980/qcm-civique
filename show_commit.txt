@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+﻿import { NextResponse } from 'next/server';
 
 export const runtime = 'edge';
 
@@ -35,11 +35,11 @@ export async function POST(req: Request) {
             body: JSON.stringify({
                 sender: {
                     name: "CiviQ Quiz Contact",
-                    email: "contact@civiqquiz.com"
+                    email: "contact@prepa-civique.fr"
                 },
                 to: [
                     {
-                        email: "contact@civiqquiz.com",
+                        email: "contact@prepa-civique.fr",
                         name: "Support CiviQ Quiz"
                     }
                 ],

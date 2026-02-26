@@ -1,0 +1,5 @@
+﻿70661cc test commit again
+7910dc5 feat: implement contact email functionality with Brevo and Sonner
+02c5fb6 Security audit and performance optimizations, added naturalisation theme and optimized stats calculation
+4aa0374 feat: dark/light/auto theme, guide page, SEO (sitemap, robots, metadata), a11y NVDA
+ec89f8d fix: prevent triple welcome email - send only once at registration

@@ -1,0 +1,19 @@
+﻿git : To https://github.com/
+tibari1980/qcm-civique.git
+Au caractère Ligne:1 : 1
++ git push origin 
+70661cc:refs/heads/master 
+--force 2>&1 | Out-File -Fi 
+...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          
+    : NotSpecified: (To ht  
+  tps://gith...qcm-civiqu   
+ e.git:String) [], Remot    
+eException
+    + FullyQualifiedErrorId 
+    : NativeCommandError
+ 
+   7910dc5..70661cc  
+70661cc -> master

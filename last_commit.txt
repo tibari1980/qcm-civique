@@ -1,0 +1,22 @@
+﻿[master 70661cc] test commit again
+ 2 files changed, 87 insertions(+)
+git : To https://github.com/
+tibari1980/qcm-civique.git
+Au caractère Ligne:1 : 96
++ ... ommit.txt -Encoding 
+utf8; git push origin 
+HEAD:principal 2>&1 | Out-F 
+...
++                           
+    ~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo          
+    : NotSpecified: (To ht  
+  tps://gith...qcm-civiqu   
+ e.git:String) [], Remot    
+eException
+    + FullyQualifiedErrorId 
+    : NativeCommandError
+ 
+   7910dc5..70661cc  HEAD 
+-> principal

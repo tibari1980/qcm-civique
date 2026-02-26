@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { Shield, Gavel, Database, Eye, UserCheck, Clock, Lock, Mail } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: 'Politique de Confidentialité - Prépa Examen Civique FR',
+    title: 'Politique de Confidentialité - CiviQ Quiz',
     description: 'Notre engagement RGPD : découvrez comment nous collectons, utilisons et protégeons vos données personnelles.',
 };
 
@@ -15,12 +15,12 @@ const sections = [
         title: 'Introduction et Responsable du traitement',
         color: 'text-blue-600',
         bg: 'bg-blue-50',
-        content: `Prépa Examen Civique FR (ci-après "nous", "notre service") s'engage à protéger la vie privée des citoyens et futurs citoyens utilisant nos services. Cette politique détaille comment nous traitons vos données personnelles dans le respect du Règlement Général sur la Protection des Données (RGPD – Règlement UE 2016/679) et de la loi Informatique et Libertés.
+        content: `CiviQ Quiz (ci-après "nous", "notre service") s'engage à protéger la vie privée des citoyens et futurs citoyens utilisant nos services. Cette politique détaille comment nous traitons vos données personnelles dans le respect du Règlement Général sur la Protection des Données (RGPD – Règlement UE 2016/679) et de la loi Informatique et Libertés.
 
 Responsable du traitement :
-• Raison sociale : SAS Prépa Examen Civique FR
+• Raison sociale : CiviQ Quiz
 • Siège : 75 Rue de Rivoli, 75001 Paris, France
-• Email : dpo@prepa-civique.fr
+• Email : dpo@civiqquiz.com
 • Délégué à la Protection des Données (DPO) : Me. Jean-Paul Moreau
 
 Dernière mise à jour : 1er janvier 2026.`,
@@ -74,7 +74,7 @@ Nous ne vendons jamais vos données à des tiers. Nous ne les partageons qu'avec
 • Droit d'opposition : Vous opposer au traitement de vos données.
 • Droit à la limitation : Suspendre temporairement le traitement.
 
-Pour exercer ces droits, contactez notre DPO à dpo@prepa-civique.fr. Nous traitons toute demande dans un délai maximum de 30 jours.`,
+Pour exercer ces droits, contactez notre DPO à dpo@civiqquiz.com. Nous traitons toute demande dans un délai maximum de 30 jours.`,
     },
     {
         id: 'conservation',
@@ -119,9 +119,9 @@ En cas de violation de données susceptible d'engendrer un risque pour vos droit
         bg: 'bg-indigo-50',
         content: `Pour toute question relative à cette politique ou pour exercer vos droits :
 
-• Email DPO : dpo@prepa-civique.fr
-• Email support : contact@prepa-civique.fr
-• Adresse postale : DPO – SAS Prépa Examen Civique FR, 75 Rue de Rivoli, 75001 Paris
+• Email DPO : dpo@civiqquiz.com
+• Email support : contact@civiqquiz.com
+• Adresse postale : DPO – CiviQ Quiz, 75 Rue de Rivoli, 75001 Paris
 
 Vous avez également le droit d'introduire une réclamation auprès de la CNIL (Commission Nationale de l'Informatique et des Libertés) : www.cnil.fr – Tél. 01 53 73 22 22.`,
     },
@@ -145,7 +145,7 @@ export default function PrivacyPage() {
                     </div>
                     <h1 className="text-4xl md:text-5xl font-extrabold mb-4">Politique de Confidentialité</h1>
                     <p className="text-blue-200 text-lg max-w-2xl mx-auto">
-                        Prépa Examen Civique FR s&apos;engage à protéger vos données personnelles dans le respect du RGPD.
+                        CiviQ Quiz s&apos;engage à protéger vos données personnelles dans le respect du RGPD.
                     </p>
                     <div className="flex flex-wrap justify-center gap-4 mt-6 text-sm">
                         <span className="bg-white/20 px-3 py-1 rounded-full">✓ Conforme RGPD</span>
@@ -209,8 +209,8 @@ export default function PrivacyPage() {
                             <p>
                                 Cette politique de confidentialité est entrée en vigueur le <strong>1er janvier 2026</strong>.
                                 Pour toute question, contactez-nous à{' '}
-                                <a href="mailto:dpo@prepa-civique.fr" className="underline hover:text-blue-900">
-                                    dpo@prepa-civique.fr
+                                <a href="mailto:dpo@civiqquiz.com" className="underline hover:text-blue-900">
+                                    dpo@civiqquiz.com
                                 </a>
                             </p>
                         </div>

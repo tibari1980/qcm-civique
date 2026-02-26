@@ -3,8 +3,8 @@ import Link from 'next/link';
 import { FileText, Info, LogIn, Copyright, Gavel, ShieldAlert, Database, XCircle } from 'lucide-react';
 
 export const metadata: Metadata = {
-    title: "Conditions Générales d'Utilisation - Prépa Examen Civique FR",
-    description: "Lisez nos conditions générales d'utilisation régissant l'accès à la plateforme Prépa Examen Civique FR.",
+    title: "Conditions Générales d'Utilisation - CiviQ Quiz",
+    description: "Lisez nos conditions générales d'utilisation régissant l'accès à la plateforme CiviQ Quiz.",
 };
 
 const sections = [
@@ -15,7 +15,7 @@ const sections = [
         title: "Introduction et Acceptation",
         color: 'text-blue-600',
         bg: 'bg-blue-50',
-        content: `Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation de la plateforme Prépa Examen Civique FR, accessible à l'adresse prepa-civique.fr, éditée par la SAS Prépa Examen Civique FR, immatriculée au RCS de Paris.
+        content: `Les présentes Conditions Générales d'Utilisation (CGU) régissent l'accès et l'utilisation de la plateforme CiviQ Quiz, accessible à l'adresse civiqquiz.com, éditée par la plateforme CiviQ Quiz, immatriculée au RCS de Paris.
 
 En accédant à notre service, vous acceptez sans réserve les présentes CGU. Si vous n'acceptez pas ces conditions, vous ne devez pas utiliser notre service.
 
@@ -36,7 +36,7 @@ Date d'entrée en vigueur : 1er janvier 2026.`,
 • Fournir une adresse email valide et un mot de passe sécurisé
 • Fournir des informations exactes et à jour
 
-Vous êtes responsable de la confidentialité de vos identifiants et de toute activité réalisée depuis votre compte. En cas d'utilisation non autorisée, signalez-le immédiatement à contact@prepa-civique.fr.
+Vous êtes responsable de la confidentialité de vos identifiants et de toute activité réalisée depuis votre compte. En cas d'utilisation non autorisée, signalez-le immédiatement à contact@civiqquiz.com.
 
 Nous nous réservons le droit de suspendre ou supprimer tout compte en cas de violation des présentes CGU, d'activités frauduleuses, ou d'inactivité prolongée supérieure à 24 mois.`,
     },
@@ -47,7 +47,7 @@ Nous nous réservons le droit de suspendre ou supprimer tout compte en cas de vi
         title: "Propriété Intellectuelle",
         color: 'text-purple-600',
         bg: 'bg-purple-50',
-        content: `L'ensemble des contenus présents sur la plateforme (textes, questions, formatage, logos, graphiques, code source) est la propriété exclusive de SAS Prépa Examen Civique FR ou de ses concédants de licence, et est protégé par le droit français et international de la propriété intellectuelle.
+        content: `L'ensemble des contenus présents sur la plateforme (textes, questions, formatage, logos, graphiques, code source) est la propriété exclusive de CiviQ Quiz ou de ses concédants de licence, et est protégé par le droit français et international de la propriété intellectuelle.
 
 Il vous est accordé un droit d'accès personnel, non exclusif, non transférable et révocable aux contenus, uniquement pour votre usage personnel et pédagogique.
 
@@ -105,7 +105,7 @@ Nous déclinons toute responsabilité pour les dommages indirects, pertes de don
 En résumé :
 • Nous collectons uniquement les données nécessaires au service
 • Nous ne revendons jamais vos données
-• Vous pouvez exercer vos droits RGPD à tout moment en contactant dpo@prepa-civique.fr
+• Vous pouvez exercer vos droits RGPD à tout moment en contactant dpo@civiqquiz.com
 • Vos données sont hébergées dans l'Union Européenne (servers Google Firebase – region EU)
 
 L'utilisation de notre service implique votre accord avec notre politique de traitement des données.`,
@@ -125,7 +125,7 @@ Modification des CGU : Nous pouvons modifier ces CGU à tout moment. Vous serez 
 
 Droit applicable : Les présentes CGU sont soumises au droit français. Tout litige sera soumis aux tribunaux compétents de Paris.
 
-Pour toute question légale : legal@prepa-civique.fr`,
+Pour toute question légale : legal@civiqquiz.com`,
     },
 ];
 
@@ -166,7 +166,7 @@ export default function TermsPage() {
                         <h3 className="font-semibold text-amber-900 mb-1">Besoin d&apos;aide ?</h3>
                         <p className="text-sm text-amber-800">
                             Pour toute question relative à nos mentions légales, contactez notre équipe juridique à{' '}
-                            <a href="mailto:legal@prepa-civique.fr" className="underline font-medium">legal@prepa-civique.fr</a>
+                            <a href="mailto:legal@civiqquiz.com" className="underline font-medium">legal@civiqquiz.com</a>
                         </p>
                     </div>
                 </div>
@@ -227,7 +227,7 @@ export default function TermsPage() {
                             <p>
                                 Ces conditions générales d&apos;utilisation sont entrées en vigueur le <strong>1er janvier 2026</strong>.{' '}
                                 En cas de litige, les tribunaux compétents de Paris seront saisis.{' '}
-                                <a href="mailto:legal@prepa-civique.fr" className="underline font-medium">legal@prepa-civique.fr</a>
+                                <a href="mailto:legal@civiqquiz.com" className="underline font-medium">legal@civiqquiz.com</a>
                             </p>
                         </div>
                     </main>

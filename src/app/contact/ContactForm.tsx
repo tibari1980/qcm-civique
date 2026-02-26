@@ -11,8 +11,8 @@ const contactInfo = [
         icon: Mail,
         title: 'Support Email',
         description: 'Pour toute demande directe ou envoi de documents.',
-        value: 'contact@prepa-civique.fr',
-        href: 'mailto:contact@prepa-civique.fr',
+        value: 'contact@civiqquiz.com',
+        href: 'mailto:contact@civiqquiz.com',
         color: 'text-blue-600',
         bg: 'bg-blue-50',
     },
@@ -53,7 +53,7 @@ const faqs = [
     },
     {
         q: 'Comment contacter le support rapidement ?',
-        a: 'Par email à contact@prepa-civique.fr. Nous répondons généralement en moins de 24h ouvrées.',
+        a: 'Par email à contact@civiqquiz.com. Nous répondons généralement en moins de 24h ouvrées.',
     },
 ];
 
