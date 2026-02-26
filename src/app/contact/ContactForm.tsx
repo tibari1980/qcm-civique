@@ -57,6 +57,8 @@ const faqs = [
     },
 ];
 
+import { toast } from 'sonner';
+
 export default function ContactForm() {
     const [formState, setFormState] = useState({ name: '', email: '', subject: '', message: '' });
     const [submitted, setSubmitted] = useState(false);
@@ -65,9 +67,29 @@ export default function ContactForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        await new Promise((r) => setTimeout(r, 1200));
-        setLoading(false);
-        setSubmitted(true);
+        try {
+            const response = await fetch('/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formState),
+            });
+
+            if (!response.ok) {
+                const error = await response.json();
+                throw new Error(error.error || "Erreur lors de l'envoi");
+            }
+
+            setSubmitted(true);
+            setFormState({ name: '', email: '', subject: '', message: '' });
+            toast.success('Message envoyé avec succès !');
+        } catch (error: any) {
+            console.error('Submit error:', error);
+            toast.error(error.message || "Une erreur est survenue lors de l'envoi du message.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (

@@ -67,6 +67,8 @@ const SkipLink = dynamic(() => import("@/components/layout/SkipLink").then(mod =
 
 import { GlobalA11yRoot } from "@/components/layout/GlobalA11yRoot";
 
+import { Toaster } from 'sonner';
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -103,6 +105,7 @@ export default function RootLayout({
         className={`${inter.variable} antialiased min-h-screen flex flex-col bg-[var(--color-background)] text-[var(--color-foreground)] transition-colors duration-300`}
       >
         <ThemeProvider>
+          <Toaster position="top-center" richColors />
           <AuthProvider>
             <SettingsProvider>
               <GlobalA11yRoot>
