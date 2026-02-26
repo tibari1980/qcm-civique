@@ -39,7 +39,7 @@ export async function POST(req: Request) {
                 },
                 to: [
                     {
-                        email: "contact@civiqquiz.com",
+                        email: "tibarinewdzign@gmail.com",
                         name: "Support CiviQ Quiz"
                     }
                 ],
