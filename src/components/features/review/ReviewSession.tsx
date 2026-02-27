@@ -12,6 +12,7 @@ import { UserService } from '@/services/user.service';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
+import { PedagogicalText } from '@/components/features/PedagogicalText';
 
 export default function ReviewSession() {
     const { user, loading } = useAuth();
@@ -232,7 +233,7 @@ export default function ReviewSession() {
                             tabIndex={-1}
                             ref={questionHeaderRef}
                         >
-                            {currentQuestion.question}
+                            <PedagogicalText text={currentQuestion.question} />
                         </h1>
 
                         <div className="grid gap-4" role="radiogroup" aria-label="Choix de réponse">
@@ -277,7 +278,9 @@ export default function ReviewSession() {
                                                         'border-gray-300 text-gray-400'}`} aria-hidden="true">
                                             {String.fromCharCode(65 + index)}
                                         </div>
-                                        {choice}
+                                        <div className="w-full text-left">
+                                            <PedagogicalText text={choice} />
+                                        </div>
                                     </button>
                                 );
                             })}

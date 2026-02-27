@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { useSoundEffects } from '@/hooks/useSoundEffects';
 import { Skeleton } from '@/components/ui/Skeleton';
+import { PedagogicalText } from '@/components/features/PedagogicalText';
 
 export default function TrainingSession() {
     const { user, userProfile, loading } = useAuth();
@@ -361,7 +362,7 @@ export default function TrainingSession() {
                             <Card className="border-none shadow-lg bg-white overflow-hidden mb-24">
                                 <CardContent className="p-6 md:p-8">
                                     <h2 className="text-2xl md:text-3xl font-bold text-gray-800 leading-tight mb-8" ref={questionRef} tabIndex={-1} id="current-question">
-                                        {currentQuestion.question}
+                                        <PedagogicalText text={currentQuestion.question} />
                                     </h2>
                                     <div className="grid grid-cols-1 gap-3" role="radiogroup" aria-labelledby="current-question" aria-describedby="training-feedback">
                                         {currentQuestion.choices.map((choice, index) => {
@@ -388,7 +389,9 @@ export default function TrainingSession() {
                                                     <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center font-bold border transition-colors ${isSelected ? 'bg-blue-600 text-white' : 'bg-gray-50 text-gray-400'}`} aria-hidden="true">
                                                         {String.fromCharCode(65 + index)}
                                                     </div>
-                                                    <span className="text-lg font-medium">{choice}</span>
+                                                    <span className="text-lg font-medium w-full text-left">
+                                                        <PedagogicalText text={choice} />
+                                                    </span>
                                                     {isAnswered && isCorrectChoice && <CheckCircle className="ml-auto h-6 w-6 text-green-500" aria-hidden="true" />}
                                                     {isAnswered && isSelected && !isCorrectChoice && <XCircle className="ml-auto h-6 w-6 text-red-500" aria-hidden="true" />}
                                                 </button>

@@ -11,6 +11,7 @@ import { Question, QuestionService } from '@/services/question.service';
 import { UserService } from '@/services/user.service';
 import { NotificationService } from '@/services/notification.service';
 import { motion, AnimatePresence } from 'framer-motion';
+import { PedagogicalText } from '@/components/features/PedagogicalText';
 
 export default function ExamSession() {
     const { user, userProfile, loading } = useAuth();
@@ -326,7 +327,7 @@ export default function ExamSession() {
                                 </div>
                                 <h2 className="text-2xl md:text-3xl font-black text-slate-900 leading-tight outline-none" tabIndex={-1} ref={questionHeaderRef} id="exam-question">
                                     <span className="sr-only">Thème : {currentQuestion.theme.replace('_', ' ')}. </span>
-                                    {currentQuestion.question}
+                                    <PedagogicalText text={currentQuestion.question} />
                                 </h2>
                             </div>
 
@@ -350,7 +351,9 @@ export default function ExamSession() {
                                             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-black mr-6 transition-colors ${isSelected ? 'bg-[var(--color-primary)] text-white' : 'bg-white text-slate-400 group-hover:bg-slate-100 group-hover:text-slate-600 border border-slate-200 shadow-sm'}`} aria-hidden="true">
                                                 {String.fromCharCode(65 + index)}
                                             </div>
-                                            <span className={`text-lg transition-colors ${isSelected ? 'font-bold text-slate-900' : 'text-slate-600 group-hover:text-slate-900'}`}>{choice}</span>
+                                            <span className={`text-lg transition-colors w-full text-left ${isSelected ? 'font-bold text-slate-900' : 'text-slate-600 group-hover:text-slate-900'}`}>
+                                                <PedagogicalText text={choice} />
+                                            </span>
                                             {isSelected && <motion.div layoutId="selection-glow" className="absolute left-0 w-1.5 h-full bg-[var(--color-primary)]" aria-hidden="true" />}
                                         </motion.button>
                                     );
