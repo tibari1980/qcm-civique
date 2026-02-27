@@ -72,23 +72,37 @@ export function PedagogicalText({ text, className = '' }: PedagogicalTextProps) 
                 const isActive = activeWord === lowerPiece;
                 return (
                     <span key={i} className="relative inline-block group">
-                        <button
-                            onClick={() => {
+                        <span
+                            role="button"
+                            tabIndex={0}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
                                 setActiveWord(isActive ? null : lowerPiece);
                                 if (!isActive) {
                                     playHintAudio(definition);
+                                }
+                            }}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === ' ') {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    setActiveWord(isActive ? null : lowerPiece);
+                                    if (!isActive) {
+                                        playHintAudio(definition);
+                                    }
                                 }
                             }}
                             onMouseEnter={() => setActiveWord(lowerPiece)}
                             onMouseLeave={() => setActiveWord(null)}
                             onFocus={() => setActiveWord(lowerPiece)}
                             onBlur={() => setActiveWord(null)}
-                            className="inline-flex items-baseline text-blue-700 bg-blue-50/50 hover:bg-blue-100 hover:text-blue-800 border-b-2 border-dashed border-blue-300 font-semibold px-1 rounded transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 mx-0.5 relative z-10"
+                            className="inline-flex items-baseline text-blue-700 bg-blue-50/50 hover:bg-blue-100 hover:text-blue-800 border-b-2 border-dashed border-blue-300 font-semibold px-1 rounded transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 mx-0.5 relative z-10 cursor-help"
                             aria-expanded={isActive}
                             aria-label={`Définition de ${piece}`}
                         >
                             {piece}
-                        </button>
+                        </span>
 
                         <AnimatePresence>
                             {isActive && (
