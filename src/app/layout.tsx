@@ -63,7 +63,7 @@ import NextTopLoader from 'nextjs-toploader';
 // Lazy-loaded components for better performance
 const Footer = dynamic(() => import("@/components/layout/Footer").then(mod => mod.Footer));
 const AnnouncementBanner = dynamic(() => import("@/components/layout/AnnouncementBanner").then(mod => mod.AnnouncementBanner));
-const PageTransition = dynamic(() => import("@/components/layout/PageTransition").then(mod => mod.PageTransition));
+
 const SkipLink = dynamic(() => import("@/components/layout/SkipLink").then(mod => mod.SkipLink));
 
 import { GlobalA11yRoot } from "@/components/layout/GlobalA11yRoot";
@@ -126,9 +126,7 @@ export default function RootLayout({
                 <SkipLink />
                 <Header />
                 <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
-                  <PageTransition>
-                    {children}
-                  </PageTransition>
+                  {children}
                 </main>
                 <Footer />
               </GlobalA11yRoot>

@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight, ShieldCheck, FileText } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { useAuth } from '@/context/AuthContext';
 
@@ -105,170 +105,166 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-[calc(100vh-200px)] py-12 px-4 sm:px-6 lg:px-8">
-            <Card className="w-full max-w-md shadow-lg">
-                <CardHeader className="space-y-1">
-                    <CardTitle className="text-2xl font-bold text-center" id="register-title">
-                        Créer un compte
-                    </CardTitle>
-                    <p className="text-center text-sm font-medium text-gray-500">
-                        Rejoindre {settings.appName}
+        <div className="flex min-h-[calc(100vh-64px)] w-full flex-col lg:flex-row">
+            {/* Left Side: Hero Decorative */}
+            <div className="relative hidden lg:flex flex-1 flex-col justify-center px-20 py-12 overflow-hidden bg-[#002394] text-white">
+                <div className="absolute inset-0 opacity-10 pointer-events-none">
+                    <div className="h-full w-full flex">
+                        <div className="h-full w-1/3 bg-blue-500"></div>
+                        <div className="h-full w-1/3 bg-white"></div>
+                        <div className="h-full w-1/3 bg-red-500"></div>
+                    </div>
+                </div>
+
+                <div className="relative z-10 max-w-lg">
+                    <div className="mb-8 inline-flex items-center rounded-full bg-white/10 px-4 py-1.5 backdrop-blur-sm border border-white/20">
+                        <span className="text-xs font-bold uppercase tracking-widest text-white/90">Accompagnement Officiel</span>
+                    </div>
+                    <h2 className="text-5xl font-black leading-[1.1] tracking-tight mb-6">Liberté, Égalité, Fraternité</h2>
+                    <p className="text-xl text-white/80 leading-relaxed mb-10">
+                        Préparez votre intégration en France avec un programme structuré, complet et conforme aux exigences du ministère de l'Intérieur.
                     </p>
-                    <p className="text-center text-xs text-gray-400 mt-1" id={headingDescId}>
-                        Commencez votre préparation dès aujourd&apos;hui.
-                    </p>
-                </CardHeader>
-                <CardContent>
-                    {/*
-                      La zone d'erreur est toujours présente dans le DOM (même vide)
-                      pour que le aria-live soit prêt à annoncer.
-                      role="alert" + aria-live="assertive" = annonce immédiate par NVDA.
-                    */}
-                    <div
-                        id={errorId}
-                        role="alert"
-                        aria-live="assertive"
-                        aria-atomic="true"
-                    >
+
+                    <div className="grid gap-6">
+                        <div className="flex items-start gap-4">
+                            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                                <ShieldCheck className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h3 className="font-bold">Contenu Certifié</h3>
+                                <p className="text-sm text-white/70">Questions-réponses basées sur le livret citoyen officiel.</p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-start gap-4">
+                            <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-white/10 flex items-center justify-center">
+                                <FileText className="w-5 h-5 text-white" />
+                            </div>
+                            <div>
+                                <h3 className="font-bold">Simulations Réelles</h3>
+                                <p className="text-sm text-white/70">Entraînez-vous dans les conditions de l'examen.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Bottom decorative bar */}
+                <div className="absolute bottom-0 left-0 right-0 h-2 flex">
+                    <div className="flex-1 bg-blue-600"></div>
+                    <div className="flex-1 bg-white"></div>
+                    <div className="flex-1 bg-red-600"></div>
+                </div>
+            </div>
+
+            {/* Right Side: Registration Form */}
+            <div className="flex-1 flex flex-col justify-center px-6 py-12 lg:px-24 bg-gray-50 dark:bg-gray-900">
+                <div className="max-w-[480px] w-full mx-auto space-y-8">
+                    <div className="text-center lg:text-left">
+                        <h2 className="text-3xl font-black text-[#002394] dark:text-white leading-tight mb-2" id="register-title">
+                            Inscription
+                        </h2>
+                        <p className="text-gray-500 dark:text-gray-400" id={headingDescId}>Commencez votre préparation dès aujourd'hui.</p>
+                    </div>
+
+                    <div id={errorId} role="alert" aria-live="assertive" aria-atomic="true">
                         {error && (
-                            <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-md text-sm mb-4">
+                            <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-md text-sm">
                                 <span className="sr-only">Erreur : </span>
                                 {error}
                             </div>
                         )}
                     </div>
 
-                    <form
-                        onSubmit={handleSubmit}
-                        className="space-y-4"
-                        aria-labelledby="register-title"
-                        aria-describedby={headingDescId}
-                        noValidate
-                    >
-                        <div className="space-y-2">
-                            <label htmlFor="reg-name" className="text-sm font-medium leading-none">
-                                Nom complet
-                            </label>
-                            <Input
-                                id="reg-name"
-                                type="text"
-                                placeholder="Marie Dupont"
-                                required
-                                autoComplete="name"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                aria-required="true"
-                            />
-                        </div>
+                    <form onSubmit={handleSubmit} className="space-y-6" aria-labelledby="register-title" aria-describedby={headingDescId} noValidate>
+                        <div className="grid gap-4">
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300" htmlFor="reg-name">Nom complet</label>
+                                <div className="relative">
+                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                                    <input
+                                        id="reg-name" type="text" placeholder="Jean Dupont"
+                                        className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#002394] focus:border-transparent outline-none transition-all dark:text-white"
+                                        required autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} aria-required="true"
+                                    />
+                                </div>
+                            </div>
 
-                        <div className="space-y-2">
-                            <label htmlFor="reg-email" className="text-sm font-medium leading-none">
-                                Adresse email
-                            </label>
-                            <Input
-                                id="reg-email"
-                                type="email"
-                                placeholder="marie@exemple.fr"
-                                required
-                                autoComplete="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                aria-required="true"
-                            />
-                        </div>
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300" htmlFor="reg-email">Adresse e-mail</label>
+                                <div className="relative">
+                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                                    <input
+                                        id="reg-email" type="email" placeholder="jean.dupont@exemple.fr"
+                                        className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#002394] focus:border-transparent outline-none transition-all dark:text-white"
+                                        required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} aria-required="true"
+                                    />
+                                </div>
+                            </div>
 
-                        <div className="space-y-2">
-                            <label htmlFor="reg-password" className="text-sm font-medium leading-none">
-                                Mot de passe
-                            </label>
-                            {/* Description des exigences, lue par NVDA quand le champ est focalisé */}
-                            <p id={passwordHintId} className="text-xs text-gray-500">
-                                Minimum 6 caractères.
-                            </p>
-                            <div className="relative">
-                                <Input
-                                    id="reg-password"
-                                    type={showPassword ? "text" : "password"}
-                                    required
-                                    autoComplete="new-password"
-                                    value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
-                                    className="pr-10"
-                                    aria-required="true"
-                                    aria-describedby={passwordHintId}
-                                    minLength={6}
-                                />
-                                <button
-                                    type="button"
-                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
-                                    onClick={() => setShowPassword(!showPassword)}
-                                    aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
-                                >
-                                    {showPassword ? (
-                                        <EyeOff className="h-4 w-4" aria-hidden="true" />
-                                    ) : (
-                                        <Eye className="h-4 w-4" aria-hidden="true" />
-                                    )}
-                                </button>
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300" htmlFor="reg-password">Mot de passe</label>
+                                <p id={passwordHintId} className="text-xs text-gray-500">Minimum 6 caractères.</p>
+                                <div className="relative">
+                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                                    <input
+                                        id="reg-password" type={showPassword ? "text" : "password"} placeholder="••••••••"
+                                        className="w-full pl-10 pr-10 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#002394] focus:border-transparent outline-none transition-all dark:text-white"
+                                        required autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)}
+                                        aria-required="true" aria-describedby={passwordHintId} minLength={6}
+                                    />
+                                    <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none" onClick={() => setShowPassword(!showPassword)}>
+                                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="space-y-1.5">
+                                <label className="text-sm font-semibold text-gray-700 dark:text-gray-300" htmlFor="reg-confirm-password">Confirmer le mot de passe</label>
+                                <div className="relative">
+                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                                    <input
+                                        id="reg-confirm-password" type={showConfirmPassword ? "text" : "password"} placeholder="••••••••"
+                                        className="w-full pl-10 pr-10 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#002394] focus:border-transparent outline-none transition-all dark:text-white"
+                                        required autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
+                                        aria-required="true"
+                                    />
+                                    <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                                        {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                    </button>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="space-y-2">
-                            <label htmlFor="reg-confirm-password" className="text-sm font-medium leading-none">
-                                Confirmer le mot de passe
-                            </label>
-                            <div className="relative">
-                                <Input
-                                    id="reg-confirm-password"
-                                    type={showConfirmPassword ? "text" : "password"}
-                                    required
-                                    autoComplete="new-password"
-                                    value={confirmPassword}
-                                    onChange={(e) => setConfirmPassword(e.target.value)}
-                                    className="pr-10"
-                                    aria-required="true"
-                                    aria-describedby={passwordHintId}
-                                />
-                                <button
-                                    type="button"
-                                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none"
-                                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                    aria-label={showConfirmPassword ? "Masquer le mot de passe" : "Afficher la confirmation du mot de passe"}
-                                >
-                                    {showConfirmPassword ? (
-                                        <EyeOff className="h-4 w-4" aria-hidden="true" />
-                                    ) : (
-                                        <Eye className="h-4 w-4" aria-hidden="true" />
-                                    )}
-                                </button>
+                        <div className="flex items-start gap-3 py-2">
+                            <div className="flex h-5 items-center">
+                                <input id="terms" type="checkbox" className="h-4 w-4 rounded border-gray-300 text-[#002394] focus:ring-[#002394]" required />
                             </div>
+                            <label htmlFor="terms" className="text-sm text-gray-500 dark:text-gray-400">
+                                J'accepte les <a href="#" className="text-[#002394] dark:text-blue-400 font-semibold hover:underline">Conditions Générales d'Utilisation</a> et la <a href="#" className="text-[#002394] dark:text-blue-400 font-semibold hover:underline">Politique de Confidentialité</a>.
+                            </label>
                         </div>
 
-                        <Button
-                            type="submit"
-                            className="w-full"
-                            disabled={loading}
-                            aria-busy={loading}
-                            aria-label={loading ? "Inscription en cours, veuillez patienter" : "Créer mon compte"}
+                        <button
+                            type="submit" disabled={loading} aria-busy={loading}
+                            className="w-full py-4 bg-[#002394] hover:bg-blue-900 text-white font-bold rounded-xl shadow-lg shadow-blue-900/20 transition-all flex items-center justify-center gap-2 group disabled:bg-blue-400"
                         >
                             {loading ? (
                                 <>
-                                    <span aria-hidden="true">⏳</span>
-                                    {' '}Inscription en cours...
+                                    <span className="animate-spin text-lg">⏳</span> Inscription en cours...
                                 </>
-                            ) : "S'inscrire"}
-                        </Button>
+                            ) : (
+                                <>
+                                    Créer mon compte <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                                </>
+                            )}
+                        </button>
+
+                        <p className="text-center text-sm text-gray-500 dark:text-gray-400">
+                            Vous avez déjà un compte ? <Link href="/login" className="text-[#002394] dark:text-blue-400 font-bold hover:underline">Se connecter</Link>
+                        </p>
                     </form>
-                </CardContent>
-                <CardFooter className="flex flex-col gap-4 text-center">
-                    <div className="text-sm text-gray-500">
-                        Déjà un compte ?{' '}
-                        <Link href="/login" className="font-medium text-[var(--color-primary)] hover:underline">
-                            Se connecter
-                        </Link>
-                    </div>
-                </CardFooter>
-            </Card>
+                </div>
+            </div>
         </div>
     );
 }

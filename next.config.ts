@@ -9,6 +9,9 @@ const nextConfig: NextConfig = {
         ignoreBuildErrors: true,
     },
     serverExternalPackages: ['firebase-admin'],
+    experimental: {
+        optimizePackageImports: ['lucide-react', 'recharts', 'framer-motion'],
+    },
     webpack: (config, { isServer }) => {
         if (isServer) {
             // Activation du support WebAssembly pour farmhash (utilisé par firebase-admin)
