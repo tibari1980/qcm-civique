@@ -77,9 +77,27 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex min-h-[calc(100vh-64px)] w-full">
+        <div className="flex min-h-[calc(100vh-64px)] w-full flex-col lg:flex-row">
+            {/* Mobile Header Image (Hidden on lg) */}
+            <div className="lg:hidden relative h-48 w-full overflow-hidden bg-[#002394]">
+                <div className="absolute inset-0 bg-gradient-to-br from-[#002394]/80 to-[#002394]/40 z-10"></div>
+                <Image
+                    src="https://lh3.googleusercontent.com/aida-public/AB6AXuByWW3GM_dKy-v4QHSVMNUzu9wl3fl935-YRBaP3UXz6ARPDkD4HNIXIRUBQuPeuZnWJwjF4uHfnwQKXuK-LeKLWA3kgw-lS0xuoewnQq2kY-P0LfCNZPLnAcMvqTT4rvhCneY_2WaZpizqhnmW005693MaWpylB0zaBdYM7FnDklGCgIBG_XptxFCHwr2ihPz8Y5n62bPVU2ZqNAgJ2D5z7KT4BgxVfRMqkH68O3dipZTUT3nepffdvarQZxREnXNXCZ0XwSD9EmA"
+                    alt="National symbols of France"
+                    fill
+                    className="object-cover opacity-60 mix-blend-overlay"
+                    priority
+                    unoptimized
+                />
+                <div className="relative z-20 flex h-full flex-col justify-end p-6 text-white pb-6 shadow-b">
+                    <div className="mb-2 inline-flex self-start items-center rounded-full bg-white/10 px-3 py-1 backdrop-blur-sm border border-white/20">
+                        <span className="text-[10px] font-bold uppercase tracking-widest text-white/90">Promotion de la Citoyenneté</span>
+                    </div>
+                </div>
+            </div>
+
             {/* Left Side: Login Form */}
-            <div className="flex flex-col justify-center w-full lg:w-1/2 px-8 md:px-16 lg:px-24 xl:px-32 bg-gray-50 dark:bg-gray-900 pb-12 pt-8">
+            <div className="flex flex-col justify-center w-full lg:w-1/2 px-6 sm:px-8 md:px-16 lg:px-24 xl:px-32 bg-gray-50 dark:bg-gray-900 pb-12 pt-8 lg:pt-12">
                 <div className="max-w-md w-full mx-auto">
                     {/* Header/Logo Section */}
                     <div className="flex items-center gap-3 mb-10">
