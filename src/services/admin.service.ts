@@ -8,7 +8,7 @@ import { Attempt } from '@/types';
 
 // Helper to get auth token
 const getAuthToken = async () => {
-    return await auth.currentUser?.getIdToken();
+    return await auth.currentUser?.getIdToken(true);
 };
 
 /* --------------------------------------------------

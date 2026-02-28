@@ -11,7 +11,10 @@ export async function verifyAdminRequest(request: Request) {
         return { authorized: false, error: 'Authorization header missing' };
     }
 
-    const idToken = authHeader.split('Bearer ')[1];
+    const idToken = authHeader.split('Bearer ')[1]?.trim();
+    if (!idToken) {
+        return { authorized: false, error: 'Token missing' };
+    }
     const projectId = process.env.FIREBASE_PROJECT_ID?.replace(/"/g, '').trim();
 
     try {
@@ -26,6 +29,8 @@ export async function verifyAdminRequest(request: Request) {
         );
 
         if (!authRes.ok) {
+            const errBody = await authRes.text();
+            console.error('[API Security] Invalid ID Token (Admin):', errBody);
             return { authorized: false, error: 'Invalid ID Token' };
         }
 
@@ -75,7 +80,10 @@ export async function verifyUserRequest(request: Request) {
         return { authorized: false, error: 'Authorization header missing' };
     }
 
-    const idToken = authHeader.split('Bearer ')[1];
+    const idToken = authHeader.split('Bearer ')[1]?.trim();
+    if (!idToken) {
+        return { authorized: false, error: 'Token missing' };
+    }
 
     try {
         const authRes = await fetch(
@@ -88,6 +96,8 @@ export async function verifyUserRequest(request: Request) {
         );
 
         if (!authRes.ok) {
+            const errBody = await authRes.text();
+            console.error('[API Security] Invalid ID Token (User):', errBody);
             return { authorized: false, error: 'Invalid ID Token' };
         }
 
