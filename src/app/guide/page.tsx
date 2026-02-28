@@ -174,21 +174,28 @@ const EXAM_THEMES = [
 /* ═══════════════════════════════════════════════════════
    COMPONENTS
    ═══════════════════════════════════════════════════════ */
-function FAQItem({ item }: { item: typeof FAQ_ITEMS[0] }) {
+function FAQItem({ item, id }: { item: typeof FAQ_ITEMS[0], id: string }) {
     const [open, setOpen] = useState(false);
     return (
         <div className="border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden transition-colors">
-            <button
-                onClick={() => setOpen(!open)}
-                className="w-full flex items-center justify-between p-5 text-left bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                aria-expanded={open}
-            >
-                <span className="font-bold text-gray-900 dark:text-white pr-4">{item.q}</span>
-                <ChevronDown className={`h-5 w-5 text-gray-400 flex-shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
-            </button>
+            <h3 className="m-0">
+                <button
+                    id={`faq-btn-${id}`}
+                    onClick={() => setOpen(!open)}
+                    className="w-full flex items-center justify-between p-5 text-left bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus:outline-none"
+                    aria-expanded={open}
+                    aria-controls={`faq-answer-${id}`}
+                >
+                    <span className="font-bold text-gray-900 dark:text-white pr-4">{item.q}</span>
+                    <ChevronDown className={`h-5 w-5 text-gray-400 flex-shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
+                </button>
+            </h3>
             <AnimatePresence>
                 {open && (
                     <motion.div
+                        id={`faq-answer-${id}`}
+                        role="region"
+                        aria-labelledby={`faq-btn-${id}`}
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
@@ -224,13 +231,16 @@ export default function GuidePage() {
                             Guide complet — Mis à jour 2026
                         </span>
                         <h1 className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight">
-                            Guide d'utilisation<br />
-                            <span className="bg-gradient-to-r from-blue-300 via-white to-red-300 bg-clip-text text-transparent">
-                                CiviqQuiz
+                            <span className="sr-only">Guide CiviqQuiz : Réussissez votre naturalisation, titre de séjour et carte de résident en France</span>
+                            <span aria-hidden="true">
+                                Guide d'utilisation<br />
+                                <span className="bg-gradient-to-r from-blue-300 via-white to-red-300 bg-clip-text text-transparent">
+                                    CiviqQuiz
+                                </span>
                             </span>
                         </h1>
                         <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto mb-8 font-light leading-relaxed">
-                            Tout ce que vous devez savoir pour préparer efficacement votre <strong className="text-white font-semibold">examen civique français</strong>, obligatoire depuis janvier 2026.
+                            Le guide de référence pour préparer efficacement votre <strong className="text-white font-semibold">test de naturalisation française</strong>, votre <strong className="text-white font-semibold">titre de séjour</strong> et votre <strong className="text-white font-semibold">carte de résident en France</strong> grâce à des QCM conformes aux exigences officielles.
                         </p>
                         <div className="flex flex-wrap justify-center gap-4">
                             <Link href="/register">
@@ -519,7 +529,7 @@ export default function GuidePage() {
                     </p>
                     <div className="space-y-3">
                         {FAQ_ITEMS.map((item, i) => (
-                            <FAQItem key={i} item={item} />
+                            <FAQItem key={i} id={`faq-${i}`} item={item} />
                         ))}
                     </div>
                 </div>

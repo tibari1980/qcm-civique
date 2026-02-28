@@ -1,0 +1,8 @@
+{
+    "workbench.editor.customLabels.enabled": true,
+    "workbench.editor.customLabels.patterns": {
+        "**/app/**/page.{tsx,jsx,ts,js}": "${dirname} (Page)",
+        "**/app/**/layout.{tsx,jsx,ts,js}": "${dirname} (Layout)",
+        "**/app/**/loading.{tsx,jsx,ts,js}": "${dirname} (Loading)"
+    }
+}
