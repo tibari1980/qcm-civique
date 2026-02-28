@@ -70,38 +70,38 @@ export default function FichesMemoPage() {
                             key={category.id}
                             href={`/fiches/${category.id}`}
                             className={`group bg-white dark:bg-gray-900 rounded-2xl p-6 sm:p-8 border-2 ${category.color} shadow-sm transition-all duration-300 transform hover:-translate-y-1`}
-                            style={{ animationDelay: \`\${idx * 150}ms\` }}
+                            style={{ animationDelay: `${idx * 150}ms` }}
                         >
-                    <div className="flex items-start gap-4">
-                        <div className={`\${category.bg} p-4 rounded-xl shrink-0 dark:bg-gray-800`}>
-                            {category.icon}
-                        </div>
-                        <div className="flex-1">
-                            <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-[var(--color-primary)] transition-colors">
-                                {category.title}
-                            </h2>
-                            <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm sm:text-base">
-                                {category.description}
-                            </p>
+                            <div className="flex items-start gap-4">
+                                <div className={`${category.bg} p-4 rounded-xl shrink-0 dark:bg-gray-800`}>
+                                    {category.icon}
+                                </div>
+                                <div className="flex-1">
+                                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-2 group-hover:text-[var(--color-primary)] transition-colors">
+                                        {category.title}
+                                    </h2>
+                                    <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm sm:text-base">
+                                        {category.description}
+                                    </p>
 
-                            <div className="inline-flex items-center text-sm font-semibold text-blue-600 dark:text-blue-400 group-hover:text-blue-800 dark:group-hover:text-blue-300">
-                                Lire la fiche
-                                <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                                    <div className="inline-flex items-center text-sm font-semibold text-blue-600 dark:text-blue-400 group-hover:text-blue-800 dark:group-hover:text-blue-300">
+                                        Lire la fiche
+                                        <ChevronRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </Link>
+                        </Link>
                     ))}
-            </div>
+                </div>
 
-            {/* Footer Tip */}
-            <div className="mt-16 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 rounded-2xl p-6 text-center shadow-inner">
-                <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
-                    💡 <strong className="mr-1">Astuce :</strong> Prenez le temps de relire une fiche par jour.
-                    L&apos;apprentissage se fait étape par étape !
-                </p>
+                {/* Footer Tip */}
+                <div className="mt-16 bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800/50 rounded-2xl p-6 text-center shadow-inner">
+                    <p className="text-sm font-medium text-blue-800 dark:text-blue-200">
+                        💡 <strong className="mr-1">Astuce :</strong> Prenez le temps de relire une fiche par jour.
+                        L&apos;apprentissage se fait étape par étape !
+                    </p>
+                </div>
             </div>
-        </div>
         </main >
     );
 }
