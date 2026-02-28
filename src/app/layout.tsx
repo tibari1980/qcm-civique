@@ -58,6 +58,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { SettingsProvider } from "@/context/SettingsContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { TricolorBar } from "@/components/layout/TricolorBar";
+import NextTopLoader from 'nextjs-toploader';
 
 // Lazy-loaded components for better performance
 const Footer = dynamic(() => import("@/components/layout/Footer").then(mod => mod.Footer));
@@ -105,6 +106,17 @@ export default function RootLayout({
         className={`${inter.variable} antialiased min-h-screen flex flex-col bg-[var(--color-background)] text-[var(--color-foreground)] transition-colors duration-300`}
       >
         <ThemeProvider>
+          <NextTopLoader
+            color="var(--color-primary)"
+            initialPosition={0.08}
+            crawlSpeed={200}
+            height={3}
+            crawl={true}
+            showSpinner={false}
+            easing="ease"
+            speed={200}
+            shadow="0 0 10px var(--color-primary),0 0 5px var(--color-primary)"
+          />
           <Toaster position="top-center" richColors />
           <AuthProvider>
             <SettingsProvider>

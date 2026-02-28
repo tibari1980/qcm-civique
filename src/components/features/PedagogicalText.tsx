@@ -48,21 +48,17 @@ interface PedagogicalTextProps {
     className?: string;
 }
 
+// Optimization: Pre-compile Regex once for entire application lifecycle
+const SORTED_KEYS = Object.keys(DICTIONARY).sort((a, b) => b.length - a.length);
+const ESCAPED_KEYS = SORTED_KEYS.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+const DICT_REGEX = new RegExp(`\\b(${ESCAPED_KEYS.join('|')})\\b`, 'gi');
+
 export function PedagogicalText({ text, className = '' }: PedagogicalTextProps) {
     const [activeWord, setActiveWord] = useState<string | null>(null);
 
     // Fonction pour découper le texte et trouver les mots du dictionnaire
     const renderTextWithTooltips = () => {
-        // Sort keys by length descending to match longest expressions first
-        const sortedKeys = Object.keys(DICTIONARY).sort((a, b) => b.length - a.length);
-
-        // Escape regex tokens
-        const escapedKeys = sortedKeys.map(k => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
-
-        // Create regex that matches whole words (ignoring case)
-        const regexPattern = new RegExp(`\\b(${escapedKeys.join('|')})\\b`, 'gi');
-
-        const pieces = text.split(regexPattern);
+        const pieces = text.split(DICT_REGEX);
 
         return pieces.map((piece, i) => {
             const lowerPiece = piece.toLowerCase();
