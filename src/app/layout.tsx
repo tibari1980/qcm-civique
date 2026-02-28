@@ -58,17 +58,15 @@ import { AuthProvider } from "@/context/AuthContext";
 import { SettingsProvider } from "@/context/SettingsContext";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { TricolorBar } from "@/components/layout/TricolorBar";
-import NextTopLoader from 'nextjs-toploader';
 
 // Lazy-loaded components for better performance
 const Footer = dynamic(() => import("@/components/layout/Footer").then(mod => mod.Footer));
 const AnnouncementBanner = dynamic(() => import("@/components/layout/AnnouncementBanner").then(mod => mod.AnnouncementBanner));
-
 const SkipLink = dynamic(() => import("@/components/layout/SkipLink").then(mod => mod.SkipLink));
+const NextTopLoader = dynamic(() => import("nextjs-toploader"), { ssr: false });
+const Toaster = dynamic(() => import("sonner").then(mod => mod.Toaster), { ssr: false });
 
 import { GlobalA11yRoot } from "@/components/layout/GlobalA11yRoot";
-
-import { Toaster } from 'sonner';
 
 export default function RootLayout({
   children,
