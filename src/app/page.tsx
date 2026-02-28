@@ -165,18 +165,17 @@ export default function Home() {
                 >
                   🇫🇷 Excellence Républicaine
                 </motion.div>
-                <h1 id="hero-heading" className="text-5xl md:text-8xl font-black tracking-tighter text-gray-900 mb-8 leading-tight">
-                  Devinez la <span className="text-gradient-republic">France</span>. <br />
-                  Vivez la République.
+                <h1 id="hero-heading" className="text-4xl md:text-6xl font-black tracking-tighter text-gray-900 mb-8 leading-tight">
+                  Réussissez votre naturalisation en <span className="text-gradient-republic">France</span>. <br />
+                  Maîtrisez la <span className="text-gradient-republic">France</span> avec CiviqQuiz.
                 </h1>
                 <p className="max-w-3xl mx-auto text-xl md:text-2xl text-gray-500 mb-12 font-light leading-relaxed">
-                  L&apos;excellence académique pour votre parcours administratif. <br />
-                  Titres de séjour, cartes de résident et naturalisation française.
+                  Préparez votre test de naturalisation française, votre titre de séjour et votre carte de résident en France grâce à des QCM conformes aux exigences officielles.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                   <Link href="/register">
                     <Button size="xl" className="px-12 rounded-full bg-black hover:bg-gray-800 text-white shadow-2xl transition-all active:scale-95 text-lg font-bold">
-                      Commencer gratuitement
+                      Commencer ma préparation pour la France
                     </Button>
                   </Link>
                   <Link href="#values">
