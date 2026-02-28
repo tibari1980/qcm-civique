@@ -20,7 +20,7 @@ export async function verifyAdminRequest(request: Request) {
     try {
         // 1. Get user info from ID Token using Google Auth API
         const authRes = await fetch(
-            `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${process.env.NEXT_PUBLIC_FIREBASE_API_KEY}`,
+            `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'AIzaSyBgwmq_u5Z6rJS4z7Ndebo5dWzgP0MyHNE'}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -87,7 +87,7 @@ export async function verifyUserRequest(request: Request) {
 
     try {
         const authRes = await fetch(
-            `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${process.env.NEXT_PUBLIC_FIREBASE_API_KEY}`,
+            `https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${process.env.NEXT_PUBLIC_FIREBASE_API_KEY || 'AIzaSyBgwmq_u5Z6rJS4z7Ndebo5dWzgP0MyHNE'}`,
             {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

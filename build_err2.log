@@ -5,3 +5,77 @@
    ▲ Next.js 15.1.6
    - Environments: .env.local
 
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Skipping validation of types
+   Skipping linting
+   Collecting page data ...
+ ⚠ Using edge runtime on a page currently disables static generation for that page
+   Generating static pages (0/45) ...
+   Generating static pages (11/45) 
+   Generating static pages (22/45) 
+   Generating static pages (33/45) 
+ ✓ Generating static pages (45/45)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    8.33 kB         306 kB
+├ ○ /_not-found                          163 B           106 kB
+├ ○ /about                               191 B           110 kB
+├ ○ /admin                               3.49 kB         254 kB
+├ ○ /admin/clean-variantes               4.72 kB         247 kB
+├ ○ /admin/deduplicate                   5.01 kB         247 kB
+├ ○ /admin/import                        10.7 kB         391 kB
+├ ○ /admin/questions                     4.6 kB          393 kB
+├ ○ /admin/questions/edit                2.94 kB         250 kB
+├ ○ /admin/questions/new                 5.43 kB         252 kB
+├ ○ /admin/reviews                       5.02 kB         449 kB
+├ ○ /admin/settings                      3.25 kB         250 kB
+├ ○ /admin/stats                         118 kB          360 kB
+├ ○ /admin/users                         5.32 kB         403 kB
+├ ○ /admin/users/details                 6.14 kB         248 kB
+├ ○ /ai-quiz                             6.75 kB         262 kB
+├ ○ /ai-quiz/session                     5.94 kB         264 kB
+├ ƒ /api/admin/delete-user               163 B           106 kB
+├ ƒ /api/admin/sync-users                163 B           106 kB
+├ ƒ /api/admin/test-email                163 B           106 kB
+├ ƒ /api/contact                         163 B           106 kB
+├ ƒ /api/welcome                         163 B           106 kB
+├ ○ /contact                             4.17 kB         132 kB
+├ ○ /dashboard                           8.17 kB         306 kB
+├ ○ /exam                                10.9 kB         308 kB
+├ ○ /fiches                              191 B           110 kB
+├ ● /fiches/[id]                         191 B           110 kB
+├   ├ /fiches/histoire
+├   ├ /fiches/valeurs
+├   ├ /fiches/droits
+├   └ /fiches/institutions
+├ ○ /forgot-password                     7.4 kB          301 kB
+├ ○ /guide                               11.2 kB         168 kB
+├ ○ /icon.svg                            0 B                0 B
+├ ○ /interview                           4.8 kB          259 kB
+├ ○ /login                               3.56 kB         260 kB
+├ ○ /onboarding                          5.19 kB         299 kB
+├ ○ /privacy                             191 B           110 kB
+├ ○ /profile                             183 kB          477 kB
+├ ○ /register                            4.11 kB         260 kB
+├ ○ /resetpassword                       6.83 kB         296 kB
+├ ○ /review                              3.74 kB         312 kB
+├ ○ /reviews                             6.32 kB         311 kB
+├ ○ /robots.txt                          0 B                0 B
+├ ○ /sitemap.xml                         0 B                0 B
+├ ○ /terms                               191 B           110 kB
+├ ○ /training                            4.22 kB         302 kB
+├ ƒ /training/[themeId]                  6.6 kB          315 kB
+└ ○ /training/culture                    12.6 kB         306 kB
++ First Load JS shared by all            106 kB
+  ├ chunks/1517-fc776d7481dc2db6.js      50.7 kB
+  ├ chunks/4bd1b696-b34e33ff539247ad.js  53 kB
+  └ other shared chunks (total)          2.15 kB
+
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+
