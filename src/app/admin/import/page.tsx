@@ -3,7 +3,7 @@
 import React, { useState, useRef } from 'react';
 import {
     UploadCloud, FileSpreadsheet, CheckCircle2,
-    AlertCircle, List, Database, RotateCcw
+    AlertCircle, List, Database, RotateCcw, BookOpen, Download
 } from 'lucide-react';
 import { doc, writeBatch, collection, getCountFromServer, getDocs, deleteDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
@@ -53,6 +53,7 @@ export default function AdminImportPage() {
     const [running, setRunning] = useState(false);
     const [count, setCount] = useState<number | null>(null);
     const fileRef = useRef<HTMLInputElement>(null);
+    const updateExpFileRef = useRef<HTMLInputElement>(null);
     const [fileName, setFileName] = useState<string | null>(null);
     const logRef = useRef<HTMLDivElement>(null);
     const [skippedDuplicates, setSkippedDuplicates] = useState<string[]>([]);
@@ -305,6 +306,121 @@ export default function AdminImportPage() {
         if (file) { setFileName(file.name); runImport(file); }
     };
 
+    const runUpdateExplanations = async (file: File) => {
+        if (!window.confirm(`Vous allez mettre à jour les explications à partir de "${file.name}". Voulez-vous continuer ?`)) return;
+        setRunning(true);
+        setLogs([]);
+        setProgress(null);
+        setSkippedDuplicates([]);
+        setSummary(null);
+        addLog('info', `📂 Lecture du fichier pour MAJ des explications "${file.name}"…`);
+
+        try {
+            const [arrayBuffer, existingSnap] = await Promise.all([
+                file.arrayBuffer(),
+                getDocs(collection(db, 'questions')),
+            ]);
+
+            const workbook = XLSX.read(arrayBuffer);
+            const sheet = workbook.Sheets[workbook.SheetNames[0]];
+            const rows = XLSX.utils.sheet_to_json(sheet) as Record<string, any>[];
+
+            const normalize = normalizeTheme;
+            const getVal = (row: Record<string, any>, aliases: string[]) => {
+                const keys = Object.keys(row);
+                const normalizedAliases = aliases.map(a => normalize(a));
+                const foundKey = keys.find(k => normalizedAliases.includes(normalize(k)));
+                return foundKey && row[foundKey] !== undefined ? row[foundKey] : null;
+            };
+
+            const existingCache = new Map<string, any>();
+            existingSnap.docs.forEach(d => {
+                const normQ = normalizeQuestionText(d.data().question || '');
+                existingCache.set(normQ, d.ref);
+            });
+
+            addLog('info', `✅ ${rows.length} ligne(s) dans le fichier — ${existingCache.size} question(s) en base prêtes à être vérifiées.`);
+
+            setProgress({ done: 0, total: rows.length, imported: 0, skipped: 0 });
+
+            let batch = writeBatch(db);
+            let batchCount = 0;
+            let updatedCount = 0;
+            let skippedNotFound = 0;
+            let skippedEmptyExp = 0;
+            let totalProcessed = 0;
+
+            for (const row of rows) {
+                totalProcessed++;
+                const rawText = String(getVal(row, ['Question', 'texte', 'intitulé', 'Enoncé', 'Sujet']) || '').trim();
+                const rawExp = String(getVal(row, ['Explication', 'Explanation', 'Commentaire']) || '').trim();
+
+                if (!rawText) {
+                    skippedNotFound++;
+                    continue;
+                }
+
+                if (!rawExp) {
+                    skippedEmptyExp++;
+                    continue;
+                }
+
+                const rawQ = cleanQuestionText(rawText);
+                const normQ = normalizeQuestionText(rawQ);
+                const normRaw = normalizeQuestionText(rawText);
+
+                const docRef = existingCache.get(normQ) || existingCache.get(normRaw);
+
+                if (!docRef) {
+                    skippedNotFound++;
+                    if (skippedNotFound <= 5) {
+                        addLog('error', `⚠️ Q. non trouvée en base : "${rawQ.slice(0, 50)}..."`);
+                    }
+                    continue;
+                }
+
+                batch.update(docRef, {
+                    explanation: cleanQuestionText(rawExp),
+                    updated_at: new Date().toISOString()
+                });
+
+                batchCount++;
+                updatedCount++;
+
+                if (batchCount >= 100) {
+                    await batch.commit();
+                    batch = writeBatch(db);
+                    batchCount = 0;
+                    addLog('info', `💾 Lot de MAJ envoyé... (${updatedCount} mises à jour)`);
+                    await new Promise(r => setTimeout(r, 150));
+                }
+
+                if (totalProcessed % 20 === 0 || totalProcessed === rows.length) {
+                    setProgress({ done: totalProcessed, total: rows.length, imported: updatedCount, skipped: skippedNotFound + skippedEmptyExp });
+                }
+            }
+
+            if (batchCount > 0) {
+                await batch.commit();
+            }
+
+            setProgress({ done: rows.length, total: rows.length, imported: updatedCount, skipped: skippedNotFound + skippedEmptyExp });
+            addLog('success', `🎉 MAJ Terminée : ${updatedCount} explications ajoutées. (${skippedNotFound} introuvables, ${skippedEmptyExp} sans exp.)`);
+            playSound('success');
+
+        } catch (err: unknown) {
+            addLog('error', `❌ Erreur : ${err instanceof Error ? err.message : String(err)}`);
+        } finally {
+            setRunning(false);
+            if (updateExpFileRef.current) updateExpFileRef.current.value = '';
+        }
+    };
+
+    const handleUpdateExpFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) { runUpdateExplanations(file); }
+    };
+
     const handleDrop = (e: React.DragEvent) => {
         e.preventDefault();
         const file = e.dataTransfer.files[0];
@@ -424,6 +540,52 @@ export default function AdminImportPage() {
         }
     };
 
+    const downloadMissingExplanations = async () => {
+        setRunning(true);
+        addLog('info', '🔍 Recherche des questions sans explication...');
+        try {
+            const snap = await getDocs(collection(db, 'questions'));
+            let content = 'Questions à expliquer :\n\n';
+            let count = 0;
+            const uniqueQuestions = new Set<string>();
+
+            snap.forEach(doc => {
+                const data = doc.data();
+                if (!data.explanation || data.explanation.trim() === '') {
+                    const questionText = data.question ? data.question.trim() : '';
+                    if (questionText && !uniqueQuestions.has(questionText)) {
+                        uniqueQuestions.add(questionText);
+                        count++;
+                        const correctText = data.choices && data.correct_index !== undefined ? data.choices[data.correct_index] : 'Inconnue';
+                        content += `Question : ${questionText}\nRéponse : ${correctText}\nExplication :\n\n-------------------\n\n`;
+                    }
+                }
+            });
+
+            if (count === 0) {
+                addLog('success', '🎉 Toutes les questions ont déjà une explication !');
+                setRunning(false);
+                return;
+            }
+
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'questions_sans_explications.txt';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            addLog('success', `📥 Fichier téléchargé ! (${count} questions à expliquer). Vous pouvez utiliser ce fichier avec une IA comme ChatGPT ou DeepSeek.`);
+        } catch (e) {
+            addLog('error', `❌ Erreur lors du téléchargement: ${e instanceof Error ? e.message : String(e)}`);
+        } finally {
+            setRunning(false);
+        }
+    };
+
     return (
         <div className="p-6 max-w-3xl mx-auto">
             <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -483,6 +645,25 @@ export default function AdminImportPage() {
                         <RotateCcw className="h-4 w-4" />
                         Migrer Parcours
                     </button>
+                    <button
+                        onClick={() => !running && updateExpFileRef.current?.click()}
+                        disabled={running}
+                        className="flex items-center gap-2 text-sm font-medium text-blue-700 bg-blue-50 px-4 py-2 rounded-lg hover:bg-blue-100 transition-colors disabled:opacity-50"
+                        title="Met à jour uniquement le champ explication des questions existantes"
+                    >
+                        <BookOpen className="h-4 w-4" />
+                        MAJ Explications
+                    </button>
+                    <button
+                        onClick={downloadMissingExplanations}
+                        disabled={running}
+                        className="flex items-center gap-2 text-sm font-medium text-orange-700 bg-orange-50 px-4 py-2 rounded-lg hover:bg-orange-100 transition-colors disabled:opacity-50"
+                        title="Télécharger un fichier texte contenant toutes les questions sans explication pour les compléter"
+                    >
+                        <Download className="h-4 w-4" />
+                        Télécharger manquantes
+                    </button>
+                    <input ref={updateExpFileRef} type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={handleUpdateExpFileChange} />
                     <a
                         href="/data.xlsx"
                         download="modele_import_qcm.xlsx"

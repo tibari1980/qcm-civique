@@ -102,6 +102,9 @@ export function Header() {
                         <Link href="/guide" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-[var(--color-primary)] transition-colors">
                             Guide
                         </Link>
+                        <Link href="/fiches" className="text-sm font-medium text-[var(--color-primary)] hover:opacity-80 transition-all flex items-center gap-1 font-bold">
+                            <span aria-hidden="true">💡</span> Fiches Mémo
+                        </Link>
                         {settings.enableInterview && (
                             <Link href="/interview" className="text-sm font-medium text-gray-700 hover:text-[var(--color-primary)] transition-colors">
                                 Entretien
@@ -217,6 +220,10 @@ export function Header() {
                             <Link href="/guide" className="flex items-center gap-2 text-sm font-medium py-2" onClick={closeMenu}>
                                 <BookOpen className="h-4 w-4" aria-hidden="true" />
                                 Guide
+                            </Link>
+                            <Link href="/fiches" className="flex items-center gap-2 text-sm font-bold py-2 text-[var(--color-primary)]" onClick={closeMenu}>
+                                <span aria-hidden="true" className="text-base">💡</span>
+                                Fiches Mémo
                             </Link>
                             {settings.enableInterview && (
                                 <Link href="/interview" className="flex items-center gap-2 text-sm font-medium py-2" onClick={closeMenu}>
