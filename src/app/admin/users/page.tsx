@@ -7,7 +7,7 @@ import { AdminService, type AdminUserRow } from '@/services/admin.service';
 import { useAdminGuard } from '@/lib/adminGuard';
 import { useAuth } from '@/context/AuthContext';
 import { ExportUtils } from '@/lib/exportUtils';
-import { Pagination } from '@/components/ui/Pagination';
+import { Input } from '@/components/ui/input';
 
 const TRACK_LABEL: Record<string, string> = {
     residence: '🏠 Résidence',
@@ -21,10 +21,14 @@ export default function AdminUsersPage() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [updatingUid, setUpdatingUid] = useState<string | null>(null);
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
     const [syncing, setSyncing] = useState(false);
     const [testingEmail, setTestingEmail] = useState<string | null>(null);
+
+    // Server Pagination State
+    const [lastCursor, setLastCursor] = useState<any>(null);
+    const [hasMore, setHasMore] = useState(false);
+    const [totalUsersCount, setTotalUsersCount] = useState(0);
+    const ITEMS_PER_PAGE = 20;
 
     const handleSync = async () => {
         if (!confirm("Voulez-vous synchroniser tous les comptes Auth vers Firestore ? Cela créera les profils manquants.")) return;
@@ -32,7 +36,7 @@ export default function AdminUsersPage() {
         try {
             const result = await AdminService.syncUsers();
             alert(result.message);
-            await loadUsers();
+            await loadInitialUsers();
         } catch (error: any) {
             console.error("Sync failed:", error);
             alert(`La synchronisation a échoué : ${error.message || 'Erreur inconnue'}`);
@@ -68,40 +72,50 @@ export default function AdminUsersPage() {
     };
 
 
-    const loadUsers = useCallback(async () => {
+    const loadInitialUsers = useCallback(async () => {
         try {
-            // Loading more to allow better search/pagination range
-            const data = await AdminService.getAllUsers(200);
-            setUsers(data);
+            setLoading(true);
+            const data = await AdminService.getPaginatedUsers(ITEMS_PER_PAGE);
+            setUsers(data.users);
+            setLastCursor(data.nextCursor);
+            setHasMore(!!data.nextCursor);
+            setTotalUsersCount(data.totalCount);
         } catch (error) {
-            console.error("Failed to load users:", error);
+            console.error("Failed to load initial users:", error);
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [ITEMS_PER_PAGE]);
+
+    const loadMoreUsers = async () => {
+        if (!hasMore || loading) return;
+        try {
+            // Un petit indicateur de chargement pour la suite (facultatif si rapide)
+            const data = await AdminService.getPaginatedUsers(ITEMS_PER_PAGE, lastCursor);
+            setUsers(prev => [...prev, ...data.users]);
+            setLastCursor(data.nextCursor);
+            setHasMore(!!data.nextCursor);
+        } catch (error) {
+            console.error("Failed to load more users:", error);
+        }
+    };
 
     useEffect(() => {
-        loadUsers();
-    }, [loadUsers]);
+        loadInitialUsers();
+    }, [loadInitialUsers]);
 
-    // Reset to page 1 when search changes
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [search]);
 
-    const filtered = useMemo(() => {
+
+    // Filtering happens client-side ON loaded users for now.
+    // Server-side searching would require Algolia or specific indexed queries.
+    const paginatedUsers = useMemo(() => {
         const q = search.toLowerCase();
+        if (!q) return users;
         return users.filter(u =>
             u.displayName.toLowerCase().includes(q) ||
             u.email.toLowerCase().includes(q)
         );
     }, [search, users]);
-
-    const totalPages = Math.ceil(filtered.length / itemsPerPage);
-    const paginatedUsers = useMemo(() => {
-        const start = (currentPage - 1) * itemsPerPage;
-        return filtered.slice(start, start + itemsPerPage);
-    }, [filtered, currentPage]);
 
     const toggleRole = async (uid: string, current: string) => {
         setUpdatingUid(uid);
@@ -329,7 +343,7 @@ export default function AdminUsersPage() {
                                             </td>
                                         </tr>
                                     ))}
-                                    {filtered.length === 0 && (
+                                    {paginatedUsers.length === 0 && (
                                         <tr>
                                             <td colSpan={6} className="text-center py-12 text-gray-400">
                                                 Aucun utilisateur trouvé
@@ -341,11 +355,21 @@ export default function AdminUsersPage() {
                         </div>
                     </div>
 
-                    <Pagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={setCurrentPage}
-                    />
+                    {!loading && hasMore && !search && (
+                        <div className="flex justify-center p-6 border-t border-gray-100 bg-gray-50/50">
+                            <button
+                                onClick={loadMoreUsers}
+                                className="px-6 py-2 bg-white text-[var(--color-primary)] font-bold text-sm border border-[var(--color-primary)] rounded-full shadow-sm hover:bg-blue-50 transition-colors"
+                            >
+                                Charger plus d'utilisateurs
+                            </button>
+                        </div>
+                    )}
+                    {search && (
+                        <div className="p-4 text-center text-xs text-gray-400 border-t border-gray-50 bg-gray-50/30">
+                            La recherche s'effectue uniquement sur les {users.length} utilisateurs actuellement chargés.
+                        </div>
+                    )}
                 </>
             )}
         </div>

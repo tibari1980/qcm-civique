@@ -22,6 +22,9 @@ const Cell = dynamic(() => import('recharts').then(mod => mod.Cell), { ssr: fals
 import { AdminService, type GlobalStats, type DailyActivity } from '@/services/admin.service';
 import { useAdminGuard } from '@/lib/adminGuard';
 import { useSettings } from '@/context/SettingsContext';
+import { auth } from '@/lib/firebase';
+import { Trash2 } from 'lucide-react';
+import { toast } from 'sonner';
 
 /* KPI Card */
 function KpiCard({ label, value, icon: Icon, color, sub, customColor }: {
@@ -83,11 +86,40 @@ export default function AdminDashboardClient() {
 
     const brandColor = settings.brandColor || '#002394';
 
+    const handleClearCache = async () => {
+        try {
+            const token = await auth.currentUser?.getIdToken();
+            if (!token) throw new Error("Non authentifié");
+
+            const res = await fetch('/api/admin/clear-cache', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            const data = await res.json();
+            if (res.ok) {
+                toast.success(data.message || "Cache vidé avec succès !");
+            } else {
+                throw new Error(data.error || "Erreur lors du nettoyage");
+            }
+        } catch (error: any) {
+            toast.error(error.message);
+        }
+    };
+
     return (
         <div className="p-6 max-w-6xl mx-auto">
-            <div className="mb-8">
-                <h1 className="text-2xl font-bold text-gray-900">Tableau de bord</h1>
-                <p className="text-gray-500 text-sm mt-1">Vue globale de l&apos;application — {settings.appName}</p>
+            <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div>
+                    <h1 className="text-2xl font-bold text-gray-900">Tableau de bord</h1>
+                    <p className="text-gray-500 text-sm mt-1">Vue globale de l&apos;application — {settings.appName}</p>
+                </div>
+                <button
+                    onClick={handleClearCache}
+                    className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-xl text-sm font-bold border border-red-100 hover:bg-red-100 transition-colors shadow-sm"
+                    title="Vider la mémoire temporaire du serveur Next.js"
+                >
+                    <Trash2 className="h-4 w-4" /> Purger le Cache (RAM)
+                </button>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">

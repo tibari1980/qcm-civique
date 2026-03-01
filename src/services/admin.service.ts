@@ -1,7 +1,7 @@
 import {
     collection, getDocs, doc, getDoc, updateDoc, query,
     orderBy, limit, where, Timestamp, deleteDoc, addDoc, setDoc,
-    writeBatch, getCountFromServer
+    writeBatch, getCountFromServer, startAfter
 } from 'firebase/firestore';
 import { auth, db } from '@/lib/firebase';
 import { Attempt } from '@/types';
@@ -136,13 +136,35 @@ export class AdminService {
         return result;
     }
 
-    /* ── Utilisateurs paginés ── */
-    static async getAllUsers(maxResults: number = 200): Promise<AdminUserRow[]> {
-        // On retire le orderBy côté Firebase car il exclut les documents où le champ est manquant.
-        // On trie en mémoire pour être plus robuste.
-        const usersSnap = await getDocs(query(collection(db, 'users'), limit(maxResults)));
+    /* ── Utilisateurs avec Pagination ── */
+    static async getPaginatedUsers(
+        pageSize: number = 10,
+        lastDocRef?: any // Using Firebase QueryDocumentSnapshot type
+    ): Promise<{ users: AdminUserRow[], nextCursor: any | null, totalCount: number }> {
+        // Obtenir le nombre total pour la pagination globale (rapide avec getCountFromServer)
+        const totalSnap = await getCountFromServer(collection(db, 'users'));
+        const totalCount = totalSnap.data().count;
 
-        return usersSnap.docs.map(d => {
+        let q;
+        // Firebase nécessite un ordre (ici par ID/UID par défaut pour éviter les index complexes) pour faire du startAfter
+        const baseQuery = query(collection(db, 'users'), limit(pageSize));
+
+        if (lastDocRef) {
+            // "Commencer après" le dernier document de la page précédente
+            q = query(collection(db, 'users'), limit(pageSize), startAfter(lastDocRef));
+        } else {
+            // Première page
+            q = baseQuery;
+        }
+
+        const usersSnap = await getDocs(q);
+
+        // Obtenir le dernier document pour le curseur de la page suivante
+        const nextCursor = usersSnap.docs.length === pageSize
+            ? usersSnap.docs[usersSnap.docs.length - 1]
+            : null;
+
+        const users = usersSnap.docs.map(d => {
             const data = d.data();
             const stats = data.stats;
             return {
@@ -157,6 +179,8 @@ export class AdminService {
                 disabled: data.disabled || false,
             };
         }).sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+        return { users, nextCursor, totalCount };
     }
 
     /* ── Exportation ── */

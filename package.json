@@ -7,7 +7,8 @@
     "build": "next build",
     "pages:build": "npx @cloudflare/next-on-pages",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "clean": "node -e \"const fs=require('fs'); fs.rmSync('.next',{recursive:true,force:true}); fs.rmSync('node_modules/.cache',{recursive:true,force:true}); console.log('✅ Cache nettoyé avec succès !')\""
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",

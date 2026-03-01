@@ -35,7 +35,7 @@ export default function AdminStatsPage() {
     useEffect(() => {
         Promise.all([
             AdminService.getThemeStats(),
-            AdminService.getAllUsers(200),
+            AdminService.getUsersForExport(), // Using this temporarily as it fetches all logic
         ]).then(([ts, users]) => {
             setThemeStats(ts);
             // Distribution des parcours

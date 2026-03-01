@@ -63,8 +63,8 @@ import { TricolorBar } from "@/components/layout/TricolorBar";
 const Footer = dynamic(() => import("@/components/layout/Footer").then(mod => mod.Footer));
 const AnnouncementBanner = dynamic(() => import("@/components/layout/AnnouncementBanner").then(mod => mod.AnnouncementBanner));
 const SkipLink = dynamic(() => import("@/components/layout/SkipLink").then(mod => mod.SkipLink));
-const NextTopLoader = dynamic(() => import("nextjs-toploader"), { ssr: false });
-const Toaster = dynamic(() => import("sonner").then(mod => mod.Toaster), { ssr: false });
+import NextTopLoader from 'nextjs-toploader';
+import { Toaster } from 'sonner';
 
 import { GlobalA11yRoot } from "@/components/layout/GlobalA11yRoot";
 
