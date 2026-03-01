@@ -7,8 +7,13 @@ import { UserService } from '@/services/user.service';
 import { Loader2, User, Settings, LogOut, Check, Award, Eye } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Skeleton } from '@/components/ui/Skeleton';
-import CertificateGenerator from './CertificateGenerator';
 import BadgesSection from './BadgesSection';
+import dynamic from 'next/dynamic';
+
+const CertificateGenerator = dynamic(() => import('./CertificateGenerator'), {
+    ssr: false,
+    loading: () => <div className="p-8 text-center text-gray-500">Chargement du module de certificat...</div>
+});
 
 export default function ProfilePage() {
     const { user, userProfile, loading, signOut, refreshProfile } = useAuth();
