@@ -8,6 +8,7 @@ import { Loader2, User, Settings, LogOut, Check, Award, Eye } from 'lucide-react
 import { motion, AnimatePresence } from 'framer-motion';
 import { Skeleton } from '@/components/ui/Skeleton';
 import CertificateGenerator from './CertificateGenerator';
+import BadgesSection from './BadgesSection';
 
 export default function ProfilePage() {
     const { user, userProfile, loading, signOut, refreshProfile } = useAuth();
@@ -16,9 +17,14 @@ export default function ProfilePage() {
     const [certStatus, setCertStatus] = useState<{ eligible: boolean, progress: number, missingThemes: string[] } | null>(null);
     const [isLoadingCert, setIsLoadingCert] = useState(true);
     const [showExample, setShowExample] = useState(false);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const [stats, setStats] = useState<any>(null);
 
     React.useEffect(() => {
         if (user) {
+            UserService.getAllUserData(user.uid, { track: userProfile?.track as any }).then(data => {
+                setStats(data.stats);
+            });
             UserService.getCertificateStatus(user.uid).then(status => {
                 setCertStatus(status);
                 setIsLoadingCert(false);
@@ -216,6 +222,9 @@ export default function ProfilePage() {
                         {isUpdating && <p className="text-[10px] sm:text-xs text-gray-500 flex items-center"><Loader2 className="mr-2 h-3 w-3 animate-spin" aria-hidden="true" /> Synchronisation...</p>}
                     </CardFooter>
                 </Card>
+
+                {/* Gamification: Badges & Trophées */}
+                {stats && <BadgesSection stats={stats} certStatus={certStatus} />}
 
                 {/* Certificate Section */}
                 {certStatus?.eligible && (
