@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Clock, Trophy, Target, TrendingUp, AlertCircle, FileText, CheckCircle2 } from 'lucide-react';
+import { Clock, Trophy, Target, TrendingUp, AlertCircle, FileText, CheckCircle2, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -301,7 +301,22 @@ export default function Dashboard() {
                         )}
 
                         {/* Secondary Navigation Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                            {/* Fiches de révision Card */}
+                            <Link href="/fiches" className="group" aria-label="Fiches Mémo — Révisez l'essentiel">
+                                <Card className="border-none shadow-sm hover:shadow-md transition-all overflow-hidden bg-emerald-50/50">
+                                    <CardContent className="p-6 flex items-center gap-4">
+                                        <div className="p-3 bg-emerald-100 rounded-xl text-emerald-600" aria-hidden="true">
+                                            <BookOpen className="h-6 w-6" />
+                                        </div>
+                                        <div className="min-w-0">
+                                            <h4 className="font-bold text-gray-900">Fiches Mémo</h4>
+                                            <p className="text-xs text-gray-500 truncate">Révisez l'essentiel.</p>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </Link>
+
                             {/* Review Card */}
                             <Link href="/training" className="group" aria-label="Réviser mes erreurs — Reprenez les questions manquées">
                                 <Card className="border-none shadow-sm hover:shadow-md transition-all overflow-hidden bg-orange-50/50">
