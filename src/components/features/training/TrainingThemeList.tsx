@@ -57,8 +57,6 @@ function ThemeCardSkeleton() {
         <div className="rounded-xl border border-gray-100 bg-white p-5 flex flex-col gap-3 animate-pulse">
             <div className="flex justify-between items-start">
                 <div className="w-10 h-10 rounded-lg bg-gray-100" />
-                {/* badge compteur skeleton */}
-                <div className="w-12 h-5 rounded-full bg-gray-100" />
             </div>
             <div className="h-5 w-3/4 rounded bg-gray-100" />
             <div className="h-3 w-full rounded bg-gray-100" />
@@ -150,13 +148,15 @@ export default function TrainingThemeList() {
                                     <Icon className="h-6 w-6" />
                                 </div>
 
-                                {/* Compteur dynamique avec skeleton */}
-                                {countsLoading ? (
-                                    <div className="w-12 h-5 rounded-full bg-gray-100 animate-pulse" />
-                                ) : (
-                                    <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
-                                        {qCount !== undefined ? `${qCount} Q` : '— Q'}
-                                    </span>
+                                {/* Compteur dynamique (Admin uniquement) */}
+                                {userProfile?.role === 'admin' && (
+                                    countsLoading ? (
+                                        <div className="w-12 h-5 rounded-full bg-gray-100 animate-pulse" />
+                                    ) : (
+                                        <span className="text-xs font-semibold bg-gray-100 text-gray-600 px-2 py-1 rounded-full">
+                                            {qCount !== undefined ? `${qCount} Q` : '— Q'}
+                                        </span>
+                                    )
                                 )}
                             </CardHeader>
 
