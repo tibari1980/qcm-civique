@@ -74,16 +74,12 @@ export default function Dashboard() {
                 router.push('/login');
             } else if (userProfile) {
                 if (!userProfile.track) {
-                    console.log("[Dashboard] Track missing, redirecting to onboarding...");
                     router.push('/onboarding');
                 } else {
                     loadDashboardData();
                 }
             } else {
-                // User is authenticated but profile is not yet in context
-                // This happens during initial registration sync
-                // We show the loader/skeleton while waiting
-                console.log("[Dashboard] Waiting for userProfile...");
+                // User is authenticated but profile is not yet in context — show skeleton while waiting
             }
         }
     }, [user, userProfile, authLoading, router]);
@@ -318,7 +314,7 @@ export default function Dashboard() {
                             </Link>
 
                             {/* Review Card */}
-                            <Link href="/training" className="group" aria-label="Réviser mes erreurs — Reprenez les questions manquées">
+                            <Link href="/review" className="group" aria-label="Réviser mes erreurs — Reprenez les questions manquées">
                                 <Card className="border-none shadow-sm hover:shadow-md transition-all overflow-hidden bg-orange-50/50">
                                     <CardContent className="p-6 flex items-center gap-4">
                                         <div className="p-3 bg-orange-100 rounded-xl text-orange-600" aria-hidden="true">

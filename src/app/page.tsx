@@ -67,18 +67,24 @@ export default function Home() {
             {user ? (
               <>
                 <h1 id="hero-heading" className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 mb-6">
-                  Bonjour <span className="text-gradient-republic">{userProfile?.displayName || user?.displayName || 'Candidat'}</span>
+                  Ravi de vous revoir, <span className="text-gradient-republic">{userProfile?.displayName || user?.displayName || 'Candidat'}</span>
                 </h1>
                 <p className="max-w-2xl mx-auto text-xl text-gray-600 mb-10 leading-relaxed font-light">
-                  Votre parcours vers la citoyenneté continue ici. Prêt à franchir une nouvelle étape sur <span className="font-medium text-blue-600">{settings.appName}</span> ?
+                  Poursuivons ensemble votre préparation. Prêt à franchir une nouvelle étape vers votre réussite sur <span className="font-medium text-blue-600">{settings.appName}</span> ?
                 </p>
 
                 {/* Glassmorphism Stats Summary */}
                 {stats ? (
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    transition={{ delay: 0.3, duration: 0.5 }}
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: {
+                        opacity: 1,
+                        transition: { staggerChildren: 0.1, delayChildren: 0.3 }
+                      }
+                    }}
+                    initial="hidden"
+                    animate="show"
                     className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mb-12"
                     aria-label="Résumé de vos statistiques"
                     role="list"
@@ -89,7 +95,15 @@ export default function Home() {
                       { label: "Thèmes", value: Object.keys(stats.theme_stats).length, color: "text-purple-600" },
                       { label: "Dashboard", value: null, isLink: true }
                     ].map((item, idx) => (
-                      <div key={idx} className="glass-card p-6 rounded-2xl transition-transform hover:scale-105" role="listitem">
+                      <motion.div
+                        key={idx}
+                        variants={{
+                          hidden: { opacity: 0, y: 20 },
+                          show: { opacity: 1, y: 0 }
+                        }}
+                        className="glass-card p-6 rounded-2xl transition-transform hover:scale-105"
+                        role="listitem"
+                      >
                         {item.isLink ? (
                           <Link href={dashboardLink} className="h-full flex flex-col items-center justify-center text-blue-600 group" aria-label="Accéder à votre espace personnel">
                             <ArrowRight className="w-8 h-8 mb-2 group-hover:translate-x-2 transition-transform" aria-hidden="true" />
@@ -101,10 +115,19 @@ export default function Home() {
                             <div className="text-xs text-gray-400 uppercase tracking-widest font-bold">{item.label}</div>
                           </>
                         )}
-                      </div>
+                      </motion.div>
                     ))}
                   </motion.div>
-                ) : null}
+                ) : (
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto mb-12">
+                    {[1, 2, 3, 4].map((i) => (
+                      <div key={i} className="glass-card p-6 rounded-2xl animate-pulse aspect-square flex flex-col items-center justify-center">
+                        <div className="h-8 w-16 bg-gray-200/50 rounded-lg mb-2" />
+                        <div className="h-3 w-12 bg-gray-100/50 rounded" />
+                      </div>
+                    ))}
+                  </div>
+                )}
 
                 {/* New Dynamic Progress Bar */}
                 {certInfo && (
@@ -136,12 +159,6 @@ export default function Home() {
                   </motion.div>
                 )}
 
-                {!stats && !certInfo && (
-                  <div className="h-40 mb-12 flex items-center justify-center" role="status" aria-live="polite">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600" aria-hidden="true"></div>
-                    <span className="sr-only">Chargement de vos statistiques…</span>
-                  </div>
-                )}
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                   <Link href={dashboardLink}>
@@ -166,16 +183,16 @@ export default function Home() {
                   🇫🇷 Excellence Républicaine
                 </motion.div>
                 <h1 id="hero-heading" className="text-4xl md:text-6xl font-black tracking-tighter text-gray-900 mb-8 leading-tight">
-                  Réussissez votre naturalisation en <span className="text-gradient-republic">France</span>. <br />
-                  Maîtrisez la <span className="text-gradient-republic">France</span> avec CiviqQuiz.
+                  Préparez sereinement votre <span className="text-gradient-republic">intégration</span>. <br />
+                  Réussissez votre examen civique avec CiviqQuiz.
                 </h1>
                 <p className="max-w-3xl mx-auto text-xl md:text-2xl text-gray-500 mb-12 font-light leading-relaxed">
-                  Préparez votre test de naturalisation française, votre titre de séjour et votre carte de résident en France grâce à des QCM conformes aux exigences officielles.
+                  Accédez à une préparation complète et conforme aux exigences officielles pour votre naturalisation, titre de séjour ou carte de résident.
                 </p>
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                   <Link href="/register">
                     <Button size="xl" className="px-12 rounded-full bg-black hover:bg-gray-800 text-white shadow-2xl transition-all active:scale-95 text-lg font-bold">
-                      Commencer ma préparation pour la France
+                      Je commence ma préparation gratuite
                     </Button>
                   </Link>
                   <Link href="#values">
@@ -194,18 +211,34 @@ export default function Home() {
       <section id="values" className="py-24 bg-white" aria-labelledby="values-heading">
         <div className="container mx-auto px-4">
           <div className="text-center mb-20">
-            <h2 id="values-heading" className="text-3xl md:text-5xl font-extrabold mb-4 text-gray-900">Les Piliers de l&apos;Examen Civique</h2>
+            <h2 id="values-heading" className="text-3xl md:text-5xl font-extrabold mb-4 text-gray-900">Les thèmes fondamentaux</h2>
             <div className="h-1.5 w-24 bg-gradient-to-r from-blue-600 via-white to-red-600 mx-auto rounded-full" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <motion.div
+            variants={{
+              hidden: { opacity: 0 },
+              show: {
+                opacity: 1,
+                transition: { staggerChildren: 0.15 }
+              }
+            }}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-100px" }}
+            className="grid grid-cols-1 md:grid-cols-3 gap-12"
+          >
             {[
-              { icon: Landmark, title: "Nos Institutions", desc: "Comprendre le fonctionnement de l'État, la séparation des pouvoirs et le rôle du Président.", color: "bg-blue-50 text-blue-600" },
-              { icon: Shield, title: "Laïcité & Valeurs", desc: "Maîtriser les principes fondamentaux qui régissent notre vivre-ensemble républicain.", color: "bg-gray-50 text-gray-900" },
-              { icon: Scale, title: "Droits & Devoirs", desc: "Se préparer aux questions cruciales sur la justice, l'égalité homme-femme et la démocratie.", color: "bg-red-50 text-red-600" }
+              { icon: Landmark, title: "Institutions & État", desc: "Comprenez le rôle des institutions, le fonctionnement de la démocratie et la séparation des pouvoirs.", color: "bg-blue-50 text-blue-600" },
+              { icon: Shield, title: "Valeurs & Principes", desc: "Appropriez-vous les valeurs de la République : liberté, égalité, fraternité et laïcité.", color: "bg-gray-50 text-gray-900" },
+              { icon: Scale, title: "Droits & Devoirs", desc: "Maîtrisez les notions essentielles de justice, de citoyenneté et de vivre-ensemble.", color: "bg-red-50 text-red-600" }
             ].map((value, idx) => (
               <motion.div
                 key={idx}
+                variants={{
+                  hidden: { opacity: 0, y: 30 },
+                  show: { opacity: 1, y: 0 }
+                }}
                 whileHover={{ y: -10 }}
                 className="p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all group overflow-hidden relative"
               >
@@ -217,7 +250,7 @@ export default function Home() {
                 <div className="absolute top-0 right-0 w-32 h-32 bg-gray-50 rounded-bl-full -z-10 opacity-50" aria-hidden="true" />
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -226,8 +259,8 @@ export default function Home() {
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-end justify-between mb-16 gap-6">
             <div className="max-w-2xl">
-              <span className="text-blue-600 font-bold tracking-widest text-sm uppercase">Outils Avancés</span>
-              <h2 id="features-heading" className="text-4xl md:text-5xl font-black text-gray-900 mt-2 italic uppercase">Une préparation de haut niveau</h2>
+              <span className="text-blue-600 font-bold tracking-widest text-sm uppercase">Outils d'excellence</span>
+              <h2 id="features-heading" className="text-4xl md:text-5xl font-black text-gray-900 mt-2 italic uppercase">Une préparation sur mesure</h2>
             </div>
             <Link href="/register">
               <Button variant="link" className="text-blue-600 font-bold text-lg group">
@@ -267,19 +300,38 @@ export default function Home() {
               <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
                 <div className="max-w-2xl">
                   <div className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest mb-6">
-                    ✨ Gemini Pro 1.5 Powered
+                    ✨ Assistant Intelligent
                   </div>
-                  <h3 className="text-3xl md:text-5xl font-black mb-6 leading-tight">L&apos;IA au service de votre réussite civique.</h3>
+                  <h3 className="text-3xl md:text-5xl font-black mb-6 leading-tight">L&apos;IA au service de votre réussite.</h3>
                   <p className="text-gray-400 text-lg mb-8 leading-relaxed font-light italic">
-                    Générez des QCM pédagogiques personnalisés selon votre niveau CECRL. Notre algorithme identifie vos faiblesses et crée des sessions d&apos;apprentissage sur-mesure.
+                    Générez des tests personnalisés adaptés à votre niveau. Notre assistant intelligent cible vos points de progression pour un apprentissage plus rapide.
                   </p>
-                  <div className="flex flex-wrap gap-3">
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: {
+                        opacity: 1,
+                        transition: { staggerChildren: 0.1 }
+                      }
+                    }}
+                    initial="hidden"
+                    whileInView="show"
+                    viewport={{ once: true }}
+                    className="flex flex-wrap gap-3"
+                  >
                     {['Carte de séjour', 'Résident', 'Naturalisation', 'Niveaux A1-B2'].map(tag => (
-                      <span key={tag} className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm font-medium">
+                      <motion.span
+                        key={tag}
+                        variants={{
+                          hidden: { opacity: 0, scale: 0.9 },
+                          show: { opacity: 1, scale: 1 }
+                        }}
+                        className="px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-sm font-medium backdrop-blur-sm"
+                      >
                         {tag}
-                      </span>
+                      </motion.span>
                     ))}
-                  </div>
+                  </motion.div>
                 </div>
                 <div className="flex flex-col items-center justify-center p-8 bg-white/5 rounded-3xl border border-white/10 backdrop-blur-sm min-w-[280px]">
                   <p className="text-sm font-bold text-blue-400 mb-2">SCORE DE PRÉCISION</p>
@@ -303,10 +355,10 @@ export default function Home() {
             className="mb-12"
           >
             <Heart className="w-12 h-12 text-red-500 mx-auto mb-6 animate-pulse" aria-hidden="true" />
-            <h2 id="cta-heading" className="text-4xl md:text-6xl font-black text-gray-900 mb-6 uppercase tracking-tighter">Devenir Citoyen.</h2>
+            <h2 id="cta-heading" className="text-4xl md:text-6xl font-black text-gray-900 mb-6 uppercase tracking-tighter">Bâtissons votre avenir.</h2>
             <p className="max-w-2xl mx-auto text-xl text-gray-500 font-light mb-12">
-              Chaque année, plus de 100 000 personnes rejoignent la communauté nationale. <br />
-              Commencez votre préparation dès aujourd&apos;hui avec les outils d&apos;excellence.
+              Rejoignez les milliers de candidats qui ont déjà réussi avec CiviqQuiz. <br />
+              Commencez votre préparation dès aujourd&apos;hui avec les meilleurs outils.
             </p>
           </motion.div>
 
@@ -330,16 +382,21 @@ function FeatureCard({ href, icon: Icon, title, desc }: { href: string, icon: an
   return (
     <Link href={href} className="block h-full group focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-3xl" aria-label={`${title} — ${desc}`}>
       <motion.div
-        whileHover={{ scale: 1.03 }}
-        transition={{ type: "spring", stiffness: 300 }}
-        className="h-full bg-white p-8 rounded-3xl border border-gray-100 hover:border-blue-200 shadow-sm hover:shadow-xl transition-all cursor-pointer flex flex-col items-start gap-4"
+        whileHover={{ y: -8, scale: 1.02 }}
+        transition={{ type: "spring", stiffness: 400, damping: 25 }}
+        className="h-full bg-white/70 backdrop-blur-md dark:bg-slate-900/40 p-8 rounded-3xl border border-white/50 dark:border-white/5 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_40px_rgb(0,0,0,0.08)] transition-all cursor-pointer flex flex-col items-start gap-5 relative overflow-hidden"
       >
-        <div className="p-3 bg-blue-50 rounded-2xl group-hover:bg-blue-600 group-hover:text-white transition-colors" aria-hidden="true">
+        {/* Subtle glow effect on hover */}
+        <div className="absolute -inset-2 bg-gradient-to-br from-blue-500/5 via-transparent to-red-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+        
+        <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-2xl group-hover:bg-blue-600 group-hover:text-white transition-all duration-300 relative z-10" aria-hidden="true">
           <Icon className="h-8 w-8 text-blue-600 group-hover:text-white transition-colors" />
         </div>
-        <h3 className="text-2xl font-bold text-gray-900">{title}</h3>
-        <p className="text-gray-500 flex-grow">{desc}</p>
-        <div className="pt-4 text-blue-600 font-bold flex items-center gap-1 group-hover:gap-3 transition-all" aria-hidden="true">
+        <div className="relative z-10 space-y-3">
+          <h3 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">{title}</h3>
+          <p className="text-slate-500 dark:text-slate-400 leading-relaxed font-medium">{desc}</p>
+        </div>
+        <div className="pt-6 mt-auto text-blue-600 dark:text-blue-400 font-black text-sm uppercase tracking-widest flex items-center gap-1 group-hover:gap-3 transition-all relative z-10" aria-hidden="true">
           Commencer <ArrowRight className="w-5 h-5" />
         </div>
       </motion.div>

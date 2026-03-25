@@ -11,31 +11,30 @@ const inter = Inter({
 export const metadata: Metadata = {
   metadataBase: new URL('https://civiqquiz.com'),
   title: {
-    default: "CiviqQuiz — Préparation Examen Civique Français 2026 | QCM Gratuit",
+    default: "CiviqQuiz — Votre succès à l'examen civique français 2026",
     template: "%s | CiviqQuiz"
   },
-  description: "Préparez l'examen civique français obligatoire depuis janvier 2026 pour votre titre de séjour ou naturalisation. QCM gratuit, 40 questions, 5 thématiques officielles. Entraînez-vous en conditions réelles.",
+  description: "La plateforme d'accompagnement pour réussir votre examen civique obligatoire. Préparez-vous sereinement à votre naturalisation ou votre titre de séjour avec nos QCM officiels et examens blancs.",
   keywords: [
-    "examen civique français", "QCM civique", "naturalisation France",
-    "titre de séjour", "test civique 2026", "préparation examen civique",
-    "carte de séjour pluriannuelle", "citoyenneté française",
-    "valeurs république", "droits devoirs citoyen",
-    "CiviqQuiz", "quiz civique gratuit"
+    "examen civique français", "réussir examen civique", "préparation naturalisation",
+    "titre de séjour France", "test civique 2026", "QCM civique gratuit",
+    "carte de résident", "intégration républicaine", "valeurs république",
+    "CiviqQuiz", "devenir français"
   ],
   authors: [{ name: "CiviqQuiz", url: "https://civiqquiz.com" }],
-  creator: "CiviqQuiz Engineering",
+  creator: "CiviqQuiz Team",
   openGraph: {
     type: "website",
     locale: "fr_FR",
     url: "https://civiqquiz.com",
     siteName: "CiviqQuiz",
-    title: "CiviqQuiz — Préparation Examen Civique Français 2026",
-    description: "La plateforme gratuite de référence pour réussir votre examen civique français. QCM, examens blancs, 5 thématiques officielles.",
+    title: "CiviqQuiz — Le guide complet pour votre examen civique",
+    description: "Réussissez votre examen civique français en toute confiance. Entraînements thématiques, examens blancs et suivi de progression gratuit.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "CiviqQuiz — Préparation Examen Civique 2026",
-    description: "Préparez l'examen civique obligatoire avec des QCM gratuits et illimités. 40 questions, 45 minutes, score min 80%.",
+    title: "CiviqQuiz — Préparez votre avenir en France",
+    description: "Tout pour réussir l'examen civique obligatoire : QCM gratuits, 40 questions, conditions réelles d'examen.",
   },
   robots: {
     index: true,

@@ -8,6 +8,11 @@ const nextConfig: NextConfig = {
     typescript: {
         ignoreBuildErrors: true,
     },
+    poweredByHeader: false,
+    compress: true,
+    images: {
+        formats: ['image/avif', 'image/webp'],
+    },
     serverExternalPackages: ['firebase-admin'],
     experimental: {
         optimizePackageImports: ['lucide-react', 'recharts', 'framer-motion'],

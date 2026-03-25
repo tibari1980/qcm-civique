@@ -76,12 +76,11 @@ export default function AboutPage() {
                         Depuis 2020, à vos côtés
                     </div>
                     <h1 className="text-4xl md:text-5xl font-extrabold mb-6 leading-tight">
-                        Accompagner votre<br />
-                        <span className="text-blue-200">Intégration Républicaine</span>
+                        Faciliter votre<br />
+                        <span className="text-blue-200">Parcours Citoyen</span>
                     </h1>
                     <p className="text-xl text-blue-100 max-w-2xl mx-auto leading-relaxed">
-                        Nous croyons que la connaissance de l&apos;histoire, de la culture et des valeurs de la France
-                        est la clé d&apos;une intégration réussie.
+                        Nous sommes convaincus que la maîtrise des valeurs républicaines est le premier pas vers une intégration réussie et épanouie.
                     </p>
                 </div>
             </section>
@@ -110,16 +109,13 @@ export default function AboutPage() {
                     <div>
                         <span className="text-[var(--color-primary)] font-semibold uppercase tracking-widest text-sm">Notre Mission</span>
                         <h2 className="text-3xl font-bold mt-2 mb-6 text-gray-900">
-                            Rendre l&apos;examen civique accessible à tous
+                            Un examen accessible, pour tous
                         </h2>
                         <p className="text-gray-600 leading-relaxed mb-4">
-                            Prépa Examen Civique FR est née d&apos;un constat simple : trop de candidats échouent à l&apos;examen
-                            civique faute d&apos;une préparation adaptée. Nous avons construit une plateforme pédagogique
-                            complète, structurée autour du programme officiel.
+                            CiviqQuiz est né d&apos;une volonté claire : lever les barrières à la préparation de l&apos;examen civique. Nous avons conçu un outil pédagogique moderne, directement inspiré du programme officiel.
                         </p>
                         <p className="text-gray-600 leading-relaxed mb-8">
-                            Notre approche combine des examens blancs fidèles au format officiel, des fiches de révision
-                            synthétiques, et un simulateur d&apos;entretien pour les candidats à la naturalisation.
+                            Notre méthode repose sur des simulations fidèles à la réalité, des fiches claires et un accompagnement bienveillant pour chaque étape de votre dossier.
                         </p>
                         <Link href="/register">
                             <Button size="lg" className="gap-2">
@@ -159,20 +155,20 @@ export default function AboutPage() {
                         {[
                             {
                                 step: '01',
-                                title: 'Maîtrise du Livret',
-                                description: 'Apprenez les 48 pages du livret du citoyen grâce à nos fiches interactives et résumés structurés.',
+                                title: 'Culture & Livret',
+                                description: 'Plongez dans le livret du citoyen via des fiches interactives qui vont à l&apos;essentiel.',
                                 color: 'text-blue-600',
                             },
                             {
                                 step: '02',
-                                title: 'Valeurs de la République',
-                                description: 'Comprenez en profondeur les principes fondateurs : laïcité, égalité, liberté, fraternité.',
+                                title: 'Valeurs Communes',
+                                description: 'Comprenez le sens profond des principes républicains pour mieux les intégrer.',
                                 color: 'text-green-600',
                             },
                             {
                                 step: '03',
-                                title: 'Soutien Académique',
-                                description: 'Entraînez-vous avec des QCM officiels, des examens blancs, et simulez votre entretien oral.',
+                                title: 'Réussite à l&apos;Examen',
+                                description: 'Mettez-vous en situation réelle avec nos QCM et préparez votre entretien oral.',
                                 color: 'text-purple-600',
                             },
                         ].map((item) => (

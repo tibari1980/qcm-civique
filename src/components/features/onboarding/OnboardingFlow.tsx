@@ -104,7 +104,7 @@ export default function OnboardingFlow() {
                                 Titre de Séjour
                             </h2>
                             <p className="text-sm sm:text-base text-gray-600 text-center mb-6 sm:mb-8 flex-grow">
-                                Pour le test écrit (QCM) de 40 questions requis pour la carte de séjour.
+                                Préparez l&apos;examen obligatoire (QCM) de 40 questions pour valider votre intégration.
                             </p>
                             <div className="space-y-2 sm:space-y-3 bg-gray-50 p-4 rounded-xl" aria-label="Points clés">
                                 <div className="flex items-center text-xs sm:text-sm text-gray-700">
@@ -147,7 +147,7 @@ export default function OnboardingFlow() {
                                 Naturalisation
                             </h2>
                             <p className="text-sm sm:text-base text-gray-600 text-center mb-6 sm:mb-8 flex-grow">
-                                Entretien d&apos;assimilation, culture générale et livret du citoyen.
+                                Un parcours complet pour l&apos;entretien d&apos;assimilation, la culture et l&apos;histoire de France.
                             </p>
                             <div className="space-y-2 sm:space-y-3 bg-gray-50 p-4 rounded-xl" aria-label="Points clés">
                                 <div className="flex items-center text-xs sm:text-sm text-gray-700">

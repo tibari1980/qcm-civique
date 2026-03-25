@@ -1,9 +1,0 @@
-   ▲ Next.js 15.1.6
-   - Environments: .env.local
-   - Experiments (use with caution):
-     · reactCompiler
-
-   Creating an optimized production build ...
-
-> Build error occurred
-[Error: Failed to load the `babel-plugin-react-compiler`. It is required to use the React Compiler. Please install it.]

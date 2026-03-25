@@ -27,7 +27,7 @@ const NIVEAUX: { id: NiveauCECRL; label: string; sublabel: string; color: string
 ];
 
 /* ─────────────────────────────────────────────
-   Données mode IA (Gemini)
+   Données mode IA (CiviqQuiz)
 ───────────────────────────────────────────── */
 const AI_THEMES: { id: ThemeQCM; label: string; icon: React.ReactNode }[] = [
     { id: 'vie_quotidienne', label: 'Vie quotidienne', icon: <Heart className="h-5 w-5" aria-hidden="true" /> },
@@ -64,7 +64,7 @@ export default function AIQuizConfigPage() {
     const router = useRouter();
     const { generateQCM, fetchFromFirestore, isLoading, error } = useAIQCM();
 
-    // Mode actif : 'banque' (Firestore) ou 'ia' (Gemini)
+    // Mode actif : 'banque' (Firestore) ou 'ia' (AI)
     const [mode, setMode] = useState<'banque' | 'ia'>('banque');
 
     // Sélections communes
@@ -145,7 +145,7 @@ export default function AIQuizConfigPage() {
                         ].join(' ')}
                     >
                         <Sparkles className="h-6 w-6" aria-hidden="true" />
-                        <span className="uppercase tracking-widest text-[10px]">Intelligence Gemini</span>
+                        <span className="uppercase tracking-widest text-[10px]">Assistant Intelligent</span>
                     </button>
                 </div>
 
@@ -294,7 +294,7 @@ export default function AIQuizConfigPage() {
                         ) : (
                             <>
                                 <Sparkles className="h-6 w-6 group-hover:animate-bounce transition-transform" />
-                                <span>GÉNÉRER AVEC GEMINI AI</span>
+                                <span>GÉNÉRER MON QCM PERSONNALISÉ</span>
                             </>
                         )}
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />

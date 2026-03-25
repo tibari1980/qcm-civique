@@ -68,7 +68,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                         }
                     } else {
                         // AUTO-REPAIR: If user exists in Auth but not in Firestore, create it
-                        console.log("[AuthContext] Firestore profile missing. Auto-repairing...");
                         const defaultProfile: UserProfile = {
                             uid: firebaseUser.uid,
                             email: firebaseUser.email || '',
@@ -134,22 +133,32 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return (
         <AuthContext.Provider value={{ user, userProfile, loading, isAdmin, signOut, refreshProfile }}>
             {loading ? (
-                <div className="fixed inset-0 flex flex-col items-center justify-center bg-[var(--color-background)] z-[9999]">
-                    <div className="relative mb-8">
-                        <div className="w-20 h-20 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin" />
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="w-2 h-2 bg-red-600 rounded-full animate-ping" />
+                <div className="fixed inset-0 flex flex-col items-center justify-center bg-white dark:bg-slate-950 z-[9999]">
+                    <div className="relative mb-12 animate-in fade-in zoom-in duration-700">
+                        {/* Elegant layered rings */}
+                        <div className="absolute inset-[-12px] border-2 border-blue-500/10 rounded-full animate-[spin_3s_linear_infinite]" />
+                        <div className="absolute inset-[-24px] border border-red-500/5 rounded-full animate-[spin_5s_linear_infinite_reverse]" />
+                        
+                        <div className="w-24 h-24 relative flex items-center justify-center">
+                            <div className="w-full h-full border-4 border-slate-100 dark:border-slate-800 border-t-blue-600 rounded-full animate-spin" />
+                            <div className="absolute flex items-center gap-1">
+                                <span className="w-2 h-2 rounded-full bg-blue-600 animate-bounce [animation-delay:-0.3s]" />
+                                <span className="w-2 h-2 rounded-full bg-slate-300 dark:bg-slate-700 animate-bounce [animation-delay:-0.15s]" />
+                                <span className="w-2 h-2 rounded-full bg-red-600 animate-bounce" />
+                            </div>
                         </div>
                     </div>
-                    <div className="flex flex-col items-center gap-2">
-                        <h2 className="text-xl font-bold tracking-tight text-gray-900">CiviQ Quiz</h2>
-                        <div className="flex gap-1">
-                            <div className="w-4 h-1 bg-blue-600 rounded-full" />
-                            <div className="w-4 h-1 bg-gray-200 rounded-full" />
-                            <div className="w-4 h-1 bg-red-600 rounded-full" />
+                    
+                    <div className="text-center space-y-3 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                        <h2 className="text-2xl font-black text-slate-900 dark:text-white uppercase tracking-widest italic">
+                            Civiq<span className="text-blue-600">Quiz</span>
+                        </h2>
+                        <div className="flex items-center justify-center gap-2">
+                             <div className="h-0.5 w-8 bg-gradient-to-r from-blue-600 to-transparent rounded-full" />
+                             <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.4em]">Excellence Civique</p>
+                             <div className="h-0.5 w-8 bg-gradient-to-l from-red-600 to-transparent rounded-full" />
                         </div>
                     </div>
-                    <p className="mt-8 text-sm text-gray-400 animate-pulse font-medium uppercase tracking-widest">Initialisation sécurisée...</p>
                 </div>
             ) : children}
         </AuthContext.Provider>

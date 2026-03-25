@@ -29,7 +29,6 @@ export async function POST(request: Request) {
             }, { status: 500 });
         }
 
-        console.log(`[Welcome API] Diagnostics - Sender: ${senderEmail}, KeyPresent: ${!!apiKey}, KeyFormat: ${apiKey.substring(0, 5)}...`);
 
         // Utiliser le template importé
         const htmlContent = welcomeTemplate(name);
@@ -57,7 +56,6 @@ export async function POST(request: Request) {
         const status = brevoResponse.status;
         const data = await brevoResponse.json();
 
-        console.log(`[Welcome API] Brevo Response (${status}):`, JSON.stringify(data));
 
         if (!brevoResponse.ok) {
             return NextResponse.json({

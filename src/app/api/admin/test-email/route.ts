@@ -19,8 +19,6 @@ export async function POST(request: Request) {
             }, { status: 500 });
         }
 
-        // Log key format for dev debugging (STAY SECURE: only show ends)
-        console.log(`[Test Email API] Key loaded. Format: ${apiKey.substring(0, 10)}...${apiKey.substring(apiKey.length - 4)}`);
 
         const name = "Test Admin";
         // Use provided sender or default
@@ -31,7 +29,6 @@ export async function POST(request: Request) {
 
         const htmlContent = welcomeTemplate(name);
 
-        console.log(`[Test Email API] Sending test to ${email} from ${sender.email}...`);
 
         const brevoResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
             method: 'POST',
@@ -49,7 +46,6 @@ export async function POST(request: Request) {
         });
 
         const data = await brevoResponse.json();
-        console.log(`[Test Email API] Brevo response status: ${brevoResponse.status}`);
 
         return NextResponse.json({
             success: brevoResponse.ok,

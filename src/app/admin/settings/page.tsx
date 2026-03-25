@@ -251,7 +251,7 @@ export default function AdminSettingsPage() {
                         <div className="space-y-4">
                             {([
                                 { key: 'enableInterview', label: "Entretien simulé", desc: "Active l'onglet de préparation à l'entretien" },
-                                { key: 'enableAIQCM', label: "Questions par IA", desc: "Autorise la génération de QCM via Gemini" },
+                                { key: 'enableAIQCM', label: "Questions par IA", desc: "Autorise la génération de QCM via l&apos;IA" },
                                 { key: 'maintenanceMode', label: "Mode Maintenance", desc: "Bloque l'accès aux utilisateurs (bientôt)" },
                             ] as const).map(({ key, label, desc }) => (
                                 <div key={key} className="flex items-center justify-between gap-4 p-2 hover:bg-gray-50 rounded-lg transition-colors">

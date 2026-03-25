@@ -18,7 +18,6 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Config ou ID manquant' }, { status: 400 });
         }
 
-        console.log(`[ULTRA-DELETE] Starting process for: ${docId}`);
 
         // 1. Obtenir le token d'accès
         const token = await getAccessToken();
@@ -36,7 +35,6 @@ export async function POST(request: Request) {
         const firestoreEmail = docData?.fields?.email?.stringValue;
         const firestoreInternalUid = docData?.fields?.uid?.stringValue;
 
-        console.log(`[ULTRA-DELETE] Intel Firestore - Email: ${firestoreEmail || 'N/A'}, Internal UID: ${firestoreInternalUid || 'N/A'}`);
 
         // 3. Identification CERTIFIÉE dans Firebase Auth
         const findAuthUids = async () => {
@@ -76,11 +74,9 @@ export async function POST(request: Request) {
         if (!docId.includes('@')) uidsToPurge.push(docId);
 
         const finalUids = Array.from(new Set(uidsToPurge.filter(Boolean))) as string[];
-        console.log(`[ULTRA-DELETE] Target UIDs for Auth removal:`, finalUids);
 
         // 4. Exécution de la destruction (Individuelle pour la fiabilité maximale)
         const deleteFromAuth = async (uid: string) => {
-            console.log(`[ULTRA-DELETE] Calling Auth:delete for ${uid}`);
             const res = await fetch(
                 `https://identitytoolkit.googleapis.com/v1/projects/${projectId}/accounts:delete`,
                 {
@@ -95,7 +91,6 @@ export async function POST(request: Request) {
         };
 
         const deleteFromFirestore = async () => {
-            console.log(`[ULTRA-DELETE] Calling Firestore:delete for ${docId}`);
             const res = await fetch(
                 `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/users/${docId}`,
                 {
@@ -110,7 +105,6 @@ export async function POST(request: Request) {
         const authResults = await Promise.all(finalUids.map(uid => deleteFromAuth(uid)));
         const firestoreResult = await deleteFromFirestore();
 
-        console.log(`[ULTRA-DELETE] All actions finished. Auth success count: ${authResults.filter(Boolean).length}/${authResults.length}`);
 
         return NextResponse.json({
             success: true,

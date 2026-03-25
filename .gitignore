@@ -41,7 +41,10 @@ yarn-error.log*
 next-env.d.ts
 
 # Build logs (generated locally)
-build-log.txt
+*.log
+*.txt
+!public/_headers
+!public/_redirects
 
 # Firebase service account keys (CRITIQUE — ne jamais committer)
 firebase-adminsdk*.json

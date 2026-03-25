@@ -55,10 +55,10 @@ const GUIDE_STEPS = [
         title: "1. Créez votre compte",
         description: "Inscription gratuite en 30 secondes avec votre email. Vous pouvez aussi essayer en mode invité.",
         details: [
-            "Cliquez sur « Inscription » en haut de la page",
-            "Renseignez votre nom, email et mot de passe",
-            "Choisissez votre parcours : Titre de Séjour ou Naturalisation",
-            "Votre tableau de bord personnalisé est prêt !"
+            "Inscrivez-vous en quelques secondes",
+            "Personnalisez votre profil (nom, email)",
+            "Sélectionnez votre objectif : Titre de séjour ou Naturalisation",
+            "Accédez instantanément à votre espace de révision"
         ],
         color: "bg-blue-500",
         link: "/register"
@@ -68,9 +68,9 @@ const GUIDE_STEPS = [
         title: "2. Choisissez votre parcours",
         description: "Deux parcours adaptés à votre situation administrative.",
         details: [
-            "Titre de Séjour : accès à l'entraînement thématique + examen blanc (40 questions, 45 min)",
-            "Naturalisation : entraînement complet + quiz culture générale approfondi",
-            "Vous pouvez changer de parcours à tout moment dans vos paramètres"
+            "Titre de Séjour : pour préparer l&apos;examen obligatoire (40 questions)",
+            "Naturalisation : pour approfondir votre culture générale républicaine",
+            "Ajustez votre choix à tout moment depuis vos réglages"
         ],
         color: "bg-indigo-500",
         link: "/onboarding"
@@ -240,7 +240,7 @@ export default function GuidePage() {
                             </span>
                         </h1>
                         <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto mb-8 font-light leading-relaxed">
-                            Le guide de référence pour préparer efficacement votre <strong className="text-white font-semibold">test de naturalisation française</strong>, votre <strong className="text-white font-semibold">titre de séjour</strong> et votre <strong className="text-white font-semibold">carte de résident en France</strong> grâce à des QCM conformes aux exigences officielles.
+                            Découvrez tout ce qu&apos;il faut savoir pour préparer sereinement votre <strong className="text-white font-semibold">intégration</strong>. De l&apos;examen civique à l&apos;entretien de naturalisation, nous vous guidons vers la réussite.
                         </p>
                         <div className="flex flex-wrap justify-center gap-4">
                             <Link href="/register">
@@ -525,7 +525,7 @@ export default function GuidePage() {
                         Questions fréquentes
                     </h2>
                     <p className="text-center text-gray-500 dark:text-gray-400 mb-12">
-                        Tout ce que vous devez savoir sur l'examen civique et CiviqQuiz.
+                        Retrouvez les réponses aux questions les plus fréquentes sur l&apos;examen et notre plateforme.
                     </p>
                     <div className="space-y-3">
                         {FAQ_ITEMS.map((item, i) => (

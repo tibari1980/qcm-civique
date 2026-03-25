@@ -151,7 +151,7 @@ export default function ExamSession() {
                         <CheckCircle2 className="h-8 w-8 text-slate-300" aria-hidden="true" />
                     </div>
                 </div>
-                <p className="text-slate-600 font-semibold animate-pulse">Génération d&apos;un examen unique...</p>
+                <p className="text-slate-600 font-semibold animate-pulse">Préparation de votre session d&apos;examen...</p>
             </div>
         );
     }
@@ -169,7 +169,7 @@ export default function ExamSession() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <p className="text-slate-600">
-                            Nous n&apos;avons pas pu récupérer assez de questions pour générer un examen complet de 40 questions.
+                            Nous n&apos;avons pas pu générer votre session. Vérifiez votre connexion ou réessayez dans quelques instants.
                         </p>
                     </CardContent>
                     <CardFooter className="justify-center py-8">
@@ -223,7 +223,7 @@ export default function ExamSession() {
                                     <AlertCircle className="h-6 w-6 text-red-500 flex-shrink-0 mt-1" aria-hidden="true" />
                                     <div>
                                         <p className="text-red-900 font-bold mb-1">Encore un petit effort !</p>
-                                        <p className="text-red-700 text-sm">Il vous manque {(32 - score)} points pour atteindre le seuil de réussite officiel (32/40).</p>
+                                        <p className="text-red-700 text-sm">Il vous manque {(32 - score)} point(s) pour valider cet examen blanc. Ne vous découragez pas !</p>
                                     </div>
                                 </div>
                             )}

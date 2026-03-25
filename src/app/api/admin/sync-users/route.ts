@@ -14,7 +14,6 @@ export async function POST(request: Request) {
         const projectId = process.env.FIREBASE_PROJECT_ID?.replace(/"/g, '');
         if (!projectId) return NextResponse.json({ error: 'Project ID missing (FIREBASE_PROJECT_ID)' }, { status: 500 });
 
-        console.log(`[Sync Users REST] Starting synchronization for project: ${projectId}`);
 
         const accessToken = await getAccessToken();
 
@@ -55,8 +54,6 @@ export async function POST(request: Request) {
         // On accepte 'users' ou 'userInfo' car le nom peut varier selon la version ou la config
         const authUsers = data.users || data.userInfo || [];
 
-        console.log(`[Sync Users REST] API Response Keys:`, Object.keys(data));
-        console.log(`[Sync Users REST] Found ${authUsers.length} users. RecordsCount: ${data.recordsCount || 'N/A'}`);
 
         let createdCount = 0;
         let skipCount = 0;
@@ -140,7 +137,6 @@ export async function POST(request: Request) {
                     }
 
                     if (updateMasks.length > 0) {
-                        console.log(`[Sync Users REST] Repairing fields [${updateMasks.join(',')}] for ${uid}`);
                         const maskParam = updateMasks.map(m => `updateMask.fieldPaths=${m}`).join('&');
                         await fetch(
                             `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/users/${uid}?${maskParam}`,

@@ -142,9 +142,7 @@ export default function AdminUsersPage() {
 
         try {
             setUpdatingUid(uid);
-            const result = await AdminService.deleteUser(uid);
-            // On peut loguer le succès ou montrer un petit feedback non bloquant
-            console.log("Suppression réussie:", result);
+            await AdminService.deleteUser(uid);
         } catch (error: any) {
             console.error("Échec de la suppression:", error);
             alert(`Erreur lors de la suppression de ${name} : ${error.message || 'Le serveur n\'a pas répondu'}`);

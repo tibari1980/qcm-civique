@@ -8,8 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Eye, EyeOff, Mail, Lock, LogIn } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
+import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from 'firebase/auth';
 import { useAuth } from '@/context/AuthContext';
 import { useSettings } from '@/context/SettingsContext';
 import Image from 'next/image';
@@ -27,6 +27,7 @@ export default function LoginPage() {
     const { settings } = useSettings();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [rememberMe, setRememberMe] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -53,6 +54,8 @@ export default function LoginPage() {
         setError('');
 
         try {
+            // Set persistence based on rememberMe checkbox
+            await setPersistence(auth, rememberMe ? browserLocalPersistence : browserSessionPersistence);
             await signInWithEmailAndPassword(auth, email, password);
             // La redirection est gérée par le useEffect qui attend le profil utilisateur
         } catch (err: any) {
@@ -170,8 +173,14 @@ export default function LoginPage() {
                         </div>
 
                         <div className="flex items-center">
-                            <input className="w-4 h-4 text-[#002394] border-gray-300 rounded focus:ring-blue-600" id="remember" type="checkbox" />
-                            <label className="ml-2 block text-sm text-gray-600 dark:text-gray-400" htmlFor="remember">
+                            <input 
+                                className="w-4 h-4 text-[#002394] border-gray-300 rounded focus:ring-blue-600 cursor-pointer accent-[#ed2939]" 
+                                id="remember" 
+                                type="checkbox" 
+                                checked={rememberMe}
+                                onChange={(e) => setRememberMe(e.target.checked)}
+                            />
+                            <label className="ml-2 block text-sm text-gray-600 dark:text-gray-400 cursor-pointer select-none" htmlFor="remember">
                                 Se souvenir de moi sur cet appareil
                             </label>
                         </div>

@@ -39,7 +39,7 @@ export function Footer() {
                             <div className="h-1 w-12 bg-blue-600 rounded-full" />
                         </div>
                         <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
-                            La plateforme de référence pour réussir votre examen civique français. Excellence, pédagogie et réussite.
+                            Votre partenaire de confiance pour réussir l&apos;examen civique. Une approche simple, efficace et humaine pour votre intégration.
                         </p>
                         <div className="flex items-center gap-4">
                             {settings.contactEmail && (
@@ -137,7 +137,7 @@ export function Footer() {
 
                     <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-gray-700">
                         <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-                        Propulsé par CiviqQuiz Engineering
+                        Propulsé par l&apos;expertise CiviqQuiz
                     </div>
                 </div>
             </div>
