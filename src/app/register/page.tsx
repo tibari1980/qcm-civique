@@ -53,6 +53,14 @@ export default function RegisterPage() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        
+        // Anti-spam honeypot check
+        const formData = new FormData(e.currentTarget as HTMLFormElement);
+        if (formData.get('website_url')) {
+            console.warn('Bot detected via honeypot');
+            return;
+        }
+
         if (password !== confirmPassword) {
             setError("Les mots de passe ne correspondent pas. Veuillez vérifier et réessayer.");
             return;
@@ -251,6 +259,12 @@ export default function RegisterPage() {
                                         {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                                     </button>
                                 </div>
+                            </div>
+
+                            {/* Honeypot field for anti-spam (invisible to humans) */}
+                            <div className="hidden" aria-hidden="true">
+                                <label htmlFor="website_url">Website URL (ne pas remplir)</label>
+                                <input id="website_url" type="text" name="website_url" tabIndex={-1} autoComplete="off" />
                             </div>
                         </div>
 

@@ -11,6 +11,8 @@ import { UserService } from '@/services/user.service';
 import { useSettings } from '@/context/SettingsContext';
 import { FrenchFlag } from '@/components/layout/FrenchFlag';
 
+import { FaqSection } from '@/components/features/home/FaqSection';
+
 export default function Home() {
   const { user, userProfile, isAdmin } = useAuth();
   const { settings } = useSettings();
@@ -90,9 +92,9 @@ export default function Home() {
                     role="list"
                   >
                     {[
-                      { label: "Tests", value: stats.total_attempts, color: "text-blue-600" },
-                      { label: "Moyenne", value: `${stats.average_score}%`, color: "text-green-600" },
-                      { label: "Thèmes", value: Object.keys(stats.theme_stats).length, color: "text-purple-600" },
+                      { label: "Tests", value: stats.total_attempts, color: "text-blue-800 dark:text-blue-300" },
+                      { label: "Moyenne", value: `${stats.average_score}%`, color: "text-emerald-800 dark:text-emerald-300" },
+                      { label: "Thèmes", value: Object.keys(stats.theme_stats).length, color: "text-indigo-800 dark:text-indigo-300" },
                       { label: "Dashboard", value: null, isLink: true }
                     ].map((item, idx) => (
                       <motion.div
@@ -345,6 +347,9 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+      {/* FAQ Section */}
+      <FaqSection />
 
       {/* Signature & Closing */}
       <section className="py-24 bg-white relative overflow-hidden" aria-labelledby="cta-heading">
