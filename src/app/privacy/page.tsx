@@ -120,7 +120,7 @@ En cas de violation de données susceptible d'engendrer un risque pour vos droit
         content: `Pour toute question relative à cette politique ou pour exercer vos droits :
 
 • Email DPO : dpo@civiqquiz.com
-• Email support : contact@civiqquiz.com
+• Email support : support@civiqquiz.com
 • Adresse postale : DPO – CiviQ Quiz, 75 Rue de Rivoli, 75001 Paris
 
 Vous avez également le droit d'introduire une réclamation auprès de la CNIL (Commission Nationale de l'Informatique et des Libertés) : www.cnil.fr – Tél. 01 53 73 22 22.`,

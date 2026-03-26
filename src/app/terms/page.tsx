@@ -36,7 +36,7 @@ Date d'entrée en vigueur : 1er janvier 2026.`,
 • Fournir une adresse email valide et un mot de passe sécurisé
 • Fournir des informations exactes et à jour
 
-Vous êtes responsable de la confidentialité de vos identifiants et de toute activité réalisée depuis votre compte. En cas d'utilisation non autorisée, signalez-le immédiatement à contact@civiqquiz.com.
+Vous êtes responsable de la confidentialité de vos identifiants et de toute activité réalisée depuis votre compte. En cas d'utilisation non autorisée, signalez-le immédiatement à support@civiqquiz.com.
 
 Nous nous réservons le droit de suspendre ou supprimer tout compte en cas de violation des présentes CGU, d'activités frauduleuses, ou d'inactivité prolongée supérieure à 24 mois.`,
     },

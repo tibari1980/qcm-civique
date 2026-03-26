@@ -35,7 +35,7 @@ export async function POST(req: Request) {
             body: JSON.stringify({
                 sender: {
                     name: "CiviQ Quiz Contact",
-                    email: "contact@civiqquiz.com"
+                    email: "support@civiqquiz.com"
                 },
                 to: [
                     {

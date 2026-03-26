@@ -46,7 +46,7 @@ export default function AdminUsersPage() {
     };
 
     const handleTestEmail = async (email: string) => {
-        const senderEmail = prompt(`Envoyer un email de test à ${email} ?\n\nLaissez vide pour utiliser contact@civiqquiz.com\nOu entrez votre email vérifié Brevo (ex: ${user?.email}) :`, "");
+        const senderEmail = prompt(`Envoyer un email de test à ${email} ?\n\nLaissez vide pour utiliser support@civiqquiz.com\nOu entrez votre email vérifié Brevo (ex: ${user?.email}) :`, "");
         if (senderEmail === null) return; // Cancelled
 
         setTestingEmail(email);

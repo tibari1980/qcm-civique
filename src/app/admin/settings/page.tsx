@@ -32,7 +32,7 @@ const DEFAULTS: AppSettings = {
     // New defaults
     appName: 'CiviqQuiz',
     brandColor: '#002394',
-    contactEmail: 'contact@civiqquiz.com',
+    contactEmail: 'support@civiqquiz.com',
     socialInstagram: '',
     socialLinkedIn: '',
     maintenanceMode: false,

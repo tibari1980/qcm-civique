@@ -27,7 +27,7 @@ const DEFAULTS: AppSettings = {
     enableAIQCM: true,
     announcementMessage: '',
     announcementActive: false,
-    contactEmail: 'contact@civiqquiz.com',
+    contactEmail: 'support@civiqquiz.com',
     socialInstagram: '',
     socialLinkedIn: '',
     maintenanceMode: false,

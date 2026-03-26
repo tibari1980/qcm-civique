@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { LucideIcon, BookOpen, Target, GraduationCap, AlertCircle, ChevronRight } from 'lucide-react';
+import { LucideIcon, BookOpen, Target, GraduationCap, AlertCircle, ChevronRight, MessageCircleQuestion } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 /**
@@ -61,7 +61,7 @@ function ActionCard({ href, title, description, icon: Icon, colorClass, iconBgCl
 
 export function QuickActions() {
     return (
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12" aria-label="Actions rapides">
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-12" aria-label="Actions rapides">
             <ActionCard
                 href="/fiches"
                 title="Réviser"
@@ -97,6 +97,15 @@ export function QuickActions() {
                 colorClass="bg-orange-50/50"
                 iconBgClass="bg-orange-600 shadow-orange-200"
                 badge="Focus"
+            />
+            <ActionCard
+                href="/contact"
+                title="Aide & Feedback"
+                description="Un problème ou une suggestion ? Notre équipe vous écoute."
+                icon={MessageCircleQuestion}
+                colorClass="bg-rose-50/50"
+                iconBgClass="bg-rose-600 shadow-rose-200"
+                badge="Support"
             />
         </section>
     );

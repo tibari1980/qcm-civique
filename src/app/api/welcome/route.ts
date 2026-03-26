@@ -19,7 +19,7 @@ export async function POST(request: Request) {
         }
 
         const apiKey = process.env.BREVO_API_KEY;
-        const senderEmail = process.env.BREVO_SENDER_EMAIL || 'contact@civiqquiz.com';
+        const senderEmail = process.env.BREVO_SENDER_EMAIL || 'support@civiqquiz.com';
 
         if (!apiKey) {
             console.error('[Welcome API] CRITICAL ERROR: BREVO_API_KEY is missing from environment.');

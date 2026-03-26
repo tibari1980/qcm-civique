@@ -24,7 +24,7 @@ export async function POST(request: Request) {
         // Use provided sender or default
         const sender = {
             name: 'CiviQ Quiz',
-            email: senderEmail || 'contact@civiqquiz.com'
+            email: senderEmail || 'support@civiqquiz.com'
         };
 
         const htmlContent = welcomeTemplate(name);
