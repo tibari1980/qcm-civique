@@ -142,6 +142,40 @@ export default function ExamSession() {
         return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
     };
 
+    const currentQuestion = questions[currentQuestionIndex];
+
+    // Keyboard navigation (A, B, C, D + Arrows + Enter) - MUST BE ABOVE EARLY RETURNS
+    useEffect(() => {
+        if (isFinished || isLoadingData || loading || !currentQuestion) return;
+
+        const handleKeyDown = (e: KeyboardEvent) => {
+            const key = e.key.toLowerCase();
+            
+            // Answer selection (A=0, B=1, C=2, D=3)
+            if (['a', 'b', 'c', 'd'].includes(key)) {
+                const index = key.charCodeAt(0) - 97;
+                if (currentQuestion.choices[index] !== undefined) {
+                    handleAnswerSelect(index);
+                }
+            } else if (['1', '2', '3', '4'].includes(key)) {
+                const index = parseInt(key) - 1;
+                if (currentQuestion.choices[index] !== undefined) {
+                    handleAnswerSelect(index);
+                }
+            }
+            
+            // Navigation
+            if (e.key === 'ArrowRight' || (e.key === 'Enter' && answers[currentQuestionIndex] !== undefined)) {
+                goToNext();
+            } else if (e.key === 'ArrowLeft') {
+                goToPrev();
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [currentQuestionIndex, answers, isFinished, isLoadingData, loading, currentQuestion, handleAnswerSelect, goToNext, goToPrev]);
+
 
     if (loading || isLoadingData) {
         return (
@@ -244,40 +278,6 @@ export default function ExamSession() {
             </main>
         );
     }
-
-    const currentQuestion = questions[currentQuestionIndex];
-
-    // Keyboard navigation (A, B, C, D + Arrows + Enter)
-    useEffect(() => {
-        if (isFinished || isLoadingData || loading || !currentQuestion) return;
-
-        const handleKeyDown = (e: KeyboardEvent) => {
-            const key = e.key.toLowerCase();
-            
-            // Answer selection (A=0, B=1, C=2, D=3)
-            if (['a', 'b', 'c', 'd'].includes(key)) {
-                const index = key.charCodeAt(0) - 97;
-                if (currentQuestion.choices[index] !== undefined) {
-                    handleAnswerSelect(index);
-                }
-            } else if (['1', '2', '3', '4'].includes(key)) {
-                const index = parseInt(key) - 1;
-                if (currentQuestion.choices[index] !== undefined) {
-                    handleAnswerSelect(index);
-                }
-            }
-            
-            // Navigation
-            if (e.key === 'ArrowRight' || (e.key === 'Enter' && answers[currentQuestionIndex] !== undefined)) {
-                goToNext();
-            } else if (e.key === 'ArrowLeft') {
-                goToPrev();
-            }
-        };
-
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [currentQuestionIndex, answers, isFinished, isLoadingData, loading, currentQuestion, handleAnswerSelect, goToNext, goToPrev]);
 
     const slideVariants = {
         enter: (dir: number) => ({

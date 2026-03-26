@@ -73,32 +73,42 @@ export const QuestionService = {
     },
 
     /**
-     * Récupère 40 questions mélangées, équilibrées entre tous les thèmes.
+     * Récupère 40 questions mélangées, parfaitement équilibrées entre tous les thèmes.
      */
     getExamQuestions: async (max: number = 40, examType?: string): Promise<Question[]> => {
         try {
+            // Pour garantir un examen équilibré, on pioche un nombre égal dans chaque thématique
+            const targetQuestionsPerTheme = Math.ceil(max / THEMES.length);
+
             const poolResults = await Promise.all(
                 THEMES.map(t =>
-                    getDocs(query(collection(db, 'questions'), where('theme', '==', t), limit(100)))
-                        .then(s => s.docs.map(d => ({ id: d.id, ...d.data() } as Question)))
+                    getDocs(query(collection(db, 'questions'), where('theme', '==', t), limit(targetQuestionsPerTheme * 3)))
+                        .then(s => {
+                            let qs = s.docs.map(d => ({ id: d.id, ...d.data() } as Question));
+                            
+                            // Filtrage précoce par type d'examen
+                            if (examType) {
+                                qs = qs.filter(q => {
+                                    const types = q.exam_types || (q.exam_type ? [q.exam_type] : ['titre_sejour']);
+                                    return types.includes(examType);
+                                });
+                            }
+                            
+                            // On mélange chaque thématique et on prend le quota cible
+                            return shuffle(qs).slice(0, targetQuestionsPerTheme);
+                        })
                 )
             );
 
             let all = poolResults.flat();
-
-            // Filtrage par parcours
-            if (examType) {
-                all = all.filter(q => {
-                    const types = q.exam_types || (q.exam_type ? [q.exam_type] : ['titre_sejour']);
-                    return types.includes(examType);
-                });
-            }
-
             all = dedupe(all);
-            const randomized = shuffle(all);
-            return randomized.slice(0, max);
+
+            // Si on en a un peu trop à cause de l'arrondi (Math.ceil), on réduit à 'max'
+            const balancedSelection = shuffle(all).slice(0, max);
+            
+            return balancedSelection;
         } catch (error) {
-            console.error('Error fetching exam questions:', error);
+            console.error('Error fetching exam questions (balanced):', error);
             return [];
         }
     },
