@@ -1,3 +1,4 @@
+export const runtime = 'edge';
 import TrainingSession from '../../../components/features/training/TrainingSession';
 
 export default function TrainingSessionPage() {

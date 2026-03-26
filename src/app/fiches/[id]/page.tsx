@@ -1,4 +1,5 @@
 import React from 'react';
+export const runtime = 'edge';
 import { notFound } from 'next/navigation';
 
 export const dynamicParams = false;
