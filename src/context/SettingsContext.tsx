@@ -41,14 +41,28 @@ interface SettingsContextType {
 
 const SettingsContext = createContext<SettingsContextType | undefined>(undefined);
 
+const SETTINGS_CACHE_KEY = 'civiqquiz-settings-cache';
+
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
-    const [settings, setSettings] = useState<AppSettings>(DEFAULTS);
+    const [settings, setSettings] = useState<AppSettings>(() => {
+        // Instant render from localStorage cache (stale-while-revalidate)
+        if (typeof window !== 'undefined') {
+            try {
+                const cached = localStorage.getItem(SETTINGS_CACHE_KEY);
+                if (cached) return { ...DEFAULTS, ...JSON.parse(cached) };
+            } catch { /* ignore parse errors */ }
+        }
+        return DEFAULTS;
+    });
     const [loading, setLoading] = useState(true);
 
     const refreshSettings = async () => {
         try {
             const raw = await AdminService.getAppSettings();
-            setSettings({ ...DEFAULTS, ...(raw as Partial<AppSettings>) });
+            const merged = { ...DEFAULTS, ...(raw as Partial<AppSettings>) };
+            setSettings(merged);
+            // Persist to localStorage for next visit
+            try { localStorage.setItem(SETTINGS_CACHE_KEY, JSON.stringify(merged)); } catch { /* quota exceeded */ }
         } catch (err) {
             console.error('Failed to fetch settings:', err);
         } finally {
