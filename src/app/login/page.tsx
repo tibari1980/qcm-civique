@@ -8,6 +8,7 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Eye, EyeOff, Mail, Lock, LogIn } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../components/ui/card';
+import { motion } from 'framer-motion';
 import { auth } from '../../lib/firebase';
 import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from 'firebase/auth';
 import { useAuth } from '../../context/AuthContext';
@@ -103,35 +104,39 @@ export default function LoginPage() {
             <div className="flex flex-col justify-center w-full lg:w-1/2 px-6 sm:px-8 md:px-16 lg:px-24 xl:px-32 bg-gray-50 dark:bg-gray-900 pb-12 pt-8 lg:pt-12">
                 <div className="max-w-md w-full mx-auto">
                     {/* Header/Logo Section */}
-                    <div className="flex items-center gap-3 mb-10">
+                    <div className="flex items-center gap-4 mb-12">
                         <div className="flex flex-col">
-                            <div className="flex items-center gap-2">
-                                <div className="w-8 h-6 flex overflow-hidden rounded-sm border border-gray-200 shadow-sm">
+                            <div className="flex items-center gap-3">
+                                <div className="flex h-10 w-28 shadow-3d-sm rounded-md overflow-hidden border-2 border-white">
                                     <div className="w-1/3 bg-[#002394]"></div>
                                     <div className="w-1/3 bg-white"></div>
                                     <div className="w-1/3 bg-[#ed2939]"></div>
                                 </div>
-                                <h2 className="text-[#002394] dark:text-white text-xl font-bold leading-tight tracking-tight" id="login-title">
+                                <h2 className="text-[#002394] dark:text-white text-2xl font-black leading-tight tracking-tight antialiased" id="login-title">
                                     {settings.appName}
                                 </h2>
                             </div>
-                            <p className="text-xs uppercase tracking-[0.2em] text-[#002394]/60 dark:text-blue-400 mt-1 font-semibold" id={headingDescId}>
-                                Ministère de l'Intérieur
+                            <p className="text-[10px] uppercase tracking-[0.4em] text-slate-400 mt-2 font-black antialiased" id={headingDescId}>
+                                Liberté • Égalité • Fraternité
                             </p>
                         </div>
                     </div>
 
-                    <div className="mb-10">
-                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">Bienvenue</h1>
-                        <p className="text-gray-600 dark:text-gray-400">Connectez-vous à votre espace républicain pour poursuivre votre préparation.</p>
+                    <div className="mb-10 space-y-2">
+                        <h1 className="text-4xl font-black text-slate-900 dark:text-white leading-tight tracking-tight antialiased">Ravi de vous revoir</h1>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium">Poursuivez votre préparation vers la citoyenneté française.</p>
                     </div>
 
                     <div id={errorId} role="alert" aria-live="assertive" aria-atomic="true">
                         {error && (
-                            <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-md text-sm mb-6">
-                                <span className="sr-only">Erreur : </span>
+                            <motion.div 
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className="bg-red-50 border-2 border-red-100 text-red-700 p-4 rounded-2xl text-sm mb-8 font-bold flex items-center gap-3 shadow-3d-sm"
+                            >
+                                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                                 {error}
-                            </div>
+                            </motion.div>
                         )}
                     </div>
 
@@ -187,36 +192,36 @@ export default function LoginPage() {
 
                         <button
                             type="submit" disabled={loading} aria-busy={loading}
-                            className="w-full bg-[#002394] hover:bg-blue-900 text-white font-bold py-3.5 rounded-lg transition-colors shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2 disabled:bg-blue-400"
+                            className="w-full bg-primary hover:bg-blue-800 text-white font-black py-4 rounded-2xl transition-all shadow-3d-md hover:shadow-3d-lg flex items-center justify-center gap-3 disabled:bg-blue-300 active:scale-95 antialiased"
                         >
                             {loading ? (
                                 <>
-                                    <span className="animate-spin text-lg">⏳</span> Connexion en cours...
+                                    <span className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full" /> Connexion...
                                 </>
                             ) : (
                                 <>
-                                    Accéder à mon espace <LogIn className="h-5 w-5" />
+                                    Entrer dans mon espace <LogIn className="h-5 w-5" />
                                 </>
                             )}
                         </button>
                     </form>
 
-                    <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-800 text-center">
-                        <p className="text-gray-600 dark:text-gray-400 text-sm">
-                            Pas encore de compte ?{' '}
-                            <Link className="text-[#002394] dark:text-blue-400 font-bold hover:underline" href="/register">
-                                S'inscrire à la formation
+                    <div className="mt-10 pt-10 border-t border-slate-100 dark:border-slate-800 text-center">
+                        <p className="text-slate-500 dark:text-slate-400 font-medium">
+                            Nouveau sur la plateforme ?{' '}
+                            <Link className="text-primary dark:text-blue-400 font-black hover:underline" href="/register">
+                                Créer un compte gratuit
                             </Link>
                         </p>
                     </div>
 
                     {/* Footer Motto */}
-                    <div className="mt-12 text-center">
-                        <p className="text-[#002394]/40 dark:text-gray-500 text-xs font-bold uppercase tracking-[0.3em] flex items-center justify-center gap-4">
+                    <div className="mt-16 text-center">
+                        <p className="text-slate-300 dark:text-slate-600 text-[10px] font-black uppercase tracking-[0.5em] flex items-center justify-center gap-6 antialiased">
                             <span>Liberté</span>
-                            <span className="w-1 h-1 bg-[#002394]/40 rounded-full dark:bg-gray-500"></span>
+                            <span className="w-1.5 h-1.5 bg-slate-200 rounded-full"></span>
                             <span>Égalité</span>
-                            <span className="w-1 h-1 bg-[#002394]/40 rounded-full dark:bg-gray-500"></span>
+                            <span className="w-1.5 h-1.5 bg-slate-200 rounded-full"></span>
                             <span>Fraternité</span>
                         </p>
                     </div>

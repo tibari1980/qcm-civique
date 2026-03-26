@@ -87,19 +87,23 @@ export default function CertificateGenerator({ userName, date, track, preview = 
         <div className="space-y-6">
             {/* Action Buttons */}
             {!preview && (
-                <div className="flex justify-end gap-3 no-print">
-                    <Button variant="outline" onClick={handlePrint} className="gap-2 h-11 px-6 rounded-xl border-gray-200 hover:bg-gray-50 font-bold transition-all">
-                        <Printer className="h-4 w-4" /> Imprimer
+                <div className="flex flex-wrap justify-center sm:justify-end gap-4 no-print">
+                    <Button 
+                        variant="outline" 
+                        onClick={handlePrint} 
+                        className="gap-3 h-14 px-8 rounded-2xl border-2 border-slate-100 font-black text-slate-700 hover:bg-slate-50 hover:border-slate-200 shadow-sm transition-all active:scale-95"
+                    >
+                        <Printer className="h-5 w-5" /> Imprimer
                     </Button>
                     <Button
                         onClick={handleDownloadPDF}
                         disabled={isGenerating}
-                        className="bg-blue-600 hover:bg-blue-700 h-11 px-6 rounded-xl gap-2 font-bold shadow-lg shadow-blue-200 transition-all disabled:opacity-70"
+                        className="bg-primary hover:bg-blue-700 h-14 px-8 rounded-2xl gap-3 font-black text-white shadow-3d-md hover:shadow-3d-lg transition-all active:scale-95 disabled:opacity-70"
                     >
                         {isGenerating ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
+                            <Loader2 className="h-5 w-5 animate-spin" />
                         ) : (
-                            <Download className="h-4 w-4" />
+                            <Download className="h-5 w-5" />
                         )}
                         Télécharger (PDF)
                     </Button>
@@ -107,36 +111,48 @@ export default function CertificateGenerator({ userName, date, track, preview = 
             )}
 
             {/* Certificate Visual Area */}
-            <Card className="border-none shadow-2xl bg-white overflow-hidden max-w-4xl mx-auto cert-card" ref={certificateRef}>
-                <CardContent className="p-12 relative min-h-[600px] flex flex-col items-center justify-between text-center border-[12px] border-double border-blue-50/50 m-4 bg-white">
+            <Card className="premium-card-3d border-none bg-white overflow-hidden max-w-4xl mx-auto cert-card" ref={certificateRef}>
+                <CardContent className="p-8 md:p-16 relative min-h-[650px] flex flex-col items-center justify-between text-center border-[16px] border-slate-50 m-4 md:m-8 bg-white shadow-inner">
 
-                    {/* Corner Decorations */}
-                    <div className="absolute top-4 left-4 w-20 h-20 border-t-4 border-l-4 border-blue-600/10" />
-                    <div className="absolute top-4 right-4 w-20 h-20 border-t-4 border-r-4 border-blue-600/10" />
-                    <div className="absolute bottom-4 left-4 w-20 h-20 border-b-4 border-l-4 border-blue-600/10" />
-                    <div className="absolute bottom-4 right-4 w-20 h-20 border-b-4 border-r-4 border-blue-600/10" />
+                    {/* Corner Decorations - Premium Gold Style */}
+                    <div className="absolute top-6 left-6 w-32 h-32 border-t-4 border-l-4 border-amber-400/20 rounded-tl-3xl" />
+                    <div className="absolute top-6 right-6 w-32 h-32 border-t-4 border-r-4 border-amber-400/20 rounded-tr-3xl" />
+                    <div className="absolute bottom-6 left-6 w-32 h-32 border-b-4 border-l-4 border-amber-400/20 rounded-bl-3xl" />
+                    <div className="absolute bottom-6 right-6 w-32 h-32 border-b-4 border-r-4 border-amber-400/20 rounded-br-3xl" />
+
+                    {/* Official Banner */}
+                    <div className="absolute top-0 left-0 right-0 h-2 flex opacity-80" aria-hidden="true">
+                        <div className="h-full w-1/3 bg-[#002654]" />
+                        <div className="h-full w-1/3 bg-white" />
+                        <div className="h-full w-1/3 bg-[#ED2939]" />
+                    </div>
 
                     {/* Header with Republic Flag & Devise */}
-                    <div className="space-y-6 pt-4 w-full">
-                        <div className="flex flex-col items-center gap-4">
-                            {/* Official Tricolored Header */}
-                            <div className="flex h-12 w-32 shadow-sm rounded-sm overflow-hidden border border-gray-100">
+                    <div className="space-y-8 pt-8 w-full">
+                        <div className="flex flex-col items-center gap-6">
+                            <div className="flex h-14 w-40 shadow-3d-sm rounded-lg overflow-hidden border-2 border-white">
                                 <div className="bg-[#002654] w-1/3 h-full" />
                                 <div className="bg-white w-1/3 h-full" />
                                 <div className="bg-[#ED2939] w-1/3 h-full" />
                             </div>
 
-                            <div className="space-y-1">
-                                <h1 className="text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">République Française</h1>
-                                <p className="text-[11px] font-serif italic font-bold text-gray-500 tracking-wider">
-                                    Liberté • Égalité • Fraternité
-                                </p>
+                            <div className="space-y-2">
+                                <h1 className="text-[12px] font-black uppercase tracking-[0.6em] text-slate-400 antialiased">République Française</h1>
+                                <div className="flex items-center gap-4 justify-center">
+                                    <div className="h-px w-8 bg-slate-200" />
+                                    <p className="text-[14px] font-serif italic font-black text-slate-600 tracking-widest uppercase">
+                                        Liberté • Égalité • Fraternité
+                                    </p>
+                                    <div className="h-px w-8 bg-slate-200" />
+                                </div>
                             </div>
                         </div>
 
-                        <div className="pt-4">
-                            <h2 className="text-5xl font-serif italic text-blue-900 drop-shadow-sm">Certificat de Réussite</h2>
-                            <div className="w-16 h-0.5 bg-amber-400 mx-auto mt-4" />
+                        <div className="pt-8 relative">
+                            <h2 className="text-6xl md:text-7xl font-serif italic text-slate-900 drop-shadow-md tracking-tight">
+                                Certificat de Réussite
+                            </h2>
+                            <div className="w-32 h-1.5 bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-400 mx-auto mt-8 rounded-full shadow-3d-sm" />
                         </div>
                     </div>
 
@@ -155,36 +171,43 @@ export default function CertificateGenerator({ userName, date, track, preview = 
                     </div>
 
                     {/* Bottom Info */}
-                    <div className="w-full flex justify-between items-end pb-4 px-10">
-                        <div className="text-left space-y-2">
-                            <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Fait le</p>
-                            <p className="text-base font-bold text-gray-800 border-b border-gray-100 pb-1">
+                    <div className="w-full flex justify-between items-end pb-8 px-8 md:px-16">
+                        <div className="text-left space-y-4">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Établi le</p>
+                            <div className="text-xl font-black text-slate-900 border-b-2 border-slate-100 pb-2 flex items-center gap-2">
+                                <span className="w-1 h-1 rounded-full bg-primary" />
                                 {new Date(date).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
-                            </p>
+                            </div>
                         </div>
 
-                        <div className="relative group">
-                            <div className="absolute -top-16 -left-16 opacity-[0.05] group-hover:opacity-10 transition-opacity">
-                                <ShieldCheck className="w-40 h-40 text-blue-900" />
+                        <motion.div 
+                            whileHover={{ scale: 1.1, rotate: 5 }}
+                            className="relative group mb-4"
+                        >
+                            <div className="absolute -top-24 -left-24 opacity-5 group-hover:opacity-10 transition-opacity" aria-hidden="true">
+                                <ShieldCheck className="w-64 h-64 text-blue-900" />
                             </div>
-                            <div className="bg-amber-50 rounded-full p-6 border-4 border-white shadow-xl relative z-10">
-                                <Award className="w-12 h-12 text-amber-600" />
+                            <div className="bg-gradient-to-br from-amber-50 to-yellow-50 rounded-[3rem] p-8 border-8 border-white shadow-3d-lg relative z-10 transition-transform group-hover:rotate-6">
+                                <Award className="w-16 h-16 text-amber-600 animate-float" />
                             </div>
-                            <p className="mt-4 text-[9px] font-black uppercase tracking-tighter text-gray-400">Sceau d&apos;Excellence Civique</p>
-                        </div>
+                            <p className="mt-6 text-[10px] font-black uppercase tracking-[0.2em] text-amber-600/60 drop-shadow-sm">Sceau d&apos;Excellence Civique</p>
+                        </motion.div>
 
-                        <div className="text-right space-y-2">
-                            <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em]">Signature</p>
-                            <div className="h-14 flex flex-col items-end justify-center">
-                                <span className="font-serif italic text-2xl text-blue-900 leading-tight">Civisme IA</span>
-                                <span className="text-[8px] font-bold text-blue-600/50 uppercase tracking-widest">Validé numériquement</span>
+                        <div className="text-right space-y-4">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Validation</p>
+                            <div className="h-20 flex flex-col items-end justify-center">
+                                <span className="font-serif italic text-3xl text-slate-900 leading-tight">CiviQuiz Online</span>
+                                <div className="flex items-center gap-2 mt-2">
+                                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                    <span className="text-[10px] font-black text-blue-600/50 uppercase tracking-[0.2em]">Signature Numérique</span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     {/* Official Watermark */}
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.02] rotate-[-15deg] overflow-hidden select-none">
-                        <h4 className="text-[180px] font-black uppercase tracking-tighter whitespace-nowrap">République</h4>
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03] rotate-[-15deg] overflow-hidden select-none">
+                        <h4 className="text-[200px] font-black uppercase tracking-tighter whitespace-nowrap antialiased">CIVIQUIZ RÉPUBLIQUE</h4>
                     </div>
                 </CardContent>
             </Card>
@@ -192,14 +215,21 @@ export default function CertificateGenerator({ userName, date, track, preview = 
             {/* Success Message for the user */}
             {!preview && (
                 <motion.div
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="bg-blue-50/50 border border-blue-100 p-5 rounded-2xl text-center shadow-sm"
+                    className="premium-card-3d bg-white border-primary/10 p-8 rounded-[2.5rem] text-center"
                 >
-                    <p className="text-blue-800 text-sm font-semibold flex items-center justify-center gap-2">
-                        <ShieldCheck className="h-4 w-4 text-blue-500" />
-                        Félicitations {userName} ! Ce document atteste officiellement de votre succès à l&apos;examen.
-                    </p>
+                    <div className="flex flex-col items-center gap-4">
+                        <div className="bg-green-100 p-3 rounded-2xl shadow-3d-sm">
+                            <ShieldCheck className="h-6 w-6 text-green-600" />
+                        </div>
+                        <p className="text-slate-800 text-lg font-black tracking-tight antialiased">
+                            Félicitations {userName} ! Ce document atteste officiellement de votre maîtrise exemplaire.
+                        </p>
+                        <p className="text-slate-500 text-sm font-medium">
+                            Partagez-le ou conservez-le pour prouver votre engagement citoyen.
+                        </p>
+                    </div>
                 </motion.div>
             )}
         </div>

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../../ui/card';
-import { Clock, Trophy, Target, TrendingUp, AlertCircle, FileText, CheckCircle2, BookOpen } from 'lucide-react';
+import { Clock, Trophy, Target, TrendingUp, AlertCircle, FileText, CheckCircle2, BookOpen, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -11,6 +11,7 @@ import { NotificationService } from '../../../services/notification.service';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Skeleton, StatsCardSkeleton } from '../../ui/Skeleton';
 import { Button } from '../../ui/button';
+import { QuickActions } from './QuickActions';
 
 export default function Dashboard() {
     const { user, userProfile, loading: authLoading } = useAuth();
@@ -120,22 +121,37 @@ export default function Dashboard() {
                 className="container mx-auto px-4 py-8"
                 id="main-content"
             >
-                <header className="mb-8">
-                    <h1 className="text-3xl font-bold mb-2">Tableau de Bord</h1>
-                    <div className="flex flex-wrap items-center gap-3">
-                        <p className="text-gray-500">
-                            Bienvenue, <span className="font-semibold text-[var(--color-primary)]">{user.displayName || 'Candidat'}</span> !
-                        </p>
+                <header className="mb-12 relative">
+                    <div className="absolute -top-24 -left-24 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
+                    <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                        <div>
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/50 backdrop-blur-sm border border-gray-100 shadow-sm mb-4" aria-hidden="true">
+                                <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Plateforme Active</span>
+                            </div>
+                            <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight leading-tight">
+                                Bonjour, <span className="text-primary">{user.displayName || 'Candidat'}</span>
+                            </h1>
+                            <p className="text-gray-500 text-lg font-medium mt-2">
+                                Prêt à passer une nouvelle étape vers votre citoyenneté ?
+                            </p>
+                        </div>
                         {userProfile?.track && (
-                            <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-bold border border-blue-100" aria-hidden="true">
-                                Parcours : {userProfile.track === 'residence' ? 'Titre de Séjour' : 'Naturalisation'}
-                            </span>
+                            <div className="premium-card-3d bg-white px-6 py-4 flex items-center gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600" aria-hidden="true">
+                                    <GraduationCap className="h-6 w-6" />
+                                </div>
+                                <div>
+                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Parcours Actuel</p>
+                                    <p className="font-bold text-gray-900">{userProfile.track === 'residence' ? 'Titre de Séjour' : 'Naturalisation'}</p>
+                                </div>
+                            </div>
                         )}
                     </div>
                 </header>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 mb-8" aria-label="Statistiques Globales">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12" aria-label="Statistiques Globales">
                     {dataLoading ? (
                         <>
                             <StatsCardSkeleton />
@@ -144,34 +160,50 @@ export default function Dashboard() {
                         </>
                     ) : (
                         <>
-                            <Card role="region" aria-label="Nombre total de tests" className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
+                            <Card role="region" aria-label="Nombre total de tests" className="premium-card-3d border-none bg-white">
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                    <CardTitle className="text-sm font-medium text-gray-500 uppercase tracking-wider">Tests Total</CardTitle>
-                                    <FileText className="h-4 w-4 text-blue-500" aria-hidden="true" />
+                                    <CardTitle className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tests Total</CardTitle>
+                                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500" aria-hidden="true">
+                                        <FileText className="h-4 w-4" />
+                                    </div>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="text-3xl font-bold">{stats.totalTests}</div>
-                                    <p className="text-xs text-green-600 font-medium mt-1">En progression</p>
+                                    <div className="text-4xl font-black text-gray-900">{stats.totalTests}</div>
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">En hausse</span>
+                                    </div>
                                 </CardContent>
                             </Card>
-                            <Card role="region" aria-label="Score moyen" className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
+                            <Card role="region" aria-label="Score moyen" className="premium-card-3d border-none bg-white">
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                    <CardTitle className="text-sm font-medium text-gray-500 uppercase tracking-wider">Score Moyen</CardTitle>
-                                    <Award className="h-4 w-4 text-green-500" aria-hidden="true" />
+                                    <CardTitle className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Score Moyen</CardTitle>
+                                    <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-500" aria-hidden="true">
+                                        <Award className="h-4 w-4" />
+                                    </div>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="text-3xl font-bold text-green-600">{stats.averageScore}%</div>
-                                    <p className="text-xs text-gray-400 mt-1">Objectif: 80%</p>
+                                    <div className="text-4xl font-black text-green-600">{stats.averageScore}%</div>
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Objectif : 80%</span>
+                                    </div>
                                 </CardContent>
                             </Card>
-                            <Card role="region" aria-label="Thèmes maîtrisés" className="border-none shadow-sm bg-white/50 backdrop-blur-sm">
+                            <Card role="region" aria-label="Thèmes maîtrisés" className="premium-card-3d border-none bg-white">
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                    <CardTitle className="text-sm font-medium text-gray-500 uppercase tracking-wider">Maîtrise</CardTitle>
-                                    <CheckCircle2 className="h-4 w-4 text-purple-500" aria-hidden="true" />
+                                    <CardTitle className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Maîtrise</CardTitle>
+                                    <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center text-purple-500" aria-hidden="true">
+                                        <CheckCircle2 className="h-4 w-4" />
+                                    </div>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="text-3xl font-bold">{stats.completedThemes} / 5</div>
-                                    <p className="text-xs text-gray-400 mt-1">Thèmes débloqués</p>
+                                    <div className="text-4xl font-black text-gray-900">{stats.completedThemes} <span className="text-gray-300 text-2xl">/ 5</span></div>
+                                    <div className="flex items-center gap-2 mt-2">
+                                        <div className="flex -space-x-1.5">
+                                            {[1,2,3,4,5].map(i => (
+                                                <div key={i} className={`w-3 h-3 rounded-full border border-white ${i <= stats.completedThemes ? 'bg-purple-500' : 'bg-gray-200'}`} />
+                                            ))}
+                                        </div>
+                                    </div>
                                 </CardContent>
                             </Card>
                         </>
@@ -235,116 +267,12 @@ export default function Dashboard() {
                 )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    {/* Main Actions Area */}
-                    <div className="lg:col-span-2 space-y-6">
-                        {dataLoading ? (
-                            <Skeleton height="400px" className="rounded-2xl" />
-                        ) : (
-                            <Card className="border-none shadow-lg bg-gradient-to-br from-blue-600 to-indigo-700 text-white overflow-hidden relative min-h-[350px]">
-                                <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl" aria-hidden="true" />
-                                <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-400/20 rounded-full -ml-24 -mb-24 blur-3xl" aria-hidden="true" />
-
-                                <CardHeader className="relative z-10">
-                                    <CardTitle className="text-2xl sm:text-4xl font-black mb-2">
-                                        {userProfile?.track === 'naturalisation' ? 'Expertise Naturalisation' : 'Objectif Titre de Séjour'}
-                                    </CardTitle>
-                                    <p className="text-blue-100 max-w-md">Préparez-vous efficacement avec nos modules d'entraînement spécialisés.</p>
-                                </CardHeader>
-
-                                <CardContent className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                    <Link href="/training" className="group" aria-label="Entraînement — Pratique par thématique avec corrections détaillées">
-                                        <div className="bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all p-5 rounded-2xl border border-white/20 h-full flex flex-col justify-between">
-                                            <div>
-                                                <Target className="h-8 w-8 mb-4 text-blue-200" aria-hidden="true" />
-                                                <h3 className="text-xl font-bold mb-1">Entraînement</h3>
-                                                <p className="text-sm text-blue-100/80 mb-6">Pratique par thématique avec corrections détaillées.</p>
-                                            </div>
-                                            <div className="inline-flex items-center text-sm font-bold bg-white text-blue-600 px-4 py-2 rounded-lg self-start">
-                                                Démarrer
-                                            </div>
-                                        </div>
-                                    </Link>
-
-                                    {userProfile?.track === 'residence' ? (
-                                        <Link href="/exam" className="group" aria-label="Examen Blanc — 40 questions en conditions réelles, timer 45 minutes">
-                                            <div className="bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all p-5 rounded-2xl border border-white/20 h-full flex flex-col justify-between">
-                                                <div>
-                                                    <Clock className="h-8 w-8 mb-4 text-red-200" aria-hidden="true" />
-                                                    <h3 className="text-xl font-bold mb-1">Examen Blanc</h3>
-                                                    <p className="text-sm text-blue-100/80 mb-6">Conditions réelles : 40 questions, timer 45 min.</p>
-                                                </div>
-                                                <div className="inline-flex items-center text-sm font-bold bg-red-500 text-white px-4 py-2 rounded-lg self-start">
-                                                    Lancer
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    ) : (
-                                        <Link href="/training/culture" className="group" aria-label="Quiz Culture G — Maîtrisez les dates clés et les symboles républicains">
-                                            <div className="bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all p-5 rounded-2xl border border-white/20 h-full flex flex-col justify-between">
-                                                <div>
-                                                    <Trophy className="h-8 w-8 mb-4 text-yellow-200" aria-hidden="true" />
-                                                    <h3 className="text-xl font-bold mb-1">Quiz Culture G</h3>
-                                                    <p className="text-sm text-blue-100/80 mb-6">Maîtrisez les dates clés et les symboles républicains.</p>
-                                                </div>
-                                                <div className="inline-flex items-center text-sm font-bold bg-yellow-500 text-white px-4 py-2 rounded-lg self-start">
-                                                    Explorer
-                                                </div>
-                                            </div>
-                                        </Link>
-                                    )}
-                                </CardContent>
-                            </Card>
-                        )}
-
-                        {/* Secondary Navigation Grid */}
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                            {/* Fiches de révision Card */}
-                            <Link href="/fiches" className="group" aria-label="Fiches Mémo — Révisez l'essentiel">
-                                <Card className="border-none shadow-sm hover:shadow-md transition-all overflow-hidden bg-emerald-50/50">
-                                    <CardContent className="p-6 flex items-center gap-4">
-                                        <div className="p-3 bg-emerald-100 rounded-xl text-emerald-600" aria-hidden="true">
-                                            <BookOpen className="h-6 w-6" />
-                                        </div>
-                                        <div className="min-w-0">
-                                            <h4 className="font-bold text-gray-900">Fiches Mémo</h4>
-                                            <p className="text-xs text-gray-500 truncate">Révisez l'essentiel.</p>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </Link>
-
-                            {/* Review Card */}
-                            <Link href="/review" className="group" aria-label="Réviser mes erreurs — Reprenez les questions manquées">
-                                <Card className="border-none shadow-sm hover:shadow-md transition-all overflow-hidden bg-orange-50/50">
-                                    <CardContent className="p-6 flex items-center gap-4">
-                                        <div className="p-3 bg-orange-100 rounded-xl text-orange-600" aria-hidden="true">
-                                            <AlertCircle className="h-6 w-6" />
-                                        </div>
-                                        <div className="min-w-0">
-                                            <h4 className="font-bold text-gray-900">Réviser mes erreurs</h4>
-                                            <p className="text-xs text-gray-500 truncate">Reprenez les questions manquées.</p>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </Link>
-
-                            {/* Stats Card */}
-                            <Link href="/profile" className="group" aria-label="Ma Progression — Voir mes scores détaillés">
-                                <Card className="border-none shadow-sm hover:shadow-md transition-all overflow-hidden bg-indigo-50/50">
-                                    <CardContent className="p-6 flex items-center gap-4">
-                                        <div className="p-3 bg-indigo-100 rounded-xl text-indigo-600" aria-hidden="true">
-                                            <TrendingUp className="h-6 w-6" />
-                                        </div>
-                                        <div className="min-w-0">
-                                            <h4 className="font-bold text-gray-900">Ma Progression</h4>
-                                            <p className="text-xs text-gray-500 truncate">Voir mes scores détaillés.</p>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </Link>
-                        </div>
+                    <div className="lg:col-span-2">
+                        <section className="mt-4" aria-labelledby="quick-actions-title">
+                            <h2 id="quick-actions-title" className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-6 pl-1">Actions Prioritaires</h2>
+                            <QuickActions />
+                        </section>
                     </div>
-
                     {/* Sidebar Area */}
                     <aside className="space-y-6" aria-label="Informations complémentaires">
                         <Card className="border-none shadow-sm overflow-hidden bg-white">

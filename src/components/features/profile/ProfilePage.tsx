@@ -1,7 +1,8 @@
+'use client';
+
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '../../../components/ui/card';
 import { Button } from '../../../components/ui/button';
-import { THEMES, THEME_LABELS } from '../../../constants/app-constants';
 import { useAuth } from '../../../context/AuthContext';
 import { UserService } from '../../../services/user.service';
 import { Loader2, User, Settings, LogOut, Check, Award, Eye } from 'lucide-react';
@@ -12,7 +13,7 @@ import dynamic from 'next/dynamic';
 
 const CertificateGenerator = dynamic(() => import('./CertificateGenerator'), {
     ssr: false,
-    loading: () => <div className="p-8 text-center text-gray-500">Chargement du module de certificat...</div>
+    loading: () => <div className="p-8 text-center text-gray-500 font-medium">Chargement du module spécialisé...</div>
 });
 
 export default function ProfilePage() {
@@ -37,27 +38,24 @@ export default function ProfilePage() {
         }
     }, [user, userProfile]);
 
-    /* Skeleton complet pendant l'auth */
     if (loading || !user) {
         return (
-            <div className="container mx-auto px-4 py-8 max-w-2xl space-y-8">
-                <Skeleton width="60%" height="2.5rem" className="mb-4" />
-                <Card className="border-none shadow-sm">
-                    <CardHeader><Skeleton width="40%" height="1.5rem" /></CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="grid grid-cols-2 gap-4">
-                            <Skeleton height="3rem" />
-                            <Skeleton height="3rem" />
-                            <Skeleton height="3rem" />
-                        </div>
-                    </CardContent>
+            <div className="container mx-auto px-4 py-12 max-w-2xl space-y-10" role="status" aria-busy="true" aria-live="polite">
+                <Skeleton width="60%" height="3rem" className="rounded-2xl" />
+                <Card className="premium-card-3d border-none bg-white p-6 space-y-6">
+                    <Skeleton width="40%" height="1.5rem" className="rounded-full" />
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <Skeleton height="4rem" className="rounded-2xl" />
+                        <Skeleton height="4rem" className="rounded-2xl" />
+                        <Skeleton height="4rem" className="rounded-2xl" />
+                    </div>
                 </Card>
-                <Card className="border-none shadow-sm">
-                    <CardHeader><Skeleton width="30%" height="1.5rem" /></CardHeader>
-                    <CardContent className="space-y-4">
-                        <Skeleton height="100px" />
-                        <Skeleton height="100px" />
-                    </CardContent>
+                <Card className="premium-card-3d border-none bg-white p-6 space-y-10">
+                    <Skeleton width="30%" height="1.5rem" className="rounded-full" />
+                    <div className="space-y-6">
+                        <Skeleton height="120px" className="rounded-3xl" />
+                        <Skeleton height="120px" className="rounded-3xl" />
+                    </div>
                 </Card>
             </div>
         );
@@ -72,174 +70,154 @@ export default function ProfilePage() {
         setUpdateMessage(null);
         try {
             await UserService.syncUserProfile(user.uid, { track: newTrack });
-            // Update context without reload
-            if (refreshProfile) {
-                await refreshProfile();
-            }
+            if (refreshProfile) await refreshProfile();
             setUpdateMessage({
                 text: `Parcours mis à jour : ${newTrack === 'residence' ? 'Titre de Séjour' : 'Naturalisation'} activé.`,
                 type: 'success'
             });
         } catch (error) {
             console.error("Error updating track:", error);
-            setUpdateMessage({
-                text: "Erreur lors de la modification du parcours.",
-                type: 'error'
-            });
+            setUpdateMessage({ text: "Erreur lors de la modification du parcours.", type: 'error' });
         } finally {
             setIsUpdating(false);
         }
     };
 
     return (
-        <div className="container mx-auto px-4 py-6 sm:py-8 max-w-2xl">
-            {/* Zone ARIA Live pour les notifications NVDA */}
+        <div className="container mx-auto px-4 py-8 sm:py-12 max-w-2xl">
             <div className="sr-only" aria-live="polite" role="status">
                 {updateMessage?.text}
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 flex items-center gap-2">
-                <User className="h-6 w-6 sm:h-8 sm:w-8 text-[var(--color-primary)]" aria-hidden="true" />
-                Mon Profil
+            <h1 className="text-3xl sm:text-4xl font-black mb-8 sm:mb-12 flex items-center gap-4 tracking-tight">
+                <div className="bg-primary/10 p-3 rounded-2xl shadow-3d-sm" aria-hidden="true">
+                    <User className="h-8 w-8 text-primary shadow-sm" />
+                </div>
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 antialiased">Mon Profil</span>
             </h1>
 
-            <div className="space-y-4 sm:space-y-6">
-                {/* User Info Card */}
-                <Card>
-                    <CardHeader className="p-4 sm:p-6 pb-2 sm:pb-3">
-                        <CardTitle className="text-lg sm:text-xl">Informations Personnelles</CardTitle>
+            <div className="space-y-6 sm:space-y-10">
+                <Card className="premium-card-3d border-none bg-white p-2">
+                    <CardHeader className="p-6 pb-2">
+                        <CardTitle className="text-xl font-black tracking-tight flex items-center gap-2">
+                            <span className="w-1.5 h-6 bg-primary rounded-full" aria-hidden="true" />
+                            Informations Personnelles
+                        </CardTitle>
                     </CardHeader>
-                    <CardContent className="p-4 sm:p-6 space-y-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div className="flex flex-col gap-0.5 sm:gap-1">
-                                <span className="text-[10px] sm:text-xs text-gray-500 font-bold uppercase tracking-wider">Email</span>
-                                <span className="text-sm sm:text-base truncate">{user.email}</span>
+                    <CardContent className="p-6 pt-2 space-y-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-slate-50 border border-slate-100/50 shadow-sm">
+                                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">Email</span>
+                                <span className="text-base font-black text-slate-900 truncate">{user.email}</span>
                             </div>
-                            <div className="flex flex-col gap-0.5 sm:gap-1">
-                                <span className="text-[10px] sm:text-xs text-gray-500 font-bold uppercase tracking-wider">Nom d&apos;utilisateur</span>
-                                <span className="text-sm sm:text-base">{user.displayName || 'Utilisateur'}</span>
+                            <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-slate-50 border border-slate-100/50 shadow-sm">
+                                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">Nom d&apos;utilisateur</span>
+                                <span className="text-base font-black text-slate-900">{user.displayName || 'Utilisateur'}</span>
                             </div>
-                            <div className="flex flex-col gap-0.5 sm:gap-1">
-                                <span className="text-[10px] sm:text-xs text-gray-500 font-bold uppercase tracking-wider">Membre depuis</span>
-                                <span className="text-sm sm:text-base">{userProfile?.createdAt ? new Date(userProfile.createdAt).toLocaleDateString() : 'N/A'}</span>
+                            <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-slate-50 border border-slate-100/50 shadow-sm">
+                                <span className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">Membre depuis</span>
+                                <span className="text-base font-black text-slate-900">{userProfile?.createdAt ? new Date(userProfile.createdAt).toLocaleDateString() : 'N/A'}</span>
                             </div>
                         </div>
                     </CardContent>
                 </Card>
 
-                {/* Track Selection Card */}
-                <Card className="border-blue-100 bg-blue-50/50 shadow-sm overflow-hidden">
-                    <CardHeader className="p-4 sm:p-6">
-                        <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
-                            <Settings className="h-4 w-4 sm:h-5 sm:w-5" aria-hidden="true" />
+                <Card className="premium-card-3d border-primary/20 bg-blue-50/30 overflow-hidden">
+                    <CardHeader className="p-6">
+                        <CardTitle className="flex items-center gap-3 text-xl font-black tracking-tight">
+                            <div className="bg-primary p-2 rounded-xl shadow-3d-sm" aria-hidden="true">
+                                <Settings className="h-5 w-5 text-white" />
+                            </div>
                             Choix du Parcours
                         </CardTitle>
-                        <p className="text-xs sm:text-sm text-gray-600">
+                        <p className="text-sm text-slate-500 font-medium ml-12">
                             L&apos;interface s&apos;adaptera automatiquement à vos objectifs.
                         </p>
                     </CardHeader>
-                    <CardContent className="p-4 sm:p-6">
-                        {/* Radio Group Pattern for NVDA */}
+                    <CardContent className="p-6 pt-0">
                         <div
                             role="radiogroup"
                             aria-label="Sélectionnez votre parcours d'examen"
-                            className="grid grid-cols-1 gap-3 sm:gap-4"
+                            className="grid grid-cols-1 gap-4"
                         >
-                            {/* Option Titre de Séjour */}
-                            <div
+                            <motion.div
+                                whileHover={{ y: -4, scale: 1.01 }}
+                                whileTap={{ scale: 0.99 }}
                                 role="radio"
                                 tabIndex={0}
                                 aria-checked={currentTrack === 'residence'}
-                                aria-label="Titre de Séjour. Pour les résidents de 10 ans ou renouvellement."
                                 onClick={() => handleTrackSwitch('residence')}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                        e.preventDefault();
-                                        handleTrackSwitch('residence');
-                                    }
-                                }}
-                                className={`group relative cursor-pointer p-4 sm:p-5 rounded-xl border-2 transition-all flex flex-col gap-1.5 sm:gap-2 focus-visible:ring-4 focus-visible:ring-blue-500 focus-visible:outline-none ${currentTrack === 'residence'
-                                    ? 'border-[var(--color-primary)] bg-white shadow-lg ring-1 ring-[var(--color-primary)]'
-                                    : 'border-gray-200 bg-gray-50/50 hover:bg-white hover:border-gray-300'
+                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleTrackSwitch('residence'); } }}
+                                className={`group relative cursor-pointer p-6 rounded-[2rem] border-2 transition-all flex flex-col gap-3 focus-visible:ring-4 focus-visible:ring-blue-500 focus-visible:outline-none ${currentTrack === 'residence'
+                                    ? 'border-primary bg-white shadow-3d-lg ring-1 ring-primary'
+                                    : 'border-slate-100 bg-slate-50/50 hover:bg-white hover:border-slate-200 shadow-sm'
                                     }`}
                             >
                                 <div className="flex justify-between items-center">
-                                    <span className={`font-bold text-base sm:text-lg ${currentTrack === 'residence' ? 'text-blue-700' : 'text-gray-700'}`}>
+                                    <span className={`font-black text-xl tracking-tight ${currentTrack === 'residence' ? 'text-blue-700' : 'text-slate-700'}`}>
                                         Titre de Séjour
                                     </span>
-                                    <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center transition-colors ${currentTrack === 'residence' ? 'border-blue-600 bg-blue-600 text-white' : 'border-gray-300'}`}>
-                                        {currentTrack === 'residence' && <Check className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />}
+                                    <div className={`w-8 h-8 rounded-2xl border-2 flex items-center justify-center transition-all duration-300 ${currentTrack === 'residence' ? 'border-blue-600 bg-blue-600 text-white shadow-3d-sm scale-110 rotate-6' : 'border-slate-200'}`}>
+                                        {currentTrack === 'residence' ? <Check className="h-5 w-5 font-black" aria-hidden="true" /> : <div className="w-2 h-2 rounded-full bg-slate-200" />}
                                     </div>
                                 </div>
-                                <p className="text-xs sm:text-sm text-gray-500 leading-relaxed">
+                                <p className={`text-sm leading-relaxed font-medium ${currentTrack === 'residence' ? 'text-blue-600/80' : 'text-slate-500'}`}>
                                     Pour les résidents de 10 ans ou renouvellement de carte.
                                 </p>
-                            </div>
+                            </motion.div>
 
-                            {/* Option Naturalisation */}
-                            <div
+                            <motion.div
+                                whileHover={{ y: -4, scale: 1.01 }}
+                                whileTap={{ scale: 0.99 }}
                                 role="radio"
                                 tabIndex={0}
                                 aria-checked={currentTrack === 'naturalisation'}
-                                aria-label="Naturalisation. Entretien d'assimilation et culture française."
                                 onClick={() => handleTrackSwitch('naturalisation')}
-                                onKeyDown={(e) => {
-                                    if (e.key === 'Enter' || e.key === ' ') {
-                                        e.preventDefault();
-                                        handleTrackSwitch('naturalisation');
-                                    }
-                                }}
-                                className={`group relative cursor-pointer p-4 sm:p-5 rounded-xl border-2 transition-all flex flex-col gap-1.5 sm:gap-2 focus-visible:ring-4 focus-visible:ring-purple-500 focus-visible:outline-none ${currentTrack === 'naturalisation'
-                                    ? 'border-purple-600 bg-white shadow-lg ring-1 ring-purple-600'
-                                    : 'border-gray-200 bg-gray-50/50 hover:bg-white hover:border-gray-300'
+                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleTrackSwitch('naturalisation'); } }}
+                                className={`group relative cursor-pointer p-6 rounded-[2rem] border-2 transition-all flex flex-col gap-3 focus-visible:ring-4 focus-visible:ring-purple-500 focus-visible:outline-none ${currentTrack === 'naturalisation'
+                                    ? 'border-purple-600 bg-white shadow-3d-lg ring-1 ring-purple-600'
+                                    : 'border-slate-100 bg-slate-50/50 hover:bg-white hover:border-slate-200 shadow-sm'
                                     }`}
                             >
                                 <div className="flex justify-between items-center">
-                                    <span className={`font-bold text-base sm:text-lg ${currentTrack === 'naturalisation' ? 'text-purple-700' : 'text-gray-700'}`}>
+                                    <span className={`font-black text-xl tracking-tight ${currentTrack === 'naturalisation' ? 'text-purple-700' : 'text-slate-700'}`}>
                                         Naturalisation
                                     </span>
-                                    <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center transition-colors ${currentTrack === 'naturalisation' ? 'border-purple-600 bg-purple-600 text-white' : 'border-gray-300'}`}>
-                                        {currentTrack === 'naturalisation' && <Check className="h-3 w-3 sm:h-4 sm:w-4" aria-hidden="true" />}
+                                    <div className={`w-8 h-8 rounded-2xl border-2 flex items-center justify-center transition-all duration-300 ${currentTrack === 'naturalisation' ? 'border-purple-600 bg-purple-600 text-white shadow-3d-sm scale-110 rotate-6' : 'border-slate-200'}`}>
+                                        {currentTrack === 'naturalisation' ? <Check className="h-5 w-5 font-black" aria-hidden="true" /> : <div className="w-2 h-2 rounded-full bg-slate-200" />}
                                     </div>
                                 </div>
-                                <p className="text-xs sm:text-sm text-gray-500 leading-relaxed">
+                                <p className={`text-sm leading-relaxed font-medium ${currentTrack === 'naturalisation' ? 'text-purple-600/80' : 'text-slate-500'}`}>
                                     Entretien d&apos;assimilation, culture et histoire française.
                                 </p>
-                            </div>
+                            </motion.div>
                         </div>
 
-                        {/* Animated Message Feedback */}
                         <AnimatePresence>
                             {updateMessage && (
                                 <motion.div
                                     initial={{ opacity: 0, height: 0 }}
                                     animate={{ opacity: 1, height: 'auto' }}
                                     exit={{ opacity: 0, height: 0 }}
-                                    className={`mt-4 p-3 rounded-lg text-xs sm:text-sm font-medium flex items-center gap-2 ${updateMessage.type === 'success' ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-700 border border-red-100'}`}
+                                    className={`mt-4 p-4 rounded-2xl text-sm font-black flex items-center gap-3 ${updateMessage.type === 'success' ? 'bg-green-50 text-green-700 border border-green-100 shadow-3d-sm' : 'bg-red-50 text-red-700 border border-red-100'}`}
                                 >
-                                    {updateMessage.type === 'success' ? <Check className="h-4 w-4" /> : <Loader2 className="h-4 w-4 animate-spin" />}
+                                    {updateMessage.type === 'success' ? <Check className="h-5 w-5" /> : <Loader2 className="h-5 w-5 animate-spin" />}
                                     {updateMessage.text}
                                 </motion.div>
                             )}
                         </AnimatePresence>
                     </CardContent>
-                    <CardFooter className="bg-white/50 border-t border-gray-100 flex justify-between py-2 sm:py-3 px-4 sm:px-6">
-                        {isUpdating && <p className="text-[10px] sm:text-xs text-gray-500 flex items-center"><Loader2 className="mr-2 h-3 w-3 animate-spin" aria-hidden="true" /> Synchronisation...</p>}
+                    <CardFooter className="bg-white/50 border-t border-slate-100 flex justify-between py-4 px-6">
+                        {isUpdating && <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center"><Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" /> Synchronisation...</p>}
                     </CardFooter>
                 </Card>
 
-                {/* Gamification: Badges & Trophées */}
                 {stats && <BadgesSection stats={stats} certStatus={certStatus} />}
 
-                {/* Certificate Section */}
                 {certStatus?.eligible && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="space-y-4"
-                    >
-                        <h2 className="text-xl font-bold flex items-center gap-2">
-                            <Award className="h-6 w-6 text-amber-500" />
+                    <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="space-y-6">
+                        <h2 className="text-2xl font-black flex items-center gap-3 tracking-tight">
+                            <Award className="h-8 w-8 text-amber-500" />
                             Votre Certificat de Réussite
                         </h2>
                         <CertificateGenerator
@@ -250,33 +228,37 @@ export default function ProfilePage() {
                     </motion.div>
                 )}
 
-                {/* Tracking Progress Card */}
                 {!certStatus?.eligible && certStatus && (
-                    <Card className="border-none shadow-sm bg-gray-50/50">
-                        <CardHeader>
-                            <CardTitle className="text-lg">Progression Certification</CardTitle>
+                    <Card className="premium-card-3d border-none bg-white p-2">
+                        <CardHeader className="p-6">
+                            <CardTitle className="text-xl font-black tracking-tight flex items-center gap-2">
+                                <span className="w-1.5 h-6 bg-blue-600 rounded-full" aria-hidden="true" />
+                                Progression Certification
+                            </CardTitle>
                         </CardHeader>
-                        <CardContent className="space-y-4">
+                        <CardContent className="p-6 pt-0 space-y-6">
                             <div className="flex justify-between items-end">
-                                <span className="text-sm font-medium text-gray-500">Objectif 100% Maîtrise</span>
-                                <span className="text-2xl font-black text-[var(--color-primary)]">{Math.round(certStatus.progress)}%</span>
+                                <span className="text-sm font-black text-slate-400 uppercase tracking-widest">Objectif 100% Maîtrise</span>
+                                <span className="text-4xl font-black text-primary tracking-tighter">{Math.round(certStatus.progress)}%</span>
                             </div>
-                            <div className="h-3 w-full bg-gray-200 rounded-full overflow-hidden">
+                            <div className="h-4 w-full bg-slate-100 rounded-full overflow-hidden shadow-inner p-1">
                                 <motion.div
                                     initial={{ width: 0 }}
                                     animate={{ width: `${certStatus.progress}%` }}
-                                    className="h-full bg-blue-600"
+                                    className="h-full bg-gradient-to-r from-blue-600 to-primary rounded-full shadow-3d-sm"
                                 />
                             </div>
-                            <p className="text-xs text-gray-500 italic">
-                                {certStatus.missingThemes.length > 0
-                                    ? `Continuez à vous entraîner sur les thèmes restants (${certStatus.missingThemes.length}) pour débloquer votre certificat.`
-                                    : "Presque terminé ! Atteignez 80% de bonnes réponses sur chaque thème."}
-                            </p>
+                            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-100/50">
+                                <p className="text-sm text-slate-600 font-medium leading-relaxed">
+                                    {certStatus.missingThemes.length > 0
+                                        ? `Défiez-vous ! Continuez à vous entraîner sur les thèmes restants (${certStatus.missingThemes.length}) pour débloquer votre certificat officiel.`
+                                        : "Presque là ! Atteignez 80% de bonnes réponses sur chaque thème pour finaliser votre maîtrise."}
+                                </p>
+                            </div>
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="w-full mt-2 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                                className="w-full mt-2 text-primary font-black uppercase tracking-widest text-[10px] hover:bg-blue-50 h-12 rounded-2xl transition-all"
                                 onClick={() => setShowExample(!showExample)}
                             >
                                 {showExample ? "Masquer l'exemple" : "Voir un exemple de certificat"}
@@ -285,20 +267,15 @@ export default function ProfilePage() {
                     </Card>
                 )}
 
-                {/* Certificate Example Preview */}
                 {showExample && !certStatus?.eligible && (
-                    <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        className="space-y-4 pt-4 border-t border-dashed border-gray-200"
-                    >
+                    <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} className="space-y-6 pt-6 border-t-2 border-dashed border-slate-100">
                         <div className="flex items-center justify-between px-2">
-                            <h3 className="text-sm font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
-                                <Eye className="h-4 w-4" /> Exemple de réussite
+                            <h3 className="text-xs font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                <Eye className="h-5 w-5" /> Exemple de réussite
                             </h3>
-                            <span className="text-[10px] bg-amber-100 text-amber-600 px-2 py-0.5 rounded-full font-bold">APERÇU</span>
+                            <span className="text-[10px] bg-amber-500 text-white px-3 py-1 rounded-full font-black uppercase tracking-widest shadow-3d-sm">APERÇU</span>
                         </div>
-                        <div className="scale-[0.8] origin-top opacity-80 pointer-events-none grayscale-[0.3]">
+                        <div className="scale-[0.85] origin-top opacity-90 grayscale-[0.2] transition-all hover:grayscale-0">
                             <CertificateGenerator
                                 userName={user.displayName || 'Candidat'}
                                 date={new Date().toISOString()}
@@ -309,10 +286,9 @@ export default function ProfilePage() {
                     </motion.div>
                 )}
 
-                {/* Logout Area */}
-                <div className="flex flex-col gap-4 mt-6 sm:mt-8">
-                    <Button variant="outline" onClick={signOut} className="w-full h-11 sm:h-12 border-red-100 text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors">
-                        <LogOut className="mr-2 h-4 w-4" aria-hidden="true" /> Se déconnecter
+                <div className="flex flex-col gap-4 mt-12">
+                    <Button variant="outline" onClick={signOut} className="w-full h-14 rounded-2xl border-2 border-red-50 text-red-500 font-bold hover:bg-red-50 hover:text-red-600 transition-all shadow-sm">
+                        <LogOut className="mr-2 h-5 w-5" aria-hidden="true" /> Se déconnecter
                     </Button>
                 </div>
             </div>

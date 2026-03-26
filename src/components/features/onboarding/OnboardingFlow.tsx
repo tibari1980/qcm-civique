@@ -66,12 +66,20 @@ export default function OnboardingFlow() {
     return (
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center p-4 py-8 sm:p-6 lg:p-8">
             <div className="max-w-5xl w-full">
-                <div className="text-center mb-8 md:mb-12">
-                    <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-gray-900 mb-3 sm:mb-4 tracking-tight px-2">
-                        Bienvenue, {user.displayName || 'Candidat'} !
+                <div className="text-center mb-12 md:mb-16">
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 text-primary text-xs font-black uppercase tracking-widest mb-6 border border-blue-100 shadow-3d-sm"
+                    >
+                        <Flag className="h-3 w-3" />
+                        Parcours Officiel
+                    </motion.div>
+                    <h1 className="text-4xl md:text-5xl font-black text-slate-900 mb-4 tracking-tight px-2 antialiased">
+                        Bienvenue, <span className="text-primary">{user.displayName?.split(' ')[0] || 'Candidat'}</span> !
                     </h1>
-                    <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-2xl mx-auto px-4">
-                        Sélectionnez votre objectif pour personnaliser votre expérience.
+                    <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto px-4 font-medium">
+                        Pour commencer votre préparation, choisissez l&apos;objectif qui correspond à votre situation.
                     </p>
                 </div>
 
@@ -84,36 +92,29 @@ export default function OnboardingFlow() {
                         tabIndex={0}
                         aria-pressed={selectedTrack === 'residence'}
                         aria-label="Sélectionner le parcours Titre de Séjour : Test écrit de 40 questions."
-                        onClick={() => setSelectedTrack('residence')}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                setSelectedTrack('residence');
-                            }
-                        }}
-                        className={`cursor-pointer relative overflow-hidden rounded-2xl transition-all duration-300 border-2 ${selectedTrack === 'residence'
-                            ? 'border-[var(--color-primary)] bg-white shadow-xl ring-2 ring-[var(--color-primary)] ring-opacity-20'
-                            : 'border-transparent bg-white shadow-md hover:shadow-lg'
+                        className={`cursor-pointer focus:outline-none premium-card-3d bg-white rounded-[2rem] transition-all duration-500 border-4 relative overflow-hidden ${selectedTrack === 'residence'
+                            ? 'border-primary ring-8 ring-primary/5'
+                            : 'border-transparent'
                             }`}
                     >
-                        <CardContent className="p-6 sm:p-8 flex flex-col h-full">
-                            <div className={`mx-auto p-4 sm:p-5 rounded-full mb-4 sm:mb-6 transition-colors ${selectedTrack === 'residence' ? 'bg-blue-100' : 'bg-gray-100'}`} aria-hidden="true">
-                                <FileText className={`h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 ${selectedTrack === 'residence' ? 'text-[var(--color-primary)]' : 'text-gray-400'}`} />
+                        <CardContent className="p-8 sm:p-10 flex flex-col h-full relative z-10">
+                            <div className={`mx-auto p-6 rounded-[2rem] mb-8 transition-all duration-500 ${selectedTrack === 'residence' ? 'bg-primary text-white shadow-3d-md scale-110' : 'bg-slate-50 text-slate-400'}`} aria-hidden="true">
+                                <FileText className={`h-12 w-12 ${selectedTrack === 'residence' ? 'animate-float' : ''}`} />
                             </div>
-                            <h2 className={`text-xl sm:text-2xl font-bold text-center mb-3 ${selectedTrack === 'residence' ? 'text-[var(--color-primary)]' : 'text-gray-900'}`}>
+                            <h2 className={`text-2xl sm:text-3xl font-black text-center mb-4 antialiased ${selectedTrack === 'residence' ? 'text-primary' : 'text-slate-800'}`}>
                                 Titre de Séjour
                             </h2>
-                            <p className="text-sm sm:text-base text-gray-600 text-center mb-6 sm:mb-8 flex-grow">
-                                Préparez l&apos;examen obligatoire (QCM) de 40 questions pour valider votre intégration.
+                            <p className="text-base text-slate-500 text-center mb-8 flex-grow font-medium leading-relaxed">
+                                Préparez l&apos;examen obligatoire de 40 questions pour valider votre demande de carte de résident.
                             </p>
-                            <div className="space-y-2 sm:space-y-3 bg-gray-50 p-4 rounded-xl" aria-label="Points clés">
-                                <div className="flex items-center text-xs sm:text-sm text-gray-700">
-                                    <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 mr-3 text-green-500 flex-shrink-0" />
-                                    <span>Format QCM 40 questions</span>
+                            <div className="space-y-4 bg-slate-50/80 p-6 rounded-[1.5rem]" aria-label="Points clés">
+                                <div className="flex items-center text-sm font-bold text-slate-700">
+                                    <CheckCircle className="h-5 w-5 mr-4 text-green-500 flex-shrink-0" />
+                                    <span>QCM de 40 questions</span>
                                 </div>
-                                <div className="flex items-center text-xs sm:text-sm text-gray-700">
-                                    <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 mr-3 text-green-500 flex-shrink-0" />
-                                    <span>Objectif 80% (32/40)</span>
+                                <div className="flex items-center text-sm font-bold text-slate-700">
+                                    <CheckCircle className="h-5 w-5 mr-4 text-green-500 flex-shrink-0" />
+                                    <span>Seuil de réussite : 32/40</span>
                                 </div>
                             </div>
                         </CardContent>
@@ -127,36 +128,29 @@ export default function OnboardingFlow() {
                         tabIndex={0}
                         aria-pressed={selectedTrack === 'naturalisation'}
                         aria-label="Sélectionner le parcours Naturalisation : Entretien d'assimilation et culture."
-                        onClick={() => setSelectedTrack('naturalisation')}
-                        onKeyDown={(e) => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                                e.preventDefault();
-                                setSelectedTrack('naturalisation');
-                            }
-                        }}
-                        className={`cursor-pointer relative overflow-hidden rounded-2xl transition-all duration-300 border-2 ${selectedTrack === 'naturalisation'
-                            ? 'border-red-500 bg-white shadow-xl ring-2 ring-red-500 ring-opacity-20'
-                            : 'border-transparent bg-white shadow-md hover:shadow-lg'
+                        className={`cursor-pointer focus:outline-none premium-card-3d bg-white rounded-[2rem] transition-all duration-500 border-4 relative overflow-hidden ${selectedTrack === 'naturalisation'
+                            ? 'border-red-500 ring-8 ring-red-500/5'
+                            : 'border-transparent'
                             }`}
                     >
-                        <CardContent className="p-6 sm:p-8 flex flex-col h-full">
-                            <div className={`mx-auto p-4 sm:p-5 rounded-full mb-4 sm:mb-6 transition-colors ${selectedTrack === 'naturalisation' ? 'bg-red-100' : 'bg-gray-100'}`} aria-hidden="true">
-                                <Flag className={`h-8 w-8 sm:h-10 sm:w-10 md:h-12 md:w-12 ${selectedTrack === 'naturalisation' ? 'text-red-500' : 'text-gray-400'}`} />
+                        <CardContent className="p-8 sm:p-10 flex flex-col h-full relative z-10">
+                            <div className={`mx-auto p-6 rounded-[2rem] mb-8 transition-all duration-500 ${selectedTrack === 'naturalisation' ? 'bg-red-500 text-white shadow-3d-md scale-110' : 'bg-slate-50 text-slate-400'}`} aria-hidden="true">
+                                <Flag className={`h-12 w-12 ${selectedTrack === 'naturalisation' ? 'animate-float' : ''}`} />
                             </div>
-                            <h2 className={`text-xl sm:text-2xl font-bold text-center mb-3 ${selectedTrack === 'naturalisation' ? 'text-red-600' : 'text-gray-900'}`}>
+                            <h2 className={`text-2xl sm:text-3xl font-black text-center mb-4 antialiased ${selectedTrack === 'naturalisation' ? 'text-red-600' : 'text-slate-800'}`}>
                                 Naturalisation
                             </h2>
-                            <p className="text-sm sm:text-base text-gray-600 text-center mb-6 sm:mb-8 flex-grow">
+                            <p className="text-base text-slate-500 text-center mb-8 flex-grow font-medium leading-relaxed">
                                 Un parcours complet pour l&apos;entretien d&apos;assimilation, la culture et l&apos;histoire de France.
                             </p>
-                            <div className="space-y-2 sm:space-y-3 bg-gray-50 p-4 rounded-xl" aria-label="Points clés">
-                                <div className="flex items-center text-xs sm:text-sm text-gray-700">
-                                    <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 mr-3 text-green-500 flex-shrink-0" />
-                                    <span>Simulateur oral exclusif</span>
+                            <div className="space-y-4 bg-slate-50/80 p-6 rounded-[1.5rem]" aria-label="Points clés">
+                                <div className="flex items-center text-sm font-bold text-slate-700">
+                                    <CheckCircle className="h-5 w-5 mr-4 text-green-500 flex-shrink-0" />
+                                    <span>Simulateur d&apos;entretien oral</span>
                                 </div>
-                                <div className="flex items-center text-xs sm:text-sm text-gray-700">
-                                    <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5 mr-3 text-green-500 flex-shrink-0" />
-                                    <span>Histoire & Institutions</span>
+                                <div className="flex items-center text-sm font-bold text-slate-700">
+                                    <CheckCircle className="h-5 w-5 mr-4 text-green-500 flex-shrink-0" />
+                                    <span>Culture & Histoire complète</span>
                                 </div>
                             </div>
                         </CardContent>
@@ -182,19 +176,19 @@ export default function OnboardingFlow() {
                         size="lg"
                         disabled={!selectedTrack || loading}
                         onClick={handleConfirmTrack}
-                        className={`w-full max-w-sm sm:w-auto px-12 py-6 sm:py-7 text-lg font-bold rounded-full transition-all duration-300 shadow-lg ${!selectedTrack ? 'bg-gray-300 cursor-not-allowed' :
-                            selectedTrack === 'naturalisation' ? 'bg-red-600 hover:bg-red-700 text-white shadow-red-200' :
-                                'bg-[var(--color-primary)] hover:opacity-90 text-white shadow-blue-200'
+                        className={`w-full max-w-sm sm:w-auto h-16 px-12 text-xl font-black rounded-full transition-all duration-500 shadow-3d-md hover:shadow-3d-lg active:scale-95 ${!selectedTrack ? 'bg-slate-200 text-slate-400 cursor-not-allowed' :
+                            selectedTrack === 'naturalisation' ? 'bg-red-600 hover:bg-red-700 text-white' :
+                                'bg-primary hover:bg-blue-800 text-white'
                             }`}
                     >
                         {loading ? (
-                            <div className="flex items-center gap-2">
-                                <Loader2 className="animate-spin h-5 w-5" />
+                            <div className="flex items-center gap-3">
+                                <Loader2 className="animate-spin h-6 w-6" />
                                 <span>Initialisation...</span>
                             </div>
                         ) : (
                             <>
-                                Confirmer mon choix <ArrowRight className="ml-2 h-6 w-6" />
+                                Confirmer ma situation <ArrowRight className="ml-3 h-6 w-6" />
                             </>
                         )}
                     </Button>

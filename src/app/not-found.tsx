@@ -24,21 +24,21 @@ export default function NotFound() {
             <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-red-500/5 rounded-full blur-3xl animate-pulse delay-700" />
 
             <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5 }}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, type: "spring", damping: 25 }}
                 className="max-w-2xl w-full z-10"
             >
-                <Card className="border-none shadow-2xl bg-white/90 backdrop-blur-xl overflow-hidden rounded-3xl">
+                <Card className="premium-card-3d border-none bg-white/95 backdrop-blur-xl overflow-hidden rounded-[2.5rem]">
                     <CardContent className="p-8 md:p-12 text-center">
                         {/* Icon 404 */}
                         <motion.div
                             initial={{ rotate: -5, y: 0 }}
-                            animate={{ rotate: 5, y: -8 }}
-                            transition={{ repeat: Infinity, duration: 2.5, repeatType: "reverse", ease: "easeInOut" }}
-                            className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-blue-50 text-blue-600 mb-8 border border-blue-100"
+                            animate={{ rotate: 5, y: -10 }}
+                            transition={{ repeat: Infinity, duration: 3, repeatType: "reverse", ease: "easeInOut" }}
+                            className="inline-flex items-center justify-center w-24 h-24 rounded-[2rem] bg-blue-50 text-primary mb-8 shadow-3d-sm border-2 border-white"
                         >
-                            <SearchX size={40} />
+                            <SearchX size={48} className="animate-float" />
                         </motion.div>
 
                         <h1 className="text-4xl md:text-5xl font-black text-gray-900 mb-6 leading-tight tracking-tight">
@@ -51,15 +51,15 @@ export default function NotFound() {
                         </p>
 
                         {/* Main Actions */}
-                        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+                        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12 px-4">
                             <Link href="/dashboard" className="w-full sm:w-auto">
-                                <Button size="lg" className="w-full h-14 px-8 text-base font-bold bg-blue-600 hover:bg-blue-700 shadow-lg shadow-blue-500/20 group rounded-xl">
+                                <Button size="lg" className="w-full h-14 px-8 text-base font-black bg-primary hover:bg-blue-700 shadow-3d-md hover:shadow-3d-lg transition-all active:scale-95 group rounded-2xl text-white">
                                     <LayoutDashboard className="mr-3 h-5 w-5 transition-transform group-hover:scale-110" />
                                     Retour au tableau de bord
                                 </Button>
                             </Link>
                             <Link href="/contact" className="w-full sm:w-auto">
-                                <Button variant="outline" size="lg" className="w-full h-14 px-8 text-base font-bold border-2 border-gray-100 hover:border-blue-600 hover:bg-blue-50 text-gray-700 transition-all rounded-xl">
+                                <Button variant="outline" size="lg" className="w-full h-14 px-8 text-base font-black border-2 border-slate-100 hover:border-blue-100 hover:bg-blue-50 text-slate-600 transition-all rounded-2xl active:scale-95">
                                     <Flag className="mr-3 h-5 w-5" />
                                     Signaler un problème
                                 </Button>

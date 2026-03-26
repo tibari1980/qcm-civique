@@ -68,7 +68,7 @@ export default function TrainingSession() {
         } finally {
             setIsLoadingData(false);
         }
-    }, [themeId]);
+    }, [themeId, user]);
 
     useEffect(() => {
         if (user && themeId && questions.length === 0 && !reviewMode) {
@@ -208,7 +208,7 @@ export default function TrainingSession() {
                 }
             }
         }
-    }, [currentQuestionIndex, questions, user, answers, score, themeId, reviewMode]);
+    }, [currentQuestionIndex, questions, user, answers, score, themeId, reviewMode, userProfile]);
 
     useEffect(() => {
         const currentQuestion = questions[currentQuestionIndex];
@@ -272,47 +272,52 @@ export default function TrainingSession() {
         const wrongQuestions = questions.filter((_, i) => correctFlags[i] === false);
 
         return (
-            <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 bg-gray-50/50" role="main" aria-label="Résultats de la session">
-                <Card className="w-full max-w-2xl border-none shadow-xl bg-white/80 backdrop-blur-sm overflow-hidden" tabIndex={-1} ref={resultRef} aria-label={`Résultats : ${percentage} pourcent de réussite, ${score} sur ${questions.length} questions correctes`}>
-                    <CardHeader className="text-center pb-2 pt-8">
-                        <CardTitle className="text-3xl font-bold mb-1">
+            <div className="min-h-[calc(100vh-4rem)] flex items-center justify-center p-4 bg-slate-50/50" role="main" aria-label="Résultats de la session">
+                <Card className="w-full max-w-2xl border-none shadow-3d-lg bg-white/90 backdrop-blur-md overflow-hidden glass-card" tabIndex={-1} ref={resultRef} aria-label={`Résultats : ${percentage} pourcent de réussite, ${score} sur ${questions.length} questions correctes`}>
+                    <CardHeader className="text-center pb-2 pt-10">
+                        <CardTitle className="text-4xl font-black mb-1 tracking-tight">
                             {reviewMode ? 'Révision terminée !' : isSuccess ? 'Félicitations ! 🎉' : 'Séance terminée'}
                         </CardTitle>
-                        <p className="text-muted-foreground">Voici le récapitulatif de votre session</p>
+                        <p className="text-slate-400 font-bold uppercase tracking-[0.3em] text-[10px]">Récapitulatif de votre session</p>
                     </CardHeader>
                     <CardContent className="flex flex-col items-center py-8">
-                        <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} className={`relative w-44 h-44 flex flex-col items-center justify-center rounded-full border-[6px] ${isSuccess ? 'border-green-500 bg-green-50 text-green-700' : 'border-orange-500 bg-orange-50 text-orange-700'} mb-6 shadow-inner`} role="img" aria-label={`Score : ${percentage} pourcent de réussite`}>
-                            <span className="text-5xl font-extrabold tracking-tighter" aria-hidden="true">{percentage}%</span>
-                            <span className="text-xs font-semibold mt-1 uppercase tracking-wide opacity-80" aria-hidden="true">De réussite</span>
+                        <motion.div 
+                            initial={{ scale: 0.8, rotate: -5 }} 
+                            animate={{ scale: 1, rotate: 0 }} 
+                            className={`relative w-48 h-48 flex flex-col items-center justify-center rounded-full border-[8px] shadow-3d-md mb-8 ${isSuccess ? 'border-green-500 bg-green-50 text-green-700' : 'border-orange-500 bg-orange-50 text-orange-700'}`} 
+                            role="img" 
+                            aria-label={`Score : ${percentage} pourcent de réussite`}
+                        >
+                            <span className="text-6xl font-black tracking-tighter" aria-hidden="true">{percentage}%</span>
+                            <span className="text-[10px] font-black mt-1 uppercase tracking-widest opacity-60" aria-hidden="true">Maîtrise</span>
                         </motion.div>
-                        <div className="grid grid-cols-3 gap-3 w-full max-w-md mt-4 mb-6" role="list" aria-label="Statistiques de la session">
-                            <div className="bg-blue-50 p-3 rounded-xl text-center border border-blue-100" role="listitem">
-                                <span className="block text-2xl font-bold text-blue-700">{questions.length}</span>
-                                <span className="text-xs font-semibold text-blue-600 uppercase">Questions</span>
+                        <div className="grid grid-cols-3 gap-4 w-full max-w-md mt-4 mb-6" role="list" aria-label="Statistiques de la session">
+                            <div className="premium-card-3d bg-blue-50/50 p-4 text-center" role="listitem">
+                                <span className="block text-2xl font-black text-blue-700">{questions.length}</span>
+                                <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest">Questions</span>
                             </div>
-                            <div className="bg-purple-50 p-3 rounded-xl text-center border border-purple-100" role="listitem">
-                                <span className="block text-2xl font-bold text-purple-700">{score * 10}</span>
-                                <span className="text-xs font-semibold text-purple-600 uppercase">Points XP</span>
+                            <div className="premium-card-3d bg-purple-50/50 p-4 text-center" role="listitem">
+                                <span className="block text-2xl font-black text-purple-700">{score * 10}</span>
+                                <span className="text-[10px] font-black text-purple-600 uppercase tracking-widest">XP Gagnés</span>
                             </div>
-                            <div className="bg-orange-50 p-3 rounded-xl text-center border border-orange-100" role="listitem">
-                                <span className="sr-only">Série maximale : {maxStreak}</span>
-                                <span className="block text-2xl font-bold text-orange-600" aria-hidden="true">🔥{maxStreak}</span>
-                                <span className="text-xs font-semibold text-orange-600 uppercase">Streak max</span>
+                            <div className="premium-card-3d bg-orange-50/50 p-4 text-center" role="listitem">
+                                <span className="block text-2xl font-black text-orange-600" aria-hidden="true">🔥{maxStreak}</span>
+                                <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest">Streak</span>
                             </div>
                         </div>
                     </CardContent>
-                    <CardFooter className="flex flex-col sm:flex-row justify-center gap-3 bg-gray-50/80 p-6 border-t">
-                        <Button onClick={resetSession} variant="outline" size="lg" className="w-full sm:w-auto border-2 hover:bg-white" aria-label="Réessayer avec de nouvelles questions">
-                            <RotateCcw className="mr-2 h-4 w-4" aria-hidden="true" /> Réessayer
+                    <CardFooter className="flex flex-col sm:flex-row justify-center gap-4 bg-slate-50/50 p-8 border-t border-slate-100">
+                        <Button onClick={resetSession} variant="outline" className="w-full sm:w-auto h-14 px-8 rounded-2xl font-bold border-2 hover:bg-white shadow-sm" aria-label="Réessayer avec de nouvelles questions">
+                            <RotateCcw className="mr-2 h-5 w-5" aria-hidden="true" /> Recommencer
                         </Button>
                         {wrongQuestions.length > 0 && !reviewMode && (
-                            <Button onClick={startReview} variant="outline" size="lg" className="w-full sm:w-auto border-2 border-orange-300 text-orange-700 hover:bg-orange-50" aria-label={`Revoir les ${wrongQuestions.length} erreurs`}>
-                                <Eye className="mr-2 h-4 w-4" aria-hidden="true" /> Revoir mes erreurs
+                            <Button onClick={startReview} variant="outline" className="w-full sm:w-auto h-14 px-8 rounded-2xl font-bold border-2 border-orange-200 text-orange-700 hover:bg-orange-50 shadow-sm" aria-label={`Revoir les ${wrongQuestions.length} erreurs`}>
+                                <Eye className="mr-2 h-5 w-5" aria-hidden="true" /> Revoir Erreurs
                             </Button>
                         )}
                         <Link href="/dashboard" className="w-full sm:w-auto">
-                            <Button size="lg" className="w-full bg-blue-600 hover:bg-blue-700 shadow-lg" aria-label="Retour au tableau de bord">
-                                <Home className="mr-2 h-4 w-4" aria-hidden="true" /> Dashboard
+                            <Button className="w-full h-14 px-8 rounded-2xl bg-blue-600 hover:bg-blue-700 font-black shadow-lg shadow-blue-200" aria-label="Retour au tableau de bord">
+                                <Home className="mr-2 h-5 w-5" aria-hidden="true" /> Accueil
                             </Button>
                         </Link>
                     </CardFooter>
@@ -324,33 +329,35 @@ export default function TrainingSession() {
     const currentQuestion = questions[currentQuestionIndex];
 
     return (
-        <div className="min-h-[calc(100vh-4rem)] bg-gray-50/30 flex flex-col">
+        <div className="min-h-[calc(100vh-4rem)] bg-slate-50/30 flex flex-col">
             {/* Live region for answer feedback */}
             <div className="sr-only" aria-live="assertive" aria-atomic="true" id="training-feedback" />
-            <div className="fixed top-[4rem] left-0 right-0 h-1 bg-gray-200 z-10" role="progressbar" aria-valuenow={currentQuestionIndex + 1} aria-valuemin={1} aria-valuemax={questions.length} aria-label={`Question ${currentQuestionIndex + 1} sur ${questions.length}`}>
-                <motion.div className="h-full bg-blue-600 shadow-[0_0_10px_rgba(37,99,235,0.5)]" initial={{ width: 0 }} animate={{ width: `${(currentQuestionIndex / questions.length) * 100}%` }} transition={{ duration: 0.5 }} />
+            <div className="fixed top-[4rem] left-0 right-0 h-1.5 bg-slate-200 z-10" role="progressbar" aria-valuenow={currentQuestionIndex + 1} aria-valuemin={1} aria-valuemax={questions.length} aria-label={`Question ${currentQuestionIndex + 1} sur ${questions.length}`}>
+                <motion.div className="h-full bg-primary shadow-3d-sm" initial={{ width: 0 }} animate={{ width: `${((currentQuestionIndex + 1) / questions.length) * 100}%` }} transition={{ duration: 0.5 }} />
             </div>
 
             <div className="container mx-auto px-4 py-8 max-w-4xl flex-1 flex flex-col">
-                <header className="flex justify-between items-center mb-8 mt-4" aria-label="Progression de l'entraînement">
-                    <div className="flex items-center gap-3">
-                        <span className="bg-white px-3 py-1 rounded-full text-sm font-bold text-blue-600 shadow-sm border border-blue-100" aria-live="polite" aria-atomic="true">
-                            Question {currentQuestionIndex + 1} <span className="text-gray-400 font-normal">/ {questions.length}</span>
-                        </span>
-                        {reviewMode && <span className="bg-orange-100 text-orange-700 px-2 py-0.5 rounded-full text-xs font-bold" role="status">Mode Révision</span>}
+                <header className="flex justify-between items-center mb-10 mt-6" aria-label="Progression de l'entraînement">
+                    <div className="flex items-center gap-4">
+                        <div className="premium-card-3d bg-white px-4 py-2 rounded-2xl flex items-center gap-2 border border-slate-100" aria-live="polite" aria-atomic="true">
+                            <span className="text-sm font-black text-slate-900">
+                                Question {currentQuestionIndex + 1} <span className="text-slate-400 font-bold">/ {questions.length}</span>
+                            </span>
+                        </div>
+                        {reviewMode && <span className="bg-orange-500 text-white px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest shadow-3d-sm" role="status">Mode Révision</span>}
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-4">
                         {streak >= 2 && (
-                            <motion.div key={streak} initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex items-center gap-1 bg-orange-50 text-orange-600 px-2.5 py-1 rounded-full text-sm font-bold" role="status" aria-label={`Série de ${streak} bonnes réponses consécutives`}>
-                                <Flame className="h-4 w-4" aria-hidden="true" /> {streak}
+                            <motion.div key={streak} initial={{ scale: 0.7, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="flex items-center gap-2 bg-orange-50 text-orange-600 px-4 py-2 rounded-2xl text-sm font-black shadow-3d-sm" role="status" aria-label={`Série de ${streak} bonnes réponses consécutives`}>
+                                <Flame className="h-5 w-5" aria-hidden="true" /> {streak}
                             </motion.div>
                         )}
-                        <Button variant="ghost" size="icon" onClick={() => setIsAudioEnabled(!isAudioEnabled)} className={`rounded-full ${isAudioEnabled ? 'text-blue-600 bg-blue-50' : 'text-gray-400'}`} aria-label={isAudioEnabled ? 'Désactiver la lecture audio de la question' : 'Activer la lecture audio de la question'} aria-pressed={isAudioEnabled}>
-                            {isAudioEnabled ? <Volume2 className="h-5 w-5" aria-hidden="true" /> : <VolumeX className="h-5 w-5" aria-hidden="true" />}
+                        <Button variant="ghost" size="icon" onClick={() => setIsAudioEnabled(!isAudioEnabled)} className={`w-12 h-12 rounded-2xl transition-all ${isAudioEnabled ? 'text-primary bg-blue-50 shadow-3d-sm' : 'text-slate-400 bg-white'}`} aria-label={isAudioEnabled ? 'Désactiver la lecture audio' : 'Activer la lecture audio'} aria-pressed={isAudioEnabled}>
+                            {isAudioEnabled ? <Volume2 className="h-6 w-6" aria-hidden="true" /> : <VolumeX className="h-6 w-6" aria-hidden="true" />}
                         </Button>
-                        <Link href="/dashboard" aria-label="Quitter l'entraînement et retourner au tableau de bord">
-                            <Button variant="ghost" size="icon" className="rounded-full text-gray-400 hover:text-red-500" aria-label="Quitter">
-                                <XCircle className="h-5 w-5" aria-hidden="true" />
+                        <Link href="/dashboard" aria-label="Quitter l'entraînement">
+                            <Button variant="ghost" size="icon" className="w-12 h-12 rounded-2xl text-slate-400 bg-white hover:text-red-500 hover:bg-red-50 transition-all shadow-sm" aria-label="Quitter">
+                                <XCircle className="h-6 w-6" aria-hidden="true" />
                             </Button>
                         </Link>
                     </div>
@@ -358,69 +365,86 @@ export default function TrainingSession() {
 
                 <main className="flex-1" aria-label="Zone de quiz">
                     <AnimatePresence mode="wait">
-                        <motion.div key={currentQuestion.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }}>
-                            <Card className="border-none shadow-lg bg-white overflow-hidden mb-24">
-                                <CardContent className="p-6 md:p-8">
-                                    <h2 className="text-2xl md:text-3xl font-bold text-gray-800 leading-tight mb-8" ref={questionRef} tabIndex={-1} id="current-question">
+                        <motion.div key={currentQuestion.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -15 }}>
+                            <Card className="premium-card-3d border-none bg-white overflow-visible mb-24 p-2 md:p-4">
+                                <div className="absolute -top-3 left-10 px-4 py-1 bg-primary text-white text-[10px] font-black uppercase tracking-widest rounded-full shadow-lg z-30">
+                                    {themeId.replace('_', ' ')}
+                                </div>
+                                <CardContent className="p-8 md:p-12 relative">
+                                    <h2 className="text-2xl md:text-4xl font-black text-slate-900 leading-tight mb-12 outline-none tracking-tight" ref={questionRef} tabIndex={-1} id="current-question">
                                         <PedagogicalText text={currentQuestion.question} />
                                     </h2>
-                                    <div className="grid grid-cols-1 gap-3" role="radiogroup" aria-labelledby="current-question" aria-describedby="training-feedback">
+                                    <div className="grid grid-cols-1 gap-5" role="radiogroup" aria-labelledby="current-question" aria-describedby="training-feedback">
                                         {currentQuestion.choices.map((choice, index) => {
                                             const isSelected = selectedAnswer === index;
                                             const isCorrectChoice = index === currentQuestion.correct_index;
-                                            let styleClass = 'relative p-4 rounded-xl border-2 text-left transition-all w-full flex items-start gap-4 ';
+                                            let styleClass = 'relative p-6 rounded-[2.5rem] border-2 text-left transition-all w-full flex items-center gap-6 ';
+                                            
                                             if (isAnswered) {
-                                                if (isCorrectChoice) styleClass += 'border-green-500 bg-green-50 text-green-900';
-                                                else if (isSelected) styleClass += 'border-red-200 bg-red-50 text-red-900';
-                                                else styleClass += 'border-gray-50 text-gray-300 opacity-50';
+                                                if (isCorrectChoice) styleClass += 'border-green-500 bg-green-50 shadow-3d-sm text-green-900 z-10 ';
+                                                else if (isSelected) styleClass += 'border-red-500 bg-red-50 shadow-3d-sm text-red-900 z-10 ';
+                                                else styleClass += 'border-slate-50 text-slate-300 opacity-40 ';
                                             } else if (isSelected) {
-                                                styleClass += 'border-blue-600 bg-blue-50 text-blue-700 shadow-inner';
+                                                styleClass += 'border-primary bg-blue-50/50 shadow-3d-md z-10 ';
                                             } else {
-                                                styleClass += 'border-gray-100 hover:border-gray-200 bg-white';
+                                                styleClass += 'border-slate-50 hover:border-slate-200 hover:shadow-3d-sm bg-white/50 hover:bg-white ';
                                             }
 
-                                            // Build accessible label
                                             let accessibleLabel = `Réponse ${String.fromCharCode(65 + index)} : ${choice}`;
                                             if (isAnswered && isCorrectChoice) accessibleLabel += ' — Bonne réponse';
                                             if (isAnswered && isSelected && !isCorrectChoice) accessibleLabel += ' — Mauvaise réponse';
 
                                             return (
-                                                <button key={index} onClick={() => handleAnswerSelect(index)} disabled={isAnswered} className={styleClass} role="radio" aria-checked={isSelected} aria-label={accessibleLabel}>
-                                                    <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center font-bold border transition-colors ${isSelected ? 'bg-blue-600 text-white' : 'bg-gray-50 text-gray-400'}`} aria-hidden="true">
+                                                <motion.button 
+                                                    key={index} 
+                                                    whileHover={!isAnswered ? { y: -4, scale: 1.01 } : {}}
+                                                    whileTap={!isAnswered ? { scale: 0.98 } : {}}
+                                                    onClick={() => handleAnswerSelect(index)} 
+                                                    disabled={isAnswered} 
+                                                    className={styleClass} 
+                                                    role="radio" 
+                                                    aria-checked={isSelected} 
+                                                    aria-label={accessibleLabel}
+                                                >
+                                                    <div className={`flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center font-black text-2xl border transition-all duration-300 ${isSelected ? 'bg-primary text-white shadow-3d-sm scale-110 rotate-6' : 'bg-slate-50 text-slate-400 group-hover:bg-white group-hover:text-primary border-slate-100 shadow-sm'}`} aria-hidden="true">
                                                         {String.fromCharCode(65 + index)}
                                                     </div>
-                                                    <span className="text-lg font-medium w-full text-left">
+                                                    <span className={`text-lg md:text-xl transition-colors w-full text-left ${isSelected ? 'font-black text-slate-900' : 'font-bold text-slate-600 group-hover:text-slate-900 font-medium'}`}>
                                                         <PedagogicalText text={choice} />
                                                     </span>
-                                                    {isAnswered && isCorrectChoice && <CheckCircle className="ml-auto h-6 w-6 text-green-500" aria-hidden="true" />}
-                                                    {isAnswered && isSelected && !isCorrectChoice && <XCircle className="ml-auto h-6 w-6 text-red-500" aria-hidden="true" />}
-                                                </button>
+                                                    {isAnswered && (isCorrectChoice || isSelected) && (
+                                                        <div className={`premium-card-3d p-2.5 rounded-2xl shadow-sm ml-auto ${isCorrectChoice ? 'bg-green-500 shadow-green-200' : 'bg-red-500 shadow-red-200'}`}>
+                                                            {isCorrectChoice ? <CheckCircle className="h-6 w-6 text-white" aria-hidden="true" /> : <XCircle className="h-6 w-6 text-white" aria-hidden="true" />}
+                                                        </div>
+                                                    )}
+                                                </motion.button>
                                             );
                                         })}
                                     </div>
-                                    {/* Explication (République Française design) */}
+
                                     {isAnswered && currentQuestion.explanation && (
                                         <motion.div
-                                            initial={{ opacity: 0, y: 10, height: 0 }}
-                                            animate={{ opacity: 1, y: 0, height: 'auto' }}
-                                            transition={{ duration: 0.4, ease: "easeOut" }}
-                                            className="mt-8 overflow-hidden"
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.5, ease: "easeOut" }}
+                                            className="mt-16"
                                             role="region"
                                             aria-label="Explication de la réponse"
                                         >
-                                            <div className="bg-gradient-to-br from-slate-50 to-white border-l-4 border-l-blue-600 rounded-r-2xl p-6 shadow-sm relative border border-slate-100">
-                                                {/* Subtil liseré tricolore en haut pour rappeler la République Française */}
-                                                <div className="absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-blue-600 via-white to-red-600 opacity-80" aria-hidden="true" />
-
-                                                <div className="flex items-start gap-4">
-                                                    <div className="bg-blue-50 border border-blue-100 p-2.5 rounded-xl text-blue-700 flex-shrink-0 shadow-sm" aria-hidden="true">
-                                                        <BookOpen className="h-6 w-6" />
+                                            <div className="premium-card-3d bg-slate-900 text-white p-10 relative overflow-hidden group">
+                                                <div className="absolute top-0 right-0 w-48 h-48 bg-blue-600/20 rounded-full -mr-24 -mt-24 blur-[80px] animate-pulse" aria-hidden="true" />
+                                                <div className="absolute bottom-0 left-0 w-48 h-48 bg-red-600/20 rounded-full -ml-24 -mb-24 blur-[80px] animate-pulse delay-700" aria-hidden="true" />
+                                                
+                                                <div className="flex flex-col md:flex-row items-start gap-8 relative z-10">
+                                                    <div className="bg-white/10 backdrop-blur-md p-5 rounded-3xl flex-shrink-0 border border-white/10 shadow-3d-sm group-hover:rotate-12 transition-transform duration-700" aria-hidden="true">
+                                                        <BookOpen className="h-10 w-10 text-blue-300" />
                                                     </div>
-                                                    <div className="flex-1">
-                                                        <h3 className="text-lg font-black text-slate-900 mb-2 tracking-tight">
-                                                            Le saviez-vous ?
+                                                    <div>
+                                                        <h3 className="text-2xl font-black text-white mb-4 tracking-tight flex items-center gap-3">
+                                                            L&apos;Essentiel à Retenir
+                                                            <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-red-500 rounded-full" />
                                                         </h3>
-                                                        <p className="text-slate-700 leading-relaxed text-[1.05rem]">
+                                                        <p className="text-slate-300 leading-relaxed text-xl font-medium antialiased">
                                                             {currentQuestion.explanation}
                                                         </p>
                                                     </div>
@@ -446,27 +470,27 @@ export default function TrainingSession() {
                 </main>
             </div>
 
-            <div className="fixed bottom-0 left-0 right-0 p-4 bg-white/90 backdrop-blur-md border-t border-gray-100 z-50">
+            <div className="fixed bottom-0 left-0 right-0 p-6 bg-white/95 backdrop-blur-xl border-t border-slate-100 z-50 shadow-2xl">
                 <div className="container mx-auto max-w-4xl flex justify-end">
                     {!isAnswered ? (
-                        <Button size="lg" onClick={handleValidate} disabled={selectedAnswer === null} className="w-full sm:w-auto min-w-[180px] font-bold shadow-blue-500/20" aria-label={selectedAnswer === null ? 'Sélectionnez une réponse avant de vérifier' : 'Vérifier ma réponse'}>
+                        <Button size="lg" onClick={handleValidate} disabled={selectedAnswer === null} className="w-full sm:w-auto min-w-[200px] h-14 rounded-2xl font-black text-lg bg-primary hover:bg-blue-700 shadow-3d-md" aria-label={selectedAnswer === null ? 'Sélectionnez une réponse avant de vérifier' : 'Vérifier ma réponse'}>
                             Vérifier
                         </Button>
                     ) : (
                         <Button size="lg" onClick={handleNext}
-                            className={`w-full sm:w-auto min-w-[200px] font-bold relative overflow-hidden transition-all hover:scale-[1.02] shadow-lg
+                            className={`w-full sm:w-auto min-w-[220px] h-14 rounded-2xl font-black text-lg relative overflow-hidden transition-all hover:scale-[1.03] shadow-3d-md hover:shadow-3d-lg
                                 ${status === 'correct'
                                     ? 'bg-white text-green-700 border-2 border-green-500 hover:bg-green-50'
-                                    : 'bg-white text-gray-900 border-2 border-gray-200 hover:bg-gray-50'}`}
+                                    : 'bg-white text-slate-900 border-2 border-slate-200 hover:bg-slate-50'}`}
                         >
-                            <div className="absolute top-0 left-0 right-0 h-1 flex">
+                            <div className="absolute top-0 left-0 right-0 h-1 flex" aria-hidden="true">
                                 <div className="h-full w-1/3 bg-blue-600" />
                                 <div className="h-full w-1/3 bg-white" />
                                 <div className="h-full w-1/3 bg-red-600" />
                             </div>
-                            <span className="flex items-center gap-2">
+                            <span className="flex items-center gap-3">
                                 {currentQuestionIndex < questions.length - 1 ? 'Continuer' : 'Voir Résultats'}
-                                <ArrowRight className="h-5 w-5" aria-hidden="true" />
+                                <ArrowRight className="h-6 w-6" aria-hidden="true" />
                             </span>
                         </Button>
                     )}

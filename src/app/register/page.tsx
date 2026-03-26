@@ -8,6 +8,7 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, ShieldCheck, FileText } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../components/ui/card';
+import { motion } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
@@ -186,19 +187,28 @@ export default function RegisterPage() {
             {/* Right Side: Registration Form */}
             <div className="flex-1 flex flex-col justify-center px-6 py-12 lg:px-24 bg-gray-50 dark:bg-gray-900">
                 <div className="max-w-[480px] w-full mx-auto space-y-8">
-                    <div className="text-center lg:text-left">
-                        <h2 className="text-3xl font-black text-[#002394] dark:text-white leading-tight mb-2" id="register-title">
-                            Inscription
+                    <div className="text-center lg:text-left space-y-2">
+                        <div className="flex h-8 w-20 shadow-3d-sm rounded-md overflow-hidden border border-white mb-6 lg:ml-0 mx-auto">
+                            <div className="w-1/3 bg-[#002394]"></div>
+                            <div className="w-1/3 bg-white"></div>
+                            <div className="w-1/3 bg-[#ed2939]"></div>
+                        </div>
+                        <h2 className="text-3xl font-black text-slate-900 dark:text-white leading-tight tracking-tight antialiased" id="register-title">
+                            Créer mon espace
                         </h2>
-                        <p className="text-gray-500 dark:text-gray-400" id={headingDescId}>Commencez votre préparation dès aujourd'hui.</p>
+                        <p className="text-slate-500 dark:text-slate-400 font-medium" id={headingDescId}>Commencez votre parcours vers la citoyenneté.</p>
                     </div>
 
                     <div id={errorId} role="alert" aria-live="assertive" aria-atomic="true">
                         {error && (
-                            <div className="bg-red-50 border border-red-200 text-red-700 p-3 rounded-md text-sm">
-                                <span className="sr-only">Erreur : </span>
+                            <motion.div 
+                                initial={{ opacity: 0, x: -10 }}
+                                animate={{ opacity: 1, x: 0 }}
+                                className="bg-red-50 border-2 border-red-100 text-red-700 p-4 rounded-2xl text-sm font-bold flex items-center gap-3 shadow-3d-sm"
+                            >
+                                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
                                 {error}
-                            </div>
+                            </motion.div>
                         )}
                     </div>
 
@@ -279,21 +289,21 @@ export default function RegisterPage() {
 
                         <button
                             type="submit" disabled={loading} aria-busy={loading}
-                            className="w-full py-4 bg-[#002394] hover:bg-blue-900 text-white font-bold rounded-xl shadow-lg shadow-blue-900/20 transition-all flex items-center justify-center gap-2 group disabled:bg-blue-400"
+                            className="w-full py-4 bg-primary hover:bg-blue-800 text-white font-black rounded-2xl shadow-3d-md hover:shadow-3d-lg transition-all flex items-center justify-center gap-2 group disabled:bg-blue-300 active:scale-95 antialiased"
                         >
                             {loading ? (
                                 <>
-                                    <span className="animate-spin text-lg">⏳</span> Inscription en cours...
+                                    <span className="animate-spin h-5 w-5 border-2 border-white/30 border-t-white rounded-full" /> Inscription...
                                 </>
                             ) : (
                                 <>
-                                    Créer mon compte <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                                    Finaliser l&apos;inscription <ArrowRight className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
                                 </>
                             )}
                         </button>
 
-                        <p className="text-center text-sm text-gray-500 dark:text-gray-400">
-                            Vous avez déjà un compte ? <Link href="/login" className="text-[#002394] dark:text-blue-400 font-bold hover:underline">Se connecter</Link>
+                        <p className="text-center text-sm text-slate-500 dark:text-slate-400 font-medium">
+                            Déjà inscrit ? <Link href="/login" className="text-primary dark:text-blue-400 font-black hover:underline">Se connecter</Link>
                         </p>
                     </form>
                 </div>

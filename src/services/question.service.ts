@@ -1,5 +1,5 @@
 import { db } from '../lib/firebase';
-import { collection, getDocs, query, where, limit } from 'firebase/firestore';
+import { collection, getDocs, query, where, limit, getCountFromServer } from 'firebase/firestore';
 import { THEMES } from '../constants/app-constants';
 
 export interface Question {
@@ -153,9 +153,9 @@ export const QuestionService = {
 
         try {
             const snaps = await Promise.all(
-                THEMES.map(t => getDocs(query(collection(db, 'questions'), where('theme', '==', t))))
+                THEMES.map(t => getCountFromServer(query(collection(db, 'questions'), where('theme', '==', t))))
             );
-            const rawCounts = Object.fromEntries(THEMES.map((t, i) => [t, snaps[i].size]));
+            const rawCounts = Object.fromEntries(THEMES.map((t, i) => [t, snaps[i].data().count]));
 
             // Post-process logic for aggregated themes in UI
             const finalCounts = { ...rawCounts };

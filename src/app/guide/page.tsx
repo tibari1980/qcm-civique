@@ -177,17 +177,17 @@ const EXAM_THEMES = [
 function FAQItem({ item, id }: { item: typeof FAQ_ITEMS[0], id: string }) {
     const [open, setOpen] = useState(false);
     return (
-        <div className="border border-gray-200 dark:border-gray-700 rounded-2xl overflow-hidden transition-colors">
+        <div className="premium-card-3d border-none bg-white overflow-hidden transition-all rounded-3xl mb-4">
             <h3 className="m-0">
                 <button
                     id={`faq-btn-${id}`}
                     onClick={() => setOpen(!open)}
-                    className="w-full flex items-center justify-between p-5 text-left bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus-visible:ring-2 focus-visible:ring-blue-500 focus:outline-none"
+                    className="w-full flex items-center justify-between p-6 text-left bg-white hover:bg-slate-50 transition-colors focus:outline-none"
                     aria-expanded={open}
                     aria-controls={`faq-answer-${id}`}
                 >
-                    <span className="font-bold text-gray-900 dark:text-white pr-4">{item.q}</span>
-                    <ChevronDown className={`h-5 w-5 text-gray-400 flex-shrink-0 transition-transform duration-300 ${open ? 'rotate-180' : ''}`} aria-hidden="true" />
+                    <span className="font-black text-slate-800 pr-4 antialiased">{item.q}</span>
+                    <ChevronDown className={`h-6 w-6 text-slate-400 flex-shrink-0 transition-transform duration-500 ${open ? 'rotate-180 text-primary' : ''}`} aria-hidden="true" />
                 </button>
             </h3>
             <AnimatePresence>
@@ -202,9 +202,9 @@ function FAQItem({ item, id }: { item: typeof FAQ_ITEMS[0], id: string }) {
                         transition={{ duration: 0.3 }}
                         className="overflow-hidden"
                     >
-                        <p className="px-5 pb-5 text-gray-600 dark:text-gray-300 leading-relaxed">
+                        <div className="px-6 pb-6 text-slate-600 leading-relaxed font-medium antialiased border-t border-slate-50 pt-4 m-2 bg-slate-50/50 rounded-2xl">
                             {item.a}
-                        </p>
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -219,38 +219,44 @@ export default function GuidePage() {
     return (
         <div className="min-h-screen">
             {/* HERO */}
-            <section className="relative bg-gradient-to-br from-blue-900 via-indigo-900 to-blue-950 text-white py-24 overflow-hidden">
-                <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxIiBmaWxsPSJyZ2JhKDI1NSwyNTUsMjU1LDAuMDUpIi8+PC9zdmc+')] opacity-40" aria-hidden="true" />
-                <div className="absolute top-10 left-10 w-72 h-72 bg-blue-500/20 rounded-full blur-3xl" aria-hidden="true" />
-                <div className="absolute bottom-10 right-10 w-96 h-96 bg-red-500/10 rounded-full blur-3xl" aria-hidden="true" />
+            <section className="relative bg-gradient-to-br from-[#002654] via-[#0a1e3b] to-black text-white py-32 overflow-hidden">
+                <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10" aria-hidden="true" />
+                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#002654] via-white to-[#ED2939]" />
+                
+                <div className="absolute top-20 left-10 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-pulse" aria-hidden="true" />
+                <div className="absolute bottom-10 right-10 w-[30rem] h-[30rem] bg-red-600/10 rounded-full blur-[150px] animate-pulse delay-1000" aria-hidden="true" />
 
                 <div className="container mx-auto px-4 relative z-10 text-center">
-                    <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-                        <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-md text-sm font-bold mb-6 border border-white/20">
-                            <BookOpen className="h-4 w-4" aria-hidden="true" />
-                            Guide complet — Mis à jour 2026
+                    <motion.div 
+                        initial={{ opacity: 0, y: 30 }} 
+                        animate={{ opacity: 1, y: 0 }} 
+                        transition={{ duration: 0.8, ease: "easeOut" }}
+                    >
+                        <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-white/5 backdrop-blur-xl text-primary font-black mb-8 border border-white/10 shadow-3d-sm animate-float">
+                            <BookOpen className="h-5 w-5" aria-hidden="true" />
+                            Guide Officiel CiviQuiz — {new Date().getFullYear()}
                         </span>
-                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-black mb-6 leading-tight">
+                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-tight tracking-tighter">
                             <span className="sr-only">Guide CiviqQuiz : Réussissez votre naturalisation, titre de séjour et carte de résident en France</span>
-                            <span aria-hidden="true">
-                                Guide d'utilisation<br />
-                                <span className="bg-gradient-to-r from-blue-300 via-white to-red-300 bg-clip-text text-transparent">
-                                    CiviqQuiz
+                            <span aria-hidden="true" className="block drop-shadow-2xl">
+                                Votre passeport<br />
+                                <span className="bg-gradient-to-r from-blue-400 via-white to-red-400 bg-clip-text text-transparent">
+                                    pour la Réussite
                                 </span>
                             </span>
                         </h1>
-                        <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto mb-8 font-light leading-relaxed">
-                            Découvrez tout ce qu&apos;il faut savoir pour préparer sereinement votre <strong className="text-white font-semibold">intégration</strong>. De l&apos;examen civique à l&apos;entretien de naturalisation, nous vous guidons vers la réussite.
+                        <p className="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto mb-12 font-medium leading-relaxed antialiased">
+                            Le guide ultime pour maîtriser l&apos;examen civique. De l&apos;inscription à la naturalisation, nous vous accompagnons <span className="text-white font-black italic">étape par étape</span>.
                         </p>
-                        <div className="flex flex-wrap justify-center gap-4">
+                        <div className="flex flex-wrap justify-center gap-6">
                             <Link href="/register">
-                                <Button size="lg" className="bg-white text-blue-900 hover:bg-blue-50 font-bold text-lg px-8 shadow-xl">
-                                    Commencer gratuitement <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
+                                <Button size="lg" className="bg-white text-primary hover:bg-slate-100 font-black text-xl px-12 h-16 rounded-[2rem] shadow-3d-md hover:shadow-3d-lg transition-all active:scale-95">
+                                    Commencer <ArrowRight className="ml-3 h-6 w-6" aria-hidden="true" />
                                 </Button>
                             </Link>
                             <a href="#guide-steps">
-                                <Button size="lg" variant="outline" className="border-white/30 text-white hover:bg-white/10 font-bold text-lg px-8">
-                                    Voir le guide <ChevronDown className="ml-2 h-5 w-5" aria-hidden="true" />
+                                <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/5 font-black text-xl px-12 h-16 rounded-[2rem] backdrop-blur-md active:scale-95">
+                                    Explorer le guide
                                 </Button>
                             </a>
                         </div>
@@ -381,14 +387,10 @@ export default function GuidePage() {
 
                     <div className="space-y-8">
                         {GUIDE_STEPS.map((step, i) => (
-                            <motion.div
-                                key={i}
-                                initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                transition={{ duration: 0.5 }}
-                                viewport={{ once: true }}
-                                className="bg-white dark:bg-gray-800 rounded-3xl shadow-sm hover:shadow-md transition-shadow p-8 border border-gray-100 dark:border-gray-700"
-                            >
+                                <motion.div
+                                    whileHover={{ y: -10, rotate: 0.5 }}
+                                    className="premium-card-3d bg-white p-8 md:p-10 rounded-[2.5rem] border-none"
+                                >
                                 <div className="flex flex-col md:flex-row items-start gap-6">
                                     <div className={`${step.color} p-4 rounded-2xl text-white flex-shrink-0`} aria-hidden="true">
                                         <step.icon className="h-8 w-8" />
@@ -405,8 +407,8 @@ export default function GuidePage() {
                                             ))}
                                         </ul>
                                         <Link href={step.link}>
-                                            <Button variant="outline" size="sm" className="group">
-                                                Accéder <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                                            <Button variant="outline" size="lg" className="h-12 px-8 rounded-2xl border-2 border-slate-100 font-extrabold group active:scale-95 transition-all">
+                                                Accéder au module <ArrowRight className="ml-3 h-5 w-5 group-hover:translate-x-2 transition-transform" aria-hidden="true" />
                                             </Button>
                                         </Link>
                                     </div>
