@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import { collection, getDocs, writeBatch, doc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { useAdminGuard } from '@/lib/adminGuard';
+import { db } from '../../../lib/firebase';
+import { useAdminGuard } from '../../../lib/adminGuard';
 import { ArrowLeft, Copy, CheckCircle2, AlertCircle, RefreshCw, Trash2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { cleanQuestionText, normalizeQuestionText } from '@/utils/cleaning';
+import { cleanQuestionText, normalizeQuestionText } from '../../../utils/cleaning';
 
 type LogLine = { type: 'info' | 'success' | 'error' | 'warn'; text: string };
 

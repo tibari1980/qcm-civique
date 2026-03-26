@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '../../../components/ui/card';
 import { Award, Star, Shield, Trophy, Zap, Target, Crown } from 'lucide-react';
-import { UserProgress } from '@/types';
+import { UserProgress } from '../../../types';
 import { motion } from 'framer-motion';
 
 // Définir les badges possibles

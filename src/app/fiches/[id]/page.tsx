@@ -1,6 +1,7 @@
 import React from 'react';
-export const runtime = 'edge';
 import { notFound } from 'next/navigation';
+
+export const dynamicParams = false;
 import Link from 'next/link';
 import { ChevronLeft, Info, FileText } from 'lucide-react';
 

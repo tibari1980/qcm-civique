@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Button } from '../../../components/ui/button';
+import { Card } from '../../../components/ui/card';
 import { Clock, Sparkles, CheckCircle2, XCircle, RotateCcw, LayoutDashboard } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
-import { useAIQCM, type AIQCMSession } from '@/hooks/useAIQCM';
-import { UserService } from '@/services/user.service';
+import { useAuth } from '../../../context/AuthContext';
+import { useAIQCM, type AIQCMSession } from '../../../hooks/useAIQCM';
+import { UserService } from '../../../services/user.service';
 import Link from 'next/link';
 
 /* ─────────────────────────────────────────────

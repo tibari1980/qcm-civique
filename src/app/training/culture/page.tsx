@@ -1,7 +1,7 @@
 'use client';
 
-import CultureGeneral from '@/components/features/training/CultureGeneral';
-import { useAuth } from '@/context/AuthContext';
+import CultureGeneral from '../../../components/features/training/CultureGeneral';
+import { useAuth } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 

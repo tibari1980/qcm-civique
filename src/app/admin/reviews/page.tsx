@@ -11,15 +11,15 @@ import {
     ShieldCheck,
     Download
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Review, ReviewService } from '@/services/review.service';
-import { AdminService } from '@/services/admin.service';
+import { Button } from '../../../components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '../../../components/ui/card';
+import { Review, ReviewService } from '../../../services/review.service';
+import { AdminService } from '../../../services/admin.service';
 import { toast } from 'sonner';
-import { StarRating } from '@/components/features/reviews/ReviewForm';
+import { StarRating } from '../../../components/features/reviews/ReviewForm';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ExportUtils } from '@/lib/exportUtils';
-import { Pagination } from '@/components/ui/Pagination';
+import { ExportUtils } from '../../../lib/exportUtils';
+import { Pagination } from '../../../components/ui/Pagination';
 
 export default function AdminReviewsPage() {
     const [reviews, setReviews] = useState<Review[]>([]);

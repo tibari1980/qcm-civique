@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { useTheme, ThemeMode } from '@/context/ThemeContext';
+import { useTheme, ThemeMode } from '../../context/ThemeContext';
 import { Sun, Moon, Monitor } from 'lucide-react';
 
 const MODES: { value: ThemeMode; label: string; icon: typeof Sun }[] = [

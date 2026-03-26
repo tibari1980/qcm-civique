@@ -10,7 +10,7 @@ import Link from 'next/link';
  * - <nav> avec aria-label distinct de la nav principale
  * - Liens avec textes descriptifs
  */
-import { useSettings } from '@/context/SettingsContext';
+import { useSettings } from '../../context/SettingsContext';
 import { Instagram, Linkedin, Mail } from 'lucide-react';
 
 /**

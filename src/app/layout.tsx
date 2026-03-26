@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import { Header } from "@/components/layout/Header";
+import { Header } from "../components/layout/Header";
 import "./globals.css";
 
 const inter = Inter({
@@ -53,19 +53,19 @@ export const metadata: Metadata = {
 };
 
 import dynamic from "next/dynamic";
-import { AuthProvider } from "@/context/AuthContext";
-import { SettingsProvider } from "@/context/SettingsContext";
-import { ThemeProvider } from "@/context/ThemeContext";
-import { TricolorBar } from "@/components/layout/TricolorBar";
+import { AuthProvider } from "../context/AuthContext";
+import { SettingsProvider } from "../context/SettingsContext";
+import { ThemeProvider } from "../context/ThemeContext";
+import { TricolorBar } from "../components/layout/TricolorBar";
 
 // Lazy-loaded components for better performance
-const Footer = dynamic(() => import("@/components/layout/Footer").then(mod => mod.Footer));
-const AnnouncementBanner = dynamic(() => import("@/components/layout/AnnouncementBanner").then(mod => mod.AnnouncementBanner));
-const SkipLink = dynamic(() => import("@/components/layout/SkipLink").then(mod => mod.SkipLink));
+const Footer = dynamic(() => import("../components/layout/Footer").then(mod => mod.Footer));
+const AnnouncementBanner = dynamic(() => import("../components/layout/AnnouncementBanner").then(mod => mod.AnnouncementBanner));
+const SkipLink = dynamic(() => import("../components/layout/SkipLink").then(mod => mod.SkipLink));
 import NextTopLoader from 'nextjs-toploader';
 import { Toaster } from 'sonner';
 
-import { GlobalA11yRoot } from "@/components/layout/GlobalA11yRoot";
+import { GlobalA11yRoot } from "../components/layout/GlobalA11yRoot";
 
 export default function RootLayout({
   children,

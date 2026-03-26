@@ -3,8 +3,8 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Mail, Calendar, Target, CheckCircle, XCircle } from 'lucide-react';
-import { AdminService } from '@/services/admin.service';
-import { useAdminGuard } from '@/lib/adminGuard';
+import { AdminService } from '../../../../services/admin.service';
+import { useAdminGuard } from '../../../../lib/adminGuard';
 
 const TRACK_LABEL: Record<string, string> = {
     residence: '🏠 Résidence',

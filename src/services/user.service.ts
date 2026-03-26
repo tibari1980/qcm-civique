@@ -1,4 +1,4 @@
-import { db } from '@/lib/firebase';
+import { db } from '../lib/firebase';
 import {
     collection,
     doc,
@@ -10,7 +10,7 @@ import {
     where,
     Timestamp,
 } from 'firebase/firestore';
-import { Attempt, UserProfile, UserProgress } from '@/types';
+import { Attempt, UserProfile, UserProgress } from '../types';
 
 // Simple in-memory cache to reduce Firestore reads during a session
 const cache: {

@@ -2,14 +2,14 @@
 
 import React, { useState } from 'react';
 import { collection, getDocs, writeBatch, doc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { useAdminGuard } from '@/lib/adminGuard';
+import { db } from '../../../lib/firebase';
+import { useAdminGuard } from '../../../lib/adminGuard';
 import { ArrowLeft, Sparkles, CheckCircle2, AlertCircle, RefreshCw } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 type LogLine = { type: 'info' | 'success' | 'error'; text: string };
 
-import { cleanQuestionText } from '@/utils/cleaning';
+import { cleanQuestionText } from '../../../utils/cleaning';
 
 export default function AdminCleanVariantePage() {
     useAdminGuard();

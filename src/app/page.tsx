@@ -3,15 +3,15 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Button } from '@/components/ui/button';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Button } from '../components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
 import { BookOpen, GraduationCap, CheckCircle, TrendingUp, ArrowRight, Shield, Landmark, Scale, Heart } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
-import { UserService } from '@/services/user.service';
-import { useSettings } from '@/context/SettingsContext';
-import { FrenchFlag } from '@/components/layout/FrenchFlag';
+import { useAuth } from '../context/AuthContext';
+import { UserService } from '../services/user.service';
+import { useSettings } from '../context/SettingsContext';
+import { FrenchFlag } from '../components/layout/FrenchFlag';
 
-import { FaqSection } from '@/components/features/home/FaqSection';
+import { FaqSection } from '../components/features/home/FaqSection';
 
 export default function Home() {
   const { user, userProfile, isAdmin } = useAuth();

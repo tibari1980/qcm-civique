@@ -1,6 +1,6 @@
-import { db } from '@/lib/firebase';
+import { db } from '../lib/firebase';
 import { collection, getDocs, query, where, limit } from 'firebase/firestore';
-import { THEMES } from '@/constants/app-constants';
+import { THEMES } from '../constants/app-constants';
 
 export interface Question {
     id: string;

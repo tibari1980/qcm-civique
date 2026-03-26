@@ -14,7 +14,7 @@ import {
     startAfter,
     QueryDocumentSnapshot
 } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db } from '../lib/firebase';
 
 export interface Review {
     id?: string;

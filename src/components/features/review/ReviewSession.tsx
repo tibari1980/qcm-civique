@@ -2,17 +2,17 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
 import { CheckCircle, XCircle, RotateCcw, Home, Loader2, AlertCircle, BookOpen } from 'lucide-react';
 import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
-import { Question, QuestionService } from '@/services/question.service';
-import { UserService } from '@/services/user.service';
+import { useAuth } from '../../../context/AuthContext';
+import { Question, QuestionService } from '../../../services/question.service';
+import { UserService } from '../../../services/user.service';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { useSoundEffects } from '@/hooks/useSoundEffects';
-import { PedagogicalText } from '@/components/features/PedagogicalText';
+import { useSoundEffects } from '../../../hooks/useSoundEffects';
+import { PedagogicalText } from '../../../components/features/PedagogicalText';
 
 export default function ReviewSession() {
     const { user, loading } = useAuth();

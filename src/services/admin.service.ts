@@ -3,8 +3,8 @@ import {
     orderBy, limit, where, Timestamp, deleteDoc, addDoc, setDoc,
     writeBatch, getCountFromServer, startAfter
 } from 'firebase/firestore';
-import { auth, db } from '@/lib/firebase';
-import { Attempt } from '@/types';
+import { auth, db } from '../lib/firebase';
+import { Attempt } from '../types';
 
 // Helper to get auth token
 const getAuthToken = async () => {

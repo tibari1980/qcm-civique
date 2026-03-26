@@ -1,8 +1,8 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { BookOpen, Users, Award, Target, CheckCircle, ArrowRight, Heart } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '../../components/ui/card';
+import { Button } from '../../components/ui/button';
 
 export const metadata: Metadata = {
     title: 'À Propos - Prépa Examen Civique FR',

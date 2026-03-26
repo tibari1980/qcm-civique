@@ -2,11 +2,11 @@
 
 import React, { useState } from 'react';
 import { Star } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
+import { Button } from '../../../components/ui/button';
+import { Textarea } from '../../../components/ui/textarea';
 import { toast } from 'sonner';
-import { ReviewService, Review } from '@/services/review.service';
-import { useAuth } from '@/context/AuthContext';
+import { ReviewService, Review } from '../../../services/review.service';
+import { useAuth } from '../../../context/AuthContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export function StarRating({ rating, setRating, interactive = false }: {

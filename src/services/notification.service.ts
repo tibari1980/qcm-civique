@@ -1,4 +1,4 @@
-import { db } from '@/lib/firebase';
+import { db } from '../lib/firebase';
 import {
     collection,
     query,
@@ -12,7 +12,7 @@ import {
     Timestamp,
     getDocs
 } from 'firebase/firestore';
-import { AppNotification } from '@/types';
+import { AppNotification } from '../types';
 
 export const NotificationService = {
     /**
@@ -98,7 +98,7 @@ export const NotificationService = {
             });
 
             // Mettre à jour la date du dernier rappel dans le profil
-            const { db } = await import('@/lib/firebase');
+            const { db } = await import('../lib/firebase');
             const { doc, updateDoc } = await import('firebase/firestore');
             await updateDoc(doc(db, 'users', user.uid), {
                 lastReminderAt: now

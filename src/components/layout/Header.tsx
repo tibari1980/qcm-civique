@@ -3,11 +3,11 @@
 import React, { useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, BookOpen, GraduationCap, LayoutDashboard, Home, LogOut } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '../ui/button';
 import { TricolorLogo } from './TricolorLogo';
 import { ThemeToggle } from './ThemeToggle';
-import { useAuth } from '@/context/AuthContext';
-import { useSettings } from '@/context/SettingsContext';
+import { useAuth } from '../../context/AuthContext';
+import { useSettings } from '../../context/SettingsContext';
 import { NotificationBell } from './NotificationBell';
 
 /**

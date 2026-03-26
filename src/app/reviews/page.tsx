@@ -3,12 +3,12 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, Star, Quote, ChevronLeft, Edit2, Trash2, Plus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '../../components/ui/button';
 import Link from 'next/link';
-import { ReviewForm, StarRating } from '@/components/features/reviews/ReviewForm';
-import { Review, ReviewService } from '@/services/review.service';
-import { Card, CardContent } from '@/components/ui/card';
-import { useAuth } from '@/context/AuthContext';
+import { ReviewForm, StarRating } from '../../components/features/reviews/ReviewForm';
+import { Review, ReviewService } from '../../services/review.service';
+import { Card, CardContent } from '../../components/ui/card';
+import { useAuth } from '../../context/AuthContext';
 import { QueryDocumentSnapshot } from 'firebase/firestore';
 import { toast } from 'sonner';
 

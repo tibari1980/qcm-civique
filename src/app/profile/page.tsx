@@ -1,6 +1,6 @@
 'use client';
 
-import ProfilePage from '@/components/features/profile/ProfilePage';
+import ProfilePage from '../../components/features/profile/ProfilePage';
 
 export default function Page() {
     return <ProfilePage />;

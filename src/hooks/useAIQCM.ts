@@ -1,8 +1,8 @@
-﻿'use client';
+'use client';
 
 import { useState, useCallback } from 'react';
-import { QuestionService } from '@/services/question.service';
-import { UserService } from '@/services/user.service';
+import { QuestionService } from '../services/question.service';
+import { UserService } from '../services/user.service';
 
 /* ---------------------------------------------
    Types

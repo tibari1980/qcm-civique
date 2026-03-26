@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuth } from '@/context/AuthContext';
-import { CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { useAuth } from '../../../context/AuthContext';
+import { CardContent } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
 import { CheckCircle, Flag, FileText, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { UserService } from '@/services/user.service';
+import { UserService } from '../../../services/user.service';
 
 export default function OnboardingFlow() {
     const { user, userProfile, refreshProfile, isAdmin } = useAuth();

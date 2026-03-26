@@ -4,14 +4,14 @@
 import React, { useState, useId } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
 import { Eye, EyeOff, Mail, Lock, LogIn } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { auth } from '@/lib/firebase';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../components/ui/card';
+import { auth } from '../../lib/firebase';
 import { signInWithEmailAndPassword, setPersistence, browserLocalPersistence, browserSessionPersistence } from 'firebase/auth';
-import { useAuth } from '@/context/AuthContext';
-import { useSettings } from '@/context/SettingsContext';
+import { useAuth } from '../../context/AuthContext';
+import { useSettings } from '../../context/SettingsContext';
 import Image from 'next/image';
 
 /**

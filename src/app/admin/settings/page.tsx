@@ -2,9 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { Save, RotateCcw } from 'lucide-react';
-import { AdminService } from '@/services/admin.service';
-import { useAdminGuard } from '@/lib/adminGuard';
-import { useSettings } from '@/context/SettingsContext';
+import { AdminService } from '../../../services/admin.service';
+import { useAdminGuard } from '../../../lib/adminGuard';
+import { useSettings } from '../../../context/SettingsContext';
 
 interface AppSettings {
     questionsPerExam: number;

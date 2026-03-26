@@ -4,16 +4,16 @@
 import React, { useState, useId } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight, ShieldCheck, FileText } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { useAuth } from '@/context/AuthContext';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../components/ui/card';
+import { useAuth } from '../../context/AuthContext';
 
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth, db } from '@/lib/firebase';
+import { auth, db } from '../../lib/firebase';
 import { doc, setDoc } from 'firebase/firestore';
-import { useSettings } from '@/context/SettingsContext';
+import { useSettings } from '../../context/SettingsContext';
 import Image from 'next/image';
 
 /**

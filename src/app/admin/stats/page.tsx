@@ -13,9 +13,9 @@ const XAxis = dynamic(() => import('recharts').then(mod => mod.XAxis), { ssr: fa
 const YAxis = dynamic(() => import('recharts').then(mod => mod.YAxis), { ssr: false });
 const PieChart = dynamic(() => import('recharts').then(mod => mod.PieChart), { ssr: false });
 const Pie = dynamic(() => import('recharts').then(mod => mod.Pie), { ssr: false });
-import { AdminService } from '@/services/admin.service';
-import { useAdminGuard } from '@/lib/adminGuard';
-import { useSettings } from '@/context/SettingsContext';
+import { AdminService } from '../../../services/admin.service';
+import { useAdminGuard } from '../../../lib/adminGuard';
+import { useSettings } from '../../../context/SettingsContext';
 
 const TRACK_LABELS: Record<string, string> = {
     residence: 'Résidence',

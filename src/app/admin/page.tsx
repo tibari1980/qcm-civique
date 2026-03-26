@@ -1,4 +1,4 @@
-import AdminDashboardClient from '@/components/features/admin/AdminDashboardClient';
+import AdminDashboardClient from '../../components/features/admin/AdminDashboardClient';
 
 /**
  * Admin Dashboard Page

@@ -3,10 +3,10 @@
 import React, { useState, useEffect, Suspense, useMemo } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { confirmPasswordReset, verifyPasswordResetCode } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { auth } from '../../lib/firebase';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Card, CardHeader, CardTitle, CardContent } from '../../components/ui/card';
 import { Eye, EyeOff, CheckCircle2, AlertCircle, Loader2, ShieldCheck, ShieldAlert, Lock, Check, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 

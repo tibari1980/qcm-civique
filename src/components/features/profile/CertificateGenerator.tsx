@@ -1,6 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
 import { Download, Printer, ShieldCheck, Award, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import html2canvas from 'html2canvas';

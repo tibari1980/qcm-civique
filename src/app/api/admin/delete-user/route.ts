@@ -1,7 +1,7 @@
-import { verifyAdminRequest } from '@/lib/api-security';
+import { verifyAdminRequest } from '../../../../lib/api-security';
 import { NextResponse } from 'next/server';
 export const runtime = 'edge';
-import { getAccessToken } from '@/lib/firebase-rest';
+import { getAccessToken } from '../../../../lib/firebase-rest';
 
 export async function POST(request: Request) {
     try {

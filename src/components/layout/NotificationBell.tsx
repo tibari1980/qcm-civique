@@ -2,9 +2,9 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Bell, Check, Info, AlertTriangle, CheckCircle2, MessageSquare } from 'lucide-react';
-import { NotificationService } from '@/services/notification.service';
-import { useAuth } from '@/context/AuthContext';
-import { AppNotification } from '@/types';
+import { NotificationService } from '../../services/notification.service';
+import { useAuth } from '../../context/AuthContext';
+import { AppNotification } from '../../types';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 

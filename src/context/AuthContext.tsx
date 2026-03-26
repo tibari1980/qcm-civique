@@ -2,11 +2,11 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, onAuthStateChanged, signOut as firebaseSignOut } from 'firebase/auth';
-import { auth, db } from '@/lib/firebase';
+import { auth, db } from '../lib/firebase';
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
-import { UserProfile } from '@/types';
-import { ADMIN_EMAILS } from '@/constants/app-constants';
+import { UserProfile } from '../types';
+import { ADMIN_EMAILS } from '../constants/app-constants';
 
 interface AuthContextType {
     user: User | null;

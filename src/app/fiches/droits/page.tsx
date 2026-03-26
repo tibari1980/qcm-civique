@@ -2,7 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronLeft, Scale, ShieldCheck, HeartPulse, GraduationCap, Gavel, FileText } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '../../../components/ui/card';
 
 export const metadata: Metadata = {
     title: "Droits et Devoirs en France | CiviQ",

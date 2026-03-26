@@ -2,7 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronLeft, Calendar, Sword, Crown, Map, Compass } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '../../../components/ui/card';
 
 export const metadata: Metadata = {
     title: "Histoire et Géographie de la France | CiviQ",

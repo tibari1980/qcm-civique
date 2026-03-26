@@ -2,19 +2,19 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
 import { CheckCircle, XCircle, ArrowRight, RotateCcw, Home, Volume2, VolumeX, Loader2, Flame, Eye, BookOpen } from 'lucide-react';
 import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
-import { Question, QuestionService } from '@/services/question.service';
-import { UserService } from '@/services/user.service';
-import { NotificationService } from '@/services/notification.service';
+import { useAuth } from '../../../context/AuthContext';
+import { Question, QuestionService } from '../../../services/question.service';
+import { UserService } from '../../../services/user.service';
+import { NotificationService } from '../../../services/notification.service';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
-import { useSoundEffects } from '@/hooks/useSoundEffects';
-import { Skeleton } from '@/components/ui/Skeleton';
-import { PedagogicalText } from '@/components/features/PedagogicalText';
+import { useSoundEffects } from '../../../hooks/useSoundEffects';
+import { Skeleton } from '../../../components/ui/Skeleton';
+import { PedagogicalText } from '../../../components/features/PedagogicalText';
 
 export default function TrainingSession() {
     const { user, userProfile, loading } = useAuth();

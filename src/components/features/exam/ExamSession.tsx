@@ -1,17 +1,17 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
 import { Clock, AlertCircle, ArrowLeft, ArrowRight, CheckCircle2, ChevronRight, Loader2 } from 'lucide-react';
 import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { Question, QuestionService } from '@/services/question.service';
-import { UserService } from '@/services/user.service';
-import { NotificationService } from '@/services/notification.service';
+import { Question, QuestionService } from '../../../services/question.service';
+import { UserService } from '../../../services/user.service';
+import { NotificationService } from '../../../services/notification.service';
 import { motion, AnimatePresence } from 'framer-motion';
-import { PedagogicalText } from '@/components/features/PedagogicalText';
+import { PedagogicalText } from '../../../components/features/PedagogicalText';
 
 export default function ExamSession() {
     const { user, userProfile, loading } = useAuth();

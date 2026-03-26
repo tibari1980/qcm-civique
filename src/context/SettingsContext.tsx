@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { AdminService } from '@/services/admin.service';
+import { AdminService } from '../services/admin.service';
 
 interface AppSettings {
     appName: string;

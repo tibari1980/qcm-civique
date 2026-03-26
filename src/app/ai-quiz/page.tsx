@@ -2,19 +2,19 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Card } from '../../components/ui/card';
 import {
     Loader2, Sparkles, GraduationCap, FileText,
     Building2, Briefcase, Plane, Heart, Globe,
     Database, Lightbulb, AlertCircle, CheckCircle2, Clock
 } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '../../context/AuthContext';
 import {
     useAIQCM,
     type AIQCMParams, type NiveauCECRL, type ThemeQCM, type ModuleQCM,
     type FirestoreTheme, FIRESTORE_THEME_LABELS
-} from '@/hooks/useAIQCM';
+} from '../../hooks/useAIQCM';
 
 /* ─────────────────────────────────────────────
    Données commun : niveaux CECRL

@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { useAuth } from '@/context/AuthContext';
-import { db } from '@/lib/firebase';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
+import { useAuth } from '../../../context/AuthContext';
+import { db } from '../../../lib/firebase';
 import { collection, getDocs, addDoc } from 'firebase/firestore';
 import { CheckCircle2, AlertTriangle, Loader2, Database, Search, Plus, Shield } from 'lucide-react';
 

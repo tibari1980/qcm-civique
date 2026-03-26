@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 export const runtime = 'edge';
-import { welcomeTemplate } from '@/constants/emailTemplates';
+import { welcomeTemplate } from '../../../constants/emailTemplates';
 
-import { verifyUserRequest } from '@/lib/api-security';
+import { verifyUserRequest } from '../../../lib/api-security';
 
 export async function POST(request: Request) {
     try {

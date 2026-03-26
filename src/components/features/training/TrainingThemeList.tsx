@@ -2,16 +2,16 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
 import { ArrowRight, Book, Scale, Landmark, Globe, Users } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { UserService } from '@/services/user.service';
-import { QuestionService } from '@/services/question.service';
+import { UserService } from '../../../services/user.service';
+import { QuestionService } from '../../../services/question.service';
 import { motion, AnimatePresence } from 'framer-motion';
-import { THEMES, THEME_LABELS } from '@/constants/app-constants';
-import { Skeleton } from '@/components/ui/Skeleton';
+import { THEMES, THEME_LABELS } from '../../../constants/app-constants';
+import { Skeleton } from '../../../components/ui/Skeleton';
 
 const THEME_DETAILS: Record<string, { description: string; icon: any; color: string }> = {
     vals_principes: {

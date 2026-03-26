@@ -9,7 +9,7 @@ import {
     Shield, Star, Lightbulb, Zap, GraduationCap, HelpCircle, ExternalLink,
     Heart, Users
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Button } from '../../components/ui/button';
 
 /* ═══════════════════════════════════════════════════════
    DATA

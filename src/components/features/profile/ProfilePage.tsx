@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { THEMES, THEME_LABELS } from '@/constants/app-constants';
-import { useAuth } from '@/context/AuthContext';
-import { UserService } from '@/services/user.service';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
+import { THEMES, THEME_LABELS } from '../../../constants/app-constants';
+import { useAuth } from '../../../context/AuthContext';
+import { UserService } from '../../../services/user.service';
 import { Loader2, User, Settings, LogOut, Check, Award, Eye } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Skeleton } from '@/components/ui/Skeleton';
+import { Skeleton } from '../../../components/ui/Skeleton';
 import BadgesSection from './BadgesSection';
 import dynamic from 'next/dynamic';
 

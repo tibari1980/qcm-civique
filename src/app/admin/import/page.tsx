@@ -6,11 +6,11 @@ import {
     AlertCircle, List, Database, RotateCcw, BookOpen, Download
 } from 'lucide-react';
 import { doc, writeBatch, collection, getCountFromServer, getDocs, deleteDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db } from '../../../lib/firebase';
 import * as XLSX from 'xlsx';
-import { useAdminGuard } from '@/lib/adminGuard';
-import { cleanQuestionText, normalizeQuestionText } from '@/utils/cleaning';
-import { useSoundEffects } from '@/hooks/useSoundEffects';
+import { useAdminGuard } from '../../../lib/adminGuard';
+import { cleanQuestionText, normalizeQuestionText } from '../../../utils/cleaning';
+import { useSoundEffects } from '../../../hooks/useSoundEffects';
 
 /* ─── Normalisation des chaînes (suppression accents, espaces, etc.) ─── */
 const normalizeTheme = (s: string) =>

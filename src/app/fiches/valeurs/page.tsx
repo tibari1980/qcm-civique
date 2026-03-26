@@ -2,7 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { ChevronLeft, Flag, Scale, Heart, BookOpen, Volume2 } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent } from '../../../components/ui/card';
 
 export const metadata: Metadata = {
     title: "Symboles et Valeurs de la République | CiviQ",

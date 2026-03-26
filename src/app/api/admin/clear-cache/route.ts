@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
-import { verifyAdminRequest } from '@/lib/api-security';
+import { verifyAdminRequest } from '../../../../lib/api-security';
 
 export const runtime = 'edge';
 

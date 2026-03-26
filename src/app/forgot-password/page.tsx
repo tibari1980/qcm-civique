@@ -2,13 +2,13 @@
 
 import React, { useState, useId } from 'react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../components/ui/card';
 import { ChevronLeft, Mail, CheckCircle2 } from 'lucide-react';
 import { sendPasswordResetEmail } from 'firebase/auth';
-import { auth } from '@/lib/firebase';
-import { useSettings } from '@/context/SettingsContext';
+import { auth } from '../../lib/firebase';
+import { useSettings } from '../../context/SettingsContext';
 import { motion, AnimatePresence } from 'framer-motion';
 
 /**

@@ -3,10 +3,10 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Save, Eye } from 'lucide-react';
-import { AdminService, type AdminQuestion, type QuestionFormData } from '@/services/admin.service';
-import { useAdminGuard } from '@/lib/adminGuard';
+import { AdminService, type AdminQuestion, type QuestionFormData } from '../../../../services/admin.service';
+import { useAdminGuard } from '../../../../lib/adminGuard';
 import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { db } from '../../../../lib/firebase';
 
 const THEMES = ['vals_principes', 'histoire', 'geographie', 'institutions', 'societe', 'civique'];
 const LEVELS = ['Débutant', 'Intermédiaire', 'Avancé'];

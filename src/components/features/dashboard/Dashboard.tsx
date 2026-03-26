@@ -1,16 +1,16 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '../../ui/card';
 import { Clock, Trophy, Target, TrendingUp, AlertCircle, FileText, CheckCircle2, BookOpen } from 'lucide-react';
 import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
-import { UserService } from '@/services/user.service';
-import { NotificationService } from '@/services/notification.service';
+import { UserService } from '../../../services/user.service';
+import { NotificationService } from '../../../services/notification.service';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Skeleton, StatsCardSkeleton } from '@/components/ui/Skeleton';
-import { Button } from '@/components/ui/button';
+import { Skeleton, StatsCardSkeleton } from '../../ui/Skeleton';
+import { Button } from '../../ui/button';
 
 export default function Dashboard() {
     const { user, userProfile, loading: authLoading } = useAuth();

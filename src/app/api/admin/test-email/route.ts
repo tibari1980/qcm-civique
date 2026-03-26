@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 export const runtime = 'edge';
-import { welcomeTemplate } from '@/constants/emailTemplates';
+import { welcomeTemplate } from '../../../../constants/emailTemplates';
 
 export async function POST(request: Request) {
     try {

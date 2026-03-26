@@ -19,10 +19,10 @@ const BarChart = dynamic(() => import('recharts').then(mod => mod.BarChart), { s
 const Bar = dynamic(() => import('recharts').then(mod => mod.Bar), { ssr: false });
 const Cell = dynamic(() => import('recharts').then(mod => mod.Cell), { ssr: false });
 
-import { AdminService, type GlobalStats, type DailyActivity } from '@/services/admin.service';
-import { useAdminGuard } from '@/lib/adminGuard';
-import { useSettings } from '@/context/SettingsContext';
-import { auth } from '@/lib/firebase';
+import { AdminService, type GlobalStats, type DailyActivity } from '../../../services/admin.service';
+import { useAdminGuard } from '../../../lib/adminGuard';
+import { useSettings } from '../../../context/SettingsContext';
+import { auth } from '../../../lib/firebase';
 import { Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 

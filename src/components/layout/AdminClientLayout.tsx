@@ -7,9 +7,9 @@ import {
     LayoutDashboard, Users, FileQuestion, BarChart2,
     Settings, ChevronRight, LogOut, ShieldCheck, Menu, X, Upload, Copy, MessageSquare
 } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
-import { useAdminGuard } from '@/lib/adminGuard';
-import { useSettings } from '@/context/SettingsContext';
+import { useAuth } from '../../context/AuthContext';
+import { useAdminGuard } from '../../lib/adminGuard';
+import { useSettings } from '../../context/SettingsContext';
 
 const NAV_ITEMS = [
     { href: '/admin/', label: 'Dashboard', icon: LayoutDashboard, exact: true },

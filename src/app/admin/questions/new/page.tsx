@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ArrowLeft, Plus, Trash2, Save, Eye, EyeOff, RotateCcw, CheckCircle2 } from 'lucide-react';
 import { collection, getDocs, query, where } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
-import { AdminService, type QuestionFormData } from '@/services/admin.service';
-import { useAdminGuard } from '@/lib/adminGuard';
-import { normalizeQuestionText } from '@/utils/cleaning';
+import { db } from '../../../../lib/firebase';
+import { AdminService, type QuestionFormData } from '../../../../services/admin.service';
+import { useAdminGuard } from '../../../../lib/adminGuard';
+import { normalizeQuestionText } from '../../../../utils/cleaning';
 
 /* ─── Thèmes avec libellés lisibles ─── */
 const THEME_OPTIONS: { value: string; label: string }[] = [

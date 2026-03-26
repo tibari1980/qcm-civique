@@ -6,10 +6,10 @@ import {
     Plus, Search, Pencil, Trash2, ToggleLeft, ToggleRight,
     ChevronLeft, ChevronRight, Download
 } from 'lucide-react';
-import { AdminService, type AdminQuestion } from '@/services/admin.service';
-import { useAdminGuard } from '@/lib/adminGuard';
-import { THEMES, THEME_LABELS, LEVELS } from '@/constants/app-constants';
-import { ExportUtils } from '@/lib/exportUtils';
+import { AdminService, type AdminQuestion } from '../../../services/admin.service';
+import { useAdminGuard } from '../../../lib/adminGuard';
+import { THEMES, THEME_LABELS, LEVELS } from '../../../constants/app-constants';
+import { ExportUtils } from '../../../lib/exportUtils';
 
 export default function AdminQuestionsPage() {
     useAdminGuard();

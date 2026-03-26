@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useFocusManager } from "@/hooks/useFocusManager";
+import { useFocusManager } from "../../hooks/useFocusManager";
 
 export function GlobalA11yRoot({ children }: { children: React.ReactNode }) {
     useFocusManager();

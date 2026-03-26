@@ -3,11 +3,11 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { Search, ShieldCheck, ShieldOff, Eye, Lock, Unlock, Trash2, Download, RefreshCcw, Mail } from 'lucide-react';
 import Link from 'next/link';
-import { AdminService, type AdminUserRow } from '@/services/admin.service';
-import { useAdminGuard } from '@/lib/adminGuard';
-import { useAuth } from '@/context/AuthContext';
-import { ExportUtils } from '@/lib/exportUtils';
-import { Input } from '@/components/ui/input';
+import { AdminService, type AdminUserRow } from '../../../services/admin.service';
+import { useAdminGuard } from '../../../lib/adminGuard';
+import { useAuth } from '../../../context/AuthContext';
+import { ExportUtils } from '../../../lib/exportUtils';
+import { Input } from '../../../components/ui/input';
 
 const TRACK_LABEL: Record<string, string> = {
     residence: '🏠 Résidence',

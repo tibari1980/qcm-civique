@@ -1,5 +1,5 @@
 import React from 'react';
-import AdminClientLayout from '@/components/layout/AdminClientLayout';
+import AdminClientLayout from '../../components/layout/AdminClientLayout';
 
 /**
  * AdminLayout (Server Component)

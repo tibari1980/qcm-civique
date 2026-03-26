@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { Card } from '../../../components/ui/card';
+import { Button } from '../../../components/ui/button';
 import { ArrowLeft, ArrowRight, RotateCw, Volume2 } from 'lucide-react';
 import Link from 'next/link';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
 
 // Mock Interview Questions

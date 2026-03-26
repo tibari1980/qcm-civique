@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useSettings } from '@/context/SettingsContext';
+import { useSettings } from '../../context/SettingsContext';
 import { Megaphone, X } from 'lucide-react';
 
 export function AnnouncementBanner() {
