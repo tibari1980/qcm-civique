@@ -1,7 +1,7 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
-
-export const dynamicParams = false;
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
 import Link from 'next/link';
 import { ChevronLeft, Info, FileText } from 'lucide-react';
 
@@ -177,12 +177,6 @@ const FICHES_CONTENT: Record<string, {
     }
 };
 
-// Generates static paths at build time for optimal performance
-export function generateStaticParams() {
-    return Object.keys(FICHES_CONTENT).map((id) => ({
-        id: id,
-    }));
-}
 
 export default async function FichePage({
     params,
