@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../../components/ui/card';
 import { Button } from '../../../components/ui/button';
 import { Clock, AlertCircle, ArrowLeft, ArrowRight, CheckCircle2, ChevronRight, Loader2 } from 'lucide-react';
@@ -16,7 +17,9 @@ import { PedagogicalText } from '../../../components/features/PedagogicalText';
 export default function ExamSession() {
     const { user, userProfile, loading } = useAuth();
     const router = useRouter();
+    const searchParams = useSearchParams();
 
+    // 1. Hooks (Always at the top)
     const [questions, setQuestions] = useState<Question[]>([]);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [answers, setAnswers] = useState<Record<number, number>>({});
@@ -24,42 +27,35 @@ export default function ExamSession() {
     const [isFinished, setIsFinished] = useState(false);
     const [isLoadingData, setIsLoadingData] = useState(true);
     const [direction, setDirection] = useState(0);
+    const [score, setScore] = useState(0);
 
+    const questionHeaderRef = useRef<HTMLHeadingElement>(null);
+    const resultRef = useRef<HTMLDivElement>(null);
+
+    // 2. Auth Guard
     useEffect(() => {
         if (!loading && !user) {
             router.push('/login');
         }
     }, [user, loading, router]);
 
-    useEffect(() => {
-        const loadExam = async () => {
-            setIsLoadingData(true);
-            try {
-                // Fetch Exactly 40 questions with the improved randomization
-                const track = userProfile?.track === 'naturalisation' ? 'naturalisation' : 'titre_sejour';
-                const fetched = await QuestionService.getExamQuestions(40, track);
-                setQuestions(fetched);
-            } catch (error) {
-                console.error("Error loading exam:", error);
-            } finally {
-                setIsLoadingData(false);
-            }
-        };
+    // 3. Derived State (Safe)
+    const currentQuestion = questions.length > 0 ? questions[currentQuestionIndex] : null;
 
-        if (user) {
-            loadExam();
-        }
-    }, [user]);
-
+    // 4. Methods
     const finishExam = useCallback(async () => {
-        if (isFinished) return;
+        if (isFinished || questions.length === 0) return;
         setIsFinished(true);
+
+        const calculatedScore = questions.reduce((acc, q, index) => {
+            return acc + (answers[index] === q.correct_index ? 1 : 0);
+        }, 0);
+        setScore(calculatedScore);
+
         if (user) {
             try {
-                const calculatedScore = questions.reduce((acc, q, index) => {
-                    return acc + (answers[index] === q.correct_index ? 1 : 0);
-                }, 0);
-
+                const track = userProfile?.track === 'naturalisation' ? 'naturalisation' : 'titre_sejour';
+                
                 const attemptAnswers = questions.map((q, index) => ({
                     question_id: q.id,
                     choice_index: answers[index] ?? -1,
@@ -68,14 +64,13 @@ export default function ExamSession() {
 
                 await UserService.saveAttempt({
                     user_id: user.uid,
-                    exam_type: userProfile?.track === 'naturalisation' ? 'naturalisation' : 'titre_sejour',
+                    exam_type: track,
                     score: calculatedScore,
                     total_questions: questions.length,
                     time_spent: 45 * 60 - timeLeft,
                     answers: attemptAnswers
                 });
 
-                // Send notification on success (32/40)
                 if (calculatedScore >= 32) {
                     await NotificationService.sendNotification({
                         userId: user.uid,
@@ -86,39 +81,15 @@ export default function ExamSession() {
                     });
                 }
             } catch (error) {
-                console.error('Failed to save exam attempt:', error);
+                console.error("Error saving exam result:", error);
             }
         }
     }, [user, questions, answers, userProfile, timeLeft, isFinished]);
 
-    useEffect(() => {
-        if (loading || !user || isFinished || isLoadingData) return;
-
-        const timer = setInterval(() => {
-            setTimeLeft((prev) => {
-                if (prev <= 1) {
-                    clearInterval(timer);
-                    finishExam();
-                    return 0;
-                }
-                return prev - 1;
-            });
-        }, 1000);
-        return () => clearInterval(timer);
-    }, [isFinished, loading, user, isLoadingData, finishExam]);
-
-    const questionHeaderRef = useRef<HTMLHeadingElement>(null);
-    const resultRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        if (!loading && !isLoadingData && !isFinished && questionHeaderRef.current) {
-            questionHeaderRef.current.focus();
-        }
-    }, [currentQuestionIndex, loading, isLoadingData, isFinished]);
-
     const handleAnswerSelect = useCallback((choiceIndex: number) => {
+        if (isFinished) return;
         setAnswers(prev => ({ ...prev, [currentQuestionIndex]: choiceIndex }));
-    }, [currentQuestionIndex]);
+    }, [currentQuestionIndex, isFinished]);
 
     const goToNext = useCallback(() => {
         if (currentQuestionIndex < questions.length - 1) {
@@ -136,35 +107,52 @@ export default function ExamSession() {
         }
     }, [currentQuestionIndex]);
 
-    const formatTime = (seconds: number) => {
-        const m = Math.floor(seconds / 60);
-        const s = seconds % 60;
-        return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-    };
+    // 5. Secondary Effects
 
-    const currentQuestion = questions[currentQuestionIndex];
+    // Timer
+    useEffect(() => {
+        if (loading || !user || isFinished || isLoadingData || questions.length === 0) return;
 
-    // Keyboard navigation (A, B, C, D + Arrows + Enter) - MUST BE ABOVE EARLY RETURNS
+        const timer = setInterval(() => {
+            setTimeLeft((prev) => {
+                if (prev <= 1) {
+                    clearInterval(timer);
+                    finishExam();
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [isFinished, loading, user, isLoadingData, questions.length, finishExam]);
+
+    // Accessibility Focus
+    useEffect(() => {
+        if (!loading && !isLoadingData && !isFinished && questions.length > 0 && questionHeaderRef.current) {
+            questionHeaderRef.current.focus();
+        }
+    }, [currentQuestionIndex, loading, isLoadingData, isFinished, questions.length]);
+
+    useEffect(() => {
+        if (isFinished && resultRef.current) {
+            resultRef.current.focus();
+        }
+    }, [isFinished]);
+
+    // Keyboard Navigation
     useEffect(() => {
         if (isFinished || isLoadingData || loading || !currentQuestion) return;
 
         const handleKeyDown = (e: KeyboardEvent) => {
             const key = e.key.toLowerCase();
-            
-            // Answer selection (A=0, B=1, C=2, D=3)
             if (['a', 'b', 'c', 'd'].includes(key)) {
                 const index = key.charCodeAt(0) - 97;
-                if (currentQuestion.choices[index] !== undefined) {
-                    handleAnswerSelect(index);
-                }
+                if (currentQuestion.choices[index] !== undefined) handleAnswerSelect(index);
             } else if (['1', '2', '3', '4'].includes(key)) {
                 const index = parseInt(key) - 1;
-                if (currentQuestion.choices[index] !== undefined) {
-                    handleAnswerSelect(index);
-                }
+                if (currentQuestion.choices[index] !== undefined) handleAnswerSelect(index);
             }
-            
-            // Navigation
             if (e.key === 'ArrowRight' || (e.key === 'Enter' && answers[currentQuestionIndex] !== undefined)) {
                 goToNext();
             } else if (e.key === 'ArrowLeft') {
@@ -176,6 +164,28 @@ export default function ExamSession() {
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [currentQuestionIndex, answers, isFinished, isLoadingData, loading, currentQuestion, handleAnswerSelect, goToNext, goToPrev]);
 
+    // Load Data
+    useEffect(() => {
+        const loadExam = async () => {
+            setIsLoadingData(true);
+            try {
+                const track = userProfile?.track === 'naturalisation' ? 'naturalisation' : 'titre_sejour';
+                const fetched = await QuestionService.getExamQuestions(40, track);
+                setQuestions(fetched);
+            } catch (error) {
+                console.error("Error loading exam:", error);
+            } finally {
+                setIsLoadingData(false);
+            }
+        };
+        if (user) loadExam();
+    }, [user, userProfile]);
+
+    const formatTime = (seconds: number) => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    };
 
     if (loading || isLoadingData) {
         return (
@@ -340,59 +350,61 @@ export default function ExamSession() {
             <div className="container mx-auto px-4 -mt-16 relative z-20">
                 <Card className="glass-card border-none shadow-2xl p-4 md:p-8 min-h-[500px] flex flex-col justify-between">
                     <AnimatePresence initial={false} custom={direction} mode="wait">
-                        <motion.div
-                            key={currentQuestionIndex}
-                            custom={direction}
-                            variants={slideVariants}
-                            initial="enter"
-                            animate="center"
-                            exit="exit"
-                            transition={{
-                                x: { type: "spring", stiffness: 300, damping: 30 },
-                                opacity: { duration: 0.2 }
-                            }}
-                            className="flex-grow flex flex-col"
-                        >
-                            <div className="mb-10">
-                                <div className="flex items-center gap-2 text-[var(--color-primary)] font-bold text-sm uppercase tracking-widest mb-6" aria-hidden="true">
-                                    <div className="w-8 h-0.5 bg-[var(--color-primary)] rounded-full" />
-                                    {currentQuestion.theme.replace('_', ' ')}
+                        {currentQuestion && (
+                            <motion.div
+                                key={currentQuestionIndex}
+                                custom={direction}
+                                variants={slideVariants}
+                                initial="enter"
+                                animate="center"
+                                exit="exit"
+                                transition={{
+                                    x: { type: "spring", stiffness: 300, damping: 30 },
+                                    opacity: { duration: 0.2 }
+                                }}
+                                className="flex-grow flex-col"
+                            >
+                                <div className="mb-10">
+                                    <div className="flex items-center gap-2 text-[var(--color-primary)] font-bold text-sm uppercase tracking-widest mb-6" aria-hidden="true">
+                                        <div className="w-8 h-0.5 bg-[var(--color-primary)] rounded-full" />
+                                        {currentQuestion.theme.replace('_', ' ')}
+                                    </div>
+                                    <h2 className="text-2xl md:text-3xl font-black text-slate-900 leading-tight outline-none" tabIndex={-1} ref={questionHeaderRef} id="exam-question">
+                                        <span className="sr-only">Thème : {currentQuestion.theme.replace('_', ' ')}. </span>
+                                        <PedagogicalText text={currentQuestion.question} />
+                                    </h2>
                                 </div>
-                                <h2 className="text-2xl md:text-3xl font-black text-slate-900 leading-tight outline-none" tabIndex={-1} ref={questionHeaderRef} id="exam-question">
-                                    <span className="sr-only">Thème : {currentQuestion.theme.replace('_', ' ')}. </span>
-                                    <PedagogicalText text={currentQuestion.question} />
-                                </h2>
-                            </div>
 
-                            <div className="space-y-4 mb-10" role="radiogroup" aria-labelledby="exam-question">
-                                {currentQuestion.choices.map((choice, index) => {
-                                    const isSelected = answers[currentQuestionIndex] === index;
-                                    return (
-                                        <motion.button
-                                            key={index}
-                                            whileHover={{ scale: 1.01 }}
-                                            whileTap={{ scale: 0.99 }}
-                                            onClick={() => handleAnswerSelect(index)}
-                                            role="radio"
-                                            aria-checked={isSelected}
-                                            aria-label={`Réponse ${String.fromCharCode(65 + index)} : ${choice}`}
-                                            className={`w-full group flex items-center p-6 rounded-3xl border-2 transition-all text-left relative overflow-hidden ${isSelected
-                                                ? 'border-[var(--color-primary)] bg-blue-50/50 shadow-md'
-                                                : 'border-slate-100 bg-slate-50/50 hover:border-slate-300 hover:bg-white'
-                                                }`}
-                                        >
-                                            <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-black mr-6 transition-colors ${isSelected ? 'bg-[var(--color-primary)] text-white' : 'bg-white text-slate-400 group-hover:bg-slate-100 group-hover:text-slate-600 border border-slate-200 shadow-sm'}`} aria-hidden="true">
-                                                {String.fromCharCode(65 + index)}
-                                            </div>
-                                            <span className={`text-lg transition-colors w-full text-left ${isSelected ? 'font-bold text-slate-900' : 'text-slate-600 group-hover:text-slate-900'}`}>
-                                                <PedagogicalText text={choice} />
-                                            </span>
-                                            {isSelected && <motion.div layoutId="selection-glow" className="absolute left-0 w-1.5 h-full bg-[var(--color-primary)]" aria-hidden="true" />}
-                                        </motion.button>
-                                    );
-                                })}
-                            </div>
-                        </motion.div>
+                                <div className="space-y-4 mb-10" role="radiogroup" aria-labelledby="exam-question">
+                                    {currentQuestion.choices.map((choice, index) => {
+                                        const isSelected = answers[currentQuestionIndex] === index;
+                                        return (
+                                            <motion.button
+                                                key={index}
+                                                whileHover={{ scale: 1.01 }}
+                                                whileTap={{ scale: 0.99 }}
+                                                onClick={() => handleAnswerSelect(index)}
+                                                role="radio"
+                                                aria-checked={isSelected}
+                                                aria-label={`Réponse ${String.fromCharCode(65 + index)} : ${choice}`}
+                                                className={`w-full group flex items-center p-6 rounded-3xl border-2 transition-all text-left relative overflow-hidden ${isSelected
+                                                    ? 'border-[var(--color-primary)] bg-blue-50/50 shadow-md'
+                                                    : 'border-slate-100 bg-slate-50/50 hover:border-slate-300 hover:bg-white'
+                                                    }`}
+                                            >
+                                                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-lg font-black mr-6 transition-colors ${isSelected ? 'bg-[var(--color-primary)] text-white' : 'bg-white text-slate-400 group-hover:bg-slate-100 group-hover:text-slate-600 border border-slate-200 shadow-sm'}`} aria-hidden="true">
+                                                    {String.fromCharCode(65 + index)}
+                                                </div>
+                                                <span className={`text-lg transition-colors w-full text-left ${isSelected ? 'font-bold text-slate-900' : 'text-slate-600 group-hover:text-slate-900'}`}>
+                                                    <PedagogicalText text={choice} />
+                                                </span>
+                                                {isSelected && <motion.div layoutId="selection-glow" className="absolute left-0 w-1.5 h-full bg-[var(--color-primary)]" aria-hidden="true" />}
+                                            </motion.button>
+                                        );
+                                    })}
+                                </div>
+                            </motion.div>
+                        )}
                     </AnimatePresence>
 
                     <CardFooter className="flex justify-between items-center px-0 pt-8 border-t border-slate-100">
