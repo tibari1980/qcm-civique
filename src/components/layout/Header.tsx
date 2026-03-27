@@ -107,6 +107,9 @@ export function Header() {
                         <Link href="/guide" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-[var(--color-primary)] transition-colors">
                             Guide
                         </Link>
+                        <Link href="/centers" className="text-sm font-medium text-gray-700 dark:text-gray-300 hover:text-[var(--color-primary)] transition-colors">
+                            Centres
+                        </Link>
                         <Link href="/fiches" className="text-sm font-medium text-[var(--color-primary)] hover:opacity-80 transition-all flex items-center gap-1 font-bold">
                             <span aria-hidden="true">💡</span> Fiches
                         </Link>
@@ -225,6 +228,10 @@ export function Header() {
                             <Link href="/guide" className="flex items-center gap-2 text-sm font-medium py-2" onClick={closeMenu}>
                                 <BookOpen className="h-4 w-4" aria-hidden="true" />
                                 Guide
+                            </Link>
+                            <Link href="/centers" className="flex items-center gap-2 text-sm font-medium py-2" onClick={closeMenu}>
+                                <Home className="h-4 w-4" aria-hidden="true" />
+                                Centres d&apos;examen
                             </Link>
                             <Link href="/fiches" className="flex items-center gap-2 text-sm font-bold py-2 text-[var(--color-primary)]" onClick={closeMenu}>
                                 <span aria-hidden="true" className="text-base">💡</span>

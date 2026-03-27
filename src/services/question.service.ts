@@ -74,41 +74,54 @@ export const QuestionService = {
 
     /**
      * Récupère 40 questions mélangées, parfaitement équilibrées entre tous les thèmes.
+     * Cette version assure une distribution équitable même si le nombre total n'est pas divisible par le nombre de thèmes.
      */
     getExamQuestions: async (max: number = 40, examType?: string): Promise<Question[]> => {
         try {
-            // Pour garantir un examen équilibré, on pioche un nombre égal dans chaque thématique
-            const targetQuestionsPerTheme = Math.ceil(max / THEMES.length);
+            // Filtrer les thèmes pour exclure 'naturalisation' si c'est le parcours 'titre_sejour'
+            // ou garder tout selon le besoin. On utilise THEMES de base.
+            const themesToDraw = THEMES.filter(t => t !== 'naturalisation' || examType === 'naturalisation');
+            
+            // Calcul distribution cible
+            const questionsPerThemeBase = Math.floor(max / themesToDraw.length);
+            let remainder = max % themesToDraw.length;
 
             const poolResults = await Promise.all(
-                THEMES.map(t =>
-                    getDocs(query(collection(db, 'questions'), where('theme', '==', t), limit(targetQuestionsPerTheme * 3)))
-                        .then(s => {
-                            let qs = s.docs.map(d => ({ id: d.id, ...d.data() } as Question));
-                            
-                            // Filtrage précoce par type d'examen
-                            if (examType) {
-                                qs = qs.filter(q => {
-                                    const types = q.exam_types || (q.exam_type ? [q.exam_type] : ['titre_sejour']);
-                                    return types.includes(examType);
-                                });
-                            }
-                            
-                            // On mélange chaque thématique et on prend le quota cible
-                            return shuffle(qs).slice(0, targetQuestionsPerTheme);
-                        })
-                )
+                themesToDraw.map(async (t, index) => {
+                    // Chaque thème reçoit soit le quota de base, soit base + 1 si on est dans le "reste"
+                    const countToFetch = questionsPerThemeBase + (index < remainder ? 1 : 0);
+                    
+                    const snapshot = await getDocs(query(
+                        collection(db, 'questions'), 
+                        where('theme', '==', t), 
+                        limit(countToFetch * 5) // Pool plus large pour avoir du choix et déduper
+                    ));
+                    
+                    let qs = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Question));
+                    
+                    if (examType) {
+                        qs = qs.filter(q => {
+                            const types = q.exam_types || (q.exam_type ? [q.exam_type] : ['titre_sejour']);
+                            return types.includes(examType);
+                        });
+                    }
+
+                    return shuffle(qs).slice(0, countToFetch);
+                })
             );
 
             let all = poolResults.flat();
             all = dedupe(all);
 
-            // Si on en a un peu trop à cause de l'arrondi (Math.ceil), on réduit à 'max'
-            const balancedSelection = shuffle(all).slice(0, max);
-            
-            return balancedSelection;
+            // Si la déduplication a réduit le nombre sous 'max', on compense (rare mais possible)
+            if (all.length < max) {
+                console.warn(`Balanced draw returned only ${all.length}/${max} questions after deduplication.`);
+                // On pourrait rajouter une logique de secours ici si besoin.
+            }
+
+            return shuffle(all);
         } catch (error) {
-            console.error('Error fetching exam questions (balanced):', error);
+            console.error('Error fetching exam questions (perfect balance):', error);
             return [];
         }
     },

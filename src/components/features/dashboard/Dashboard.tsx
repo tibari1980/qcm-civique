@@ -160,7 +160,7 @@ export default function Dashboard() {
                         </>
                     ) : (
                         <>
-                            <Card role="region" aria-label="Nombre total de tests" className="premium-card-3d border-none bg-white">
+                            <Card role="region" aria-label="Nombre total de tests" className="premium-card-3d border-none bg-white hover-rotate-3d transition-all duration-500">
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                                     <CardTitle className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tests Total</CardTitle>
                                     <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500" aria-hidden="true">
@@ -174,7 +174,7 @@ export default function Dashboard() {
                                     </div>
                                 </CardContent>
                             </Card>
-                            <Card role="region" aria-label="Score moyen" className="premium-card-3d border-none bg-white">
+                            <Card role="region" aria-label="Score moyen" className="premium-card-3d border-none bg-white hover-rotate-3d transition-all duration-500 delay-75">
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                                     <CardTitle className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Score Moyen</CardTitle>
                                     <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-500" aria-hidden="true">
@@ -188,7 +188,7 @@ export default function Dashboard() {
                                     </div>
                                 </CardContent>
                             </Card>
-                            <Card role="region" aria-label="Thèmes maîtrisés" className="premium-card-3d border-none bg-white">
+                            <Card role="region" aria-label="Thèmes maîtrisés" className="premium-card-3d border-none bg-white hover-rotate-3d transition-all duration-500 delay-150">
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
                                     <CardTitle className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Maîtrise</CardTitle>
                                     <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center text-purple-500" aria-hidden="true">
@@ -264,6 +264,39 @@ export default function Dashboard() {
                             )}
                         </CardContent>
                     </Card>
+                )}
+
+                {/* Success Roadmap - Dynamic "Wow" Section */}
+                {!dataLoading && !certificateInfo.eligible && (
+                    <motion.section 
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="mb-12"
+                    >
+                        <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-6 pl-1">Votre Route vers le Succès</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            {[
+                                { step: 1, label: "S'entraîner", desc: "Pratiquez par thème pour cibler vos lacunes.", icon: BookOpen, color: "blue" },
+                                { step: 2, label: "Maîtriser", desc: "Atteignez 80% sur chaque thème clé.", icon: Target, color: "indigo" },
+                                { step: 3, label: "Valider", desc: "Passez l'examen blanc officiel avec succès.", icon: CheckCircle2, color: "green" },
+                                { step: 4, label: "Certifier", desc: "Obtenez votre attestation de réussite PDF.", icon: Trophy, color: "amber" }
+                            ].map((item, idx) => (
+                                <div key={idx} className="premium-card-3d bg-white p-6 relative group overflow-hidden">
+                                    <div className={`absolute top-0 right-0 w-24 h-24 bg-${item.color}-500/5 rounded-full -mr-12 -mt-12 group-hover:scale-110 transition-transform`} />
+                                    <div className="flex flex-col gap-4">
+                                        <div className={`w-10 h-10 rounded-xl bg-${item.color}-50 text-${item.color}-600 flex items-center justify-center font-black shadow-sm`}>
+                                            {item.step}
+                                        </div>
+                                        <div>
+                                            <h4 className="font-black text-gray-900 mb-1">{item.label}</h4>
+                                            <p className="text-xs text-gray-500 font-medium leading-relaxed">{item.desc}</p>
+                                        </div>
+                                    </div>
+                                    {idx < 3 && <div className="hidden md:block absolute -right-2 top-1/2 -translate-y-1/2 z-10 text-gray-200"><TrendingUp className="h-4 w-4 rotate-90" /></div>}
+                                </div>
+                            ))}
+                        </div>
+                    </motion.section>
                 )}
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
