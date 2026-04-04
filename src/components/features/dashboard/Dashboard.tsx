@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../../ui/card';
-import { Clock, Trophy, Target, TrendingUp, AlertCircle, FileText, CheckCircle2, BookOpen, GraduationCap } from 'lucide-react';
+import { Trophy, Target, TrendingUp, AlertCircle, FileText, CheckCircle2, BookOpen, GraduationCap, Flame, Star, Activity } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -12,6 +12,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Skeleton, StatsCardSkeleton } from '../../ui/Skeleton';
 import { Button } from '../../ui/button';
 import { QuickActions } from './QuickActions';
+
+// Recharts for Data Visualization
+import { 
+    ResponsiveContainer, 
+    AreaChart, 
+    Area, 
+    XAxis, 
+    YAxis, 
+    CartesianGrid, 
+    Tooltip as RechartsTooltip,
+    BarChart, 
+    Bar,
+    Cell
+} from 'recharts';
 
 export default function Dashboard() {
     const { user, userProfile, loading: authLoading } = useAuth();
@@ -25,6 +39,20 @@ export default function Dashboard() {
     const [dataLoading, setDataLoading] = useState(true);
     const [recentActivity, setRecentActivity] = useState<{ id: string; theme: string; date: string; score: string; status: string }[]>([]);
     const [certificateInfo, setCertificateInfo] = useState<{ eligible: boolean; progress: number; missingThemes: string[] }>({ eligible: false, progress: 0, missingThemes: [] });
+    
+    // Nouveaux états analytiques
+    const [scoreHistory, setScoreHistory] = useState<{name: string, score: number, theme: string}[]>([]);
+    const [themeStats, setThemeStats] = useState<{name: string, score: number, color: string}[]>([]);
+    const [streakDays, setStreakDays] = useState(0);
+    const [xpAmount, setXpAmount] = useState(0);
+
+    const THEME_COLORS: Record<string, string> = {
+        'histoire': '#3b82f6', // blue
+        'institutions': '#8b5cf6', // purple
+        'societe': '#f59e0b', // amber
+        'vals_principes': '#ef4444', // red
+        'droits': '#10b981', // green
+    };
 
     useEffect(() => {
         const loadDashboardData = async () => {
@@ -38,10 +66,23 @@ export default function Dashboard() {
                         completedThemes: Object.values(statsData.theme_stats).filter((s) => s.last_score >= 80).length,
                     });
 
-                    const activity = await UserService.getRecentActivity(user.uid);
+                    // Calcul de l'XP
+                    setXpAmount(statsData.total_attempts * 150 + Math.round(statsData.average_score) * 10);
+
+                    // Calcul des stats thématiques pour le graphique Barycentrique
+                    const parsedThemeStats = Object.keys(statsData.theme_stats).map(key => {
+                        return {
+                            name: key.length > 8 ? key.substring(0, 8) + '...' : key,
+                            score: statsData.theme_stats[key].last_score,
+                            color: THEME_COLORS[key] || '#cbd5e1'
+                        }
+                    });
+                    setThemeStats(parsedThemeStats);
+
+                    const activity = await UserService.getRecentActivity(user.uid, 15);
                     const formattedActivity = activity.map(a => {
                         const date = new Date(a.created_at).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short' });
-                        const percentage = (a.score / a.total_questions) * 100;
+                        const percentage = a.total_questions > 0 ? (a.score / a.total_questions) * 100 : 0;
                         let status = 'neutral';
                         if (percentage >= 80) status = 'success';
                         else if (percentage < 50) status = 'fail';
@@ -49,18 +90,49 @@ export default function Dashboard() {
 
                         return {
                             id: a.id,
-                            theme: a.theme ? `Thème: ${a.theme}` : (a.exam_type === 'naturalisation' ? 'Entretien' : 'Examen Blanc'),
+                            theme: a.theme ? a.theme : (a.exam_type === 'naturalisation' ? 'Entretien' : 'Examen Blanc'),
                             date: date,
                             score: `${a.score}/${a.total_questions}`,
-                            status: status
+                            percent: Math.round(percentage),
+                            status: status,
+                            createdAt: a.created_at
                         };
                     });
-                    setRecentActivity(formattedActivity);
+                    setRecentActivity(formattedActivity.slice(0, 5)); // Keep bottom list short
+
+                    // Chart Data (History)
+                    const historyChartData = [...formattedActivity].reverse().map(a => ({
+                        name: a.date,
+                        score: a.percent,
+                        theme: a.theme
+                    }));
+                    setScoreHistory(historyChartData);
+
+                    // Streak Calculation (Jours consécutifs)
+                    const dates = [...new Set(activity.map(a => new Date(a.created_at).setHours(0,0,0,0)))].sort((a,b)=>b-a);
+                    let streak = 0;
+                    let todayMidnight = new Date().setHours(0,0,0,0);
+                    let yesterdayMidnight = todayMidnight - 86400000;
+                    let currentCheckDate = todayMidnight;
+
+                    if (dates.includes(todayMidnight) || dates.includes(yesterdayMidnight)) {
+                        if (dates.includes(yesterdayMidnight) && !dates.includes(todayMidnight)) {
+                            currentCheckDate = yesterdayMidnight;
+                        }
+                        for (const d of dates) {
+                            if (d === currentCheckDate) {
+                                streak++;
+                                currentCheckDate -= 86400000;
+                            } else if (d < currentCheckDate) {
+                                break;
+                            }
+                        }
+                    }
+                    setStreakDays(streak);
 
                     const cert = await UserService.getCertificateStatus(user.uid);
                     setCertificateInfo(cert);
 
-                    // Engagement: Vérifier l'inactivity (3j)
                     await NotificationService.checkInactivity(user, userProfile);
                 } catch (error) {
                     console.error("Error loading dashboard data:", error);
@@ -79,30 +151,32 @@ export default function Dashboard() {
                 } else {
                     loadDashboardData();
                 }
-            } else {
-                // User is authenticated but profile is not yet in context — show skeleton while waiting
             }
         }
     }, [user, userProfile, authLoading, router]);
 
-    // Shell rendering while auth is loading or user is being redirected
+    // Custom Tooltip for Charts
+    const CustomTooltip = ({ active, payload, label }: any) => {
+        if (active && payload && payload.length) {
+            return (
+                <div className="bg-white/95 backdrop-blur-md p-3 border border-slate-200 shadow-xl rounded-xl">
+                    <p className="font-bold text-slate-800">{label}</p>
+                    <p className="text-sm font-black text-primary">Score : {payload[0].value}%</p>
+                    {payload[0].payload.theme && <p className="text-[10px] text-slate-400 font-bold uppercase mt-1">{payload[0].payload.theme}</p>}
+                </div>
+            );
+        }
+        return null;
+    };
+
     if (authLoading || (!user && !authLoading)) {
         return (
             <div className="container mx-auto px-4 py-8 space-y-8" role="status" aria-busy="true" aria-live="polite">
-                <p className="sr-only">Chargement du tableau de bord, veuillez patienter…</p>
                 <Skeleton width="40%" height="2.5rem" className="mb-4" />
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                     <StatsCardSkeleton />
                     <StatsCardSkeleton />
                     <StatsCardSkeleton />
-                </div>
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className="lg:col-span-2">
-                        <Skeleton height="350px" className="rounded-2xl" />
-                    </div>
-                    <div>
-                        <Skeleton height="350px" className="rounded-2xl" />
-                    </div>
                 </div>
             </div>
         );
@@ -118,91 +192,92 @@ export default function Dashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.3 }}
-                className="container mx-auto px-4 py-8"
+                className="container mx-auto px-4 py-8 lg:px-8"
                 id="main-content"
             >
-                <header className="mb-12 relative">
-                    <div className="absolute -top-24 -left-24 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
-                    <div className="relative z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                {/* Header Premium */}
+                <header className="mb-10 relative bg-mesh-republic p-6 md:p-10 rounded-3xl border border-slate-200/60 shadow-sm overflow-hidden">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-3xl pointer-events-none -mt-20 -mr-20" aria-hidden="true" />
+                    
+                    <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                         <div>
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/50 backdrop-blur-sm border border-gray-100 shadow-sm mb-4" aria-hidden="true">
+                            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/70 backdrop-blur-md border border-white shadow-sm mb-4" aria-hidden="true">
                                 <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-500">Plateforme Active</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">En Ligne</span>
                             </div>
-                            <h1 className="text-4xl md:text-5xl font-black text-gray-900 tracking-tight leading-tight">
-                                Bonjour, <span className="text-primary">{user.displayName || 'Candidat'}</span>
+                            <h1 className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+                                Bonjour, <span className="text-gradient-republic">{user.displayName || 'Candidat'}</span>
                             </h1>
-                            <p className="text-gray-500 text-lg font-medium mt-2">
-                                Prêt à passer une nouvelle étape vers votre citoyenneté ?
+                            <p className="text-slate-500 text-lg font-medium mt-2 max-w-xl">
+                                Prêt à passer une nouvelle étape vers votre {userProfile?.track === 'residence' ? 'Titre de Séjour' : 'Nationalité Française'} ?
                             </p>
                         </div>
-                        {userProfile?.track && (
-                            <div className="premium-card-3d bg-white px-6 py-4 flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600" aria-hidden="true">
-                                    <GraduationCap className="h-6 w-6" />
+                        
+                        {/* Badges de Gamification */}
+                        <div className="flex gap-4 items-center">
+                            <div className="glass-premium bg-white px-5 py-3 rounded-2xl flex flex-col items-center shadow-3d-sm border-orange-100">
+                                <div className="flex items-center gap-2 text-orange-500">
+                                    <Flame className="h-6 w-6 fill-current"/>
+                                    <span className="text-2xl font-black">{streakDays}</span>
                                 </div>
-                                <div>
-                                    <p className="text-[10px] font-black uppercase tracking-widest text-gray-400">Parcours Actuel</p>
-                                    <p className="font-bold text-gray-900">{userProfile.track === 'residence' ? 'Titre de Séjour' : 'Naturalisation'}</p>
-                                </div>
+                                <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 mt-1">Jours de suite</span>
                             </div>
-                        )}
+                            <div className="glass-premium bg-white px-5 py-3 rounded-2xl flex flex-col items-center shadow-3d-sm border-blue-100">
+                                <div className="flex items-center gap-2 text-blue-600">
+                                    <Star className="h-6 w-6 fill-current"/>
+                                    <span className="text-2xl font-black">{xpAmount}</span>
+                                </div>
+                                <span className="text-[9px] font-black uppercase tracking-widest text-slate-400 mt-1">Total XP</span>
+                            </div>
+                        </div>
                     </div>
                 </header>
 
                 {/* Stats Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12" aria-label="Statistiques Globales">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-12">
                     {dataLoading ? (
-                        <>
-                            <StatsCardSkeleton />
-                            <StatsCardSkeleton />
-                            <StatsCardSkeleton />
-                        </>
+                        <><StatsCardSkeleton/><StatsCardSkeleton/><StatsCardSkeleton/></>
                     ) : (
                         <>
-                            <Card role="region" aria-label="Nombre total de tests" className="premium-card-3d border-none bg-white hover-rotate-3d transition-all duration-500">
+                            <Card className="premium-card-3d border-none bg-white hover-rotate-3d transition-all duration-500">
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                    <CardTitle className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Tests Total</CardTitle>
-                                    <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center text-blue-500" aria-hidden="true">
-                                        <FileText className="h-4 w-4" />
+                                    <CardTitle className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Entraînements</CardTitle>
+                                    <div className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-blue-500 shadow-sm" aria-hidden="true">
+                                        <FileText className="h-5 w-5" />
                                     </div>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="text-4xl font-black text-gray-900">{stats.totalTests}</div>
-                                    <div className="flex items-center gap-2 mt-2">
-                                        <span className="text-[10px] font-bold text-green-600 bg-green-50 px-2 py-0.5 rounded-full">En hausse</span>
-                                    </div>
+                                    <div className="text-4xl font-black text-slate-900">{stats.totalTests}</div>
+                                    <p className="text-xs font-bold text-slate-400 mt-2">Sessions complétées</p>
                                 </CardContent>
                             </Card>
-                            <Card role="region" aria-label="Score moyen" className="premium-card-3d border-none bg-white hover-rotate-3d transition-all duration-500 delay-75">
+                            <Card className="premium-card-3d border-none bg-white hover-rotate-3d transition-all duration-500 delay-75">
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                    <CardTitle className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Score Moyen</CardTitle>
-                                    <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center text-green-500" aria-hidden="true">
-                                        <Award className="h-4 w-4" />
+                                    <CardTitle className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Score Moyen</CardTitle>
+                                    <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center text-green-500 shadow-sm" aria-hidden="true">
+                                        <Target className="h-5 w-5" />
                                     </div>
                                 </CardHeader>
                                 <CardContent>
                                     <div className="text-4xl font-black text-green-600">{stats.averageScore}%</div>
-                                    <div className="flex items-center gap-2 mt-2">
-                                        <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Objectif : 80%</span>
-                                    </div>
+                                    <p className={`text-xs font-bold mt-2 ${stats.averageScore >= 80 ? 'text-green-500' : 'text-orange-500'}`}>
+                                        {stats.averageScore >= 80 ? 'Excellent niveau !' : 'Objectif cible : 80%'}
+                                    </p>
                                 </CardContent>
                             </Card>
-                            <Card role="region" aria-label="Thèmes maîtrisés" className="premium-card-3d border-none bg-white hover-rotate-3d transition-all duration-500 delay-150">
+                            <Card className="premium-card-3d border-none bg-white hover-rotate-3d transition-all duration-500 delay-150">
                                 <CardHeader className="flex flex-row items-center justify-between pb-2">
-                                    <CardTitle className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Maîtrise</CardTitle>
-                                    <div className="w-8 h-8 rounded-lg bg-purple-50 flex items-center justify-center text-purple-500" aria-hidden="true">
-                                        <CheckCircle2 className="h-4 w-4" />
+                                    <CardTitle className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Maîtrise Thématique</CardTitle>
+                                    <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center text-purple-500 shadow-sm" aria-hidden="true">
+                                        <CheckCircle2 className="h-5 w-5" />
                                     </div>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="text-4xl font-black text-gray-900">{stats.completedThemes} <span className="text-gray-300 text-2xl">/ 5</span></div>
-                                    <div className="flex items-center gap-2 mt-2">
-                                        <div className="flex -space-x-1.5">
-                                            {[1,2,3,4,5].map(i => (
-                                                <div key={i} className={`w-3 h-3 rounded-full border border-white ${i <= stats.completedThemes ? 'bg-purple-500' : 'bg-gray-200'}`} />
-                                            ))}
-                                        </div>
+                                    <div className="text-4xl font-black text-slate-900">{stats.completedThemes} <span className="text-slate-300 text-2xl">/ 5</span></div>
+                                    <div className="flex items-center gap-1.5 mt-3">
+                                        {[1,2,3,4,5].map(i => (
+                                            <div key={i} className={`flex-1 h-1.5 rounded-full ${i <= stats.completedThemes ? 'bg-purple-500' : 'bg-slate-100'}`} />
+                                        ))}
                                     </div>
                                 </CardContent>
                             </Card>
@@ -210,153 +285,191 @@ export default function Dashboard() {
                     )}
                 </div>
 
+                {/* VISUAL ANALYTICS (Recharts) */}
+                {!dataLoading && (scoreHistory.length > 0 || themeStats.length > 0) && (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                        {/* CHART 1 : Progression */}
+                        <Card className="premium-card-3d bg-white border-none p-6">
+                            <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <Activity className="h-4 w-4 text-primary"/> Évolution des scores
+                            </h3>
+                            <div className="h-64 w-full">
+                                {scoreHistory.length > 1 ? (
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <AreaChart data={scoreHistory} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                            <defs>
+                                                <linearGradient id="colorScore" x1="0" y1="0" x2="0" y2="1">
+                                                    <stop offset="5%" stopColor="var(--color-primary)" stopOpacity={0.3}/>
+                                                    <stop offset="95%" stopColor="var(--color-primary)" stopOpacity={0}/>
+                                                </linearGradient>
+                                            </defs>
+                                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                                            <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} dy={10} />
+                                            <YAxis axisLine={false} tickLine={false} tick={{fontSize: 10, fill: '#94a3b8'}} domain={[0, 100]} />
+                                            <RechartsTooltip content={<CustomTooltip />} />
+                                            <Area type="monotone" dataKey="score" stroke="var(--color-primary)" strokeWidth={3} fillOpacity={1} fill="url(#colorScore)" activeDot={{r: 6, fill: 'var(--color-primary)', stroke: '#fff', strokeWidth: 2}} />
+                                        </AreaChart>
+                                    </ResponsiveContainer>
+                                ) : (
+                                    <div className="h-full flex items-center justify-center flex-col text-slate-400">
+                                        <TrendingUp className="h-8 w-8 mb-2 opacity-50" />
+                                        <p className="text-xs font-bold uppercase tracking-widest">Données insuffisantes</p>
+                                    </div>
+                                )}
+                            </div>
+                        </Card>
+
+                        {/* CHART 2 : Maîtrise par Thème (BarChart Horizontal pour clarté) */}
+                        <Card className="premium-card-3d bg-white border-none p-6">
+                            <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
+                                <Target className="h-4 w-4 text-purple-600"/> Maîtrise par thématique
+                            </h3>
+                            <div className="h-64 w-full">
+                                {themeStats.length > 0 ? (
+                                    <ResponsiveContainer width="100%" height="100%">
+                                        <BarChart data={themeStats} layout="vertical" margin={{ top: 0, right: 20, left: 20, bottom: 0 }} barSize={16}>
+                                            <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
+                                            <XAxis type="number" domain={[0, 100]} hide />
+                                            <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{fontSize: 11, fontWeight: 800, fill: '#475569'}} width={90}/>
+                                            <RechartsTooltip cursor={{fill: '#f8fafc'}} contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'}} formatter={(value: number) => [`${value}%`, 'Score Moyen']}/>
+                                            <Bar dataKey="score" radius={[0, 4, 4, 0]}>
+                                                {themeStats.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                                ))}
+                                            </Bar>
+                                        </BarChart>
+                                    </ResponsiveContainer>
+                                ) : (
+                                    <div className="h-full flex items-center justify-center flex-col text-slate-400">
+                                        <BookOpen className="h-8 w-8 mb-2 opacity-50" />
+                                        <p className="text-xs font-bold uppercase tracking-widest">Entraînez-vous pour voir vos stats</p>
+                                    </div>
+                                )}
+                            </div>
+                        </Card>
+                    </div>
+                )}
+
                 {/* Certification Progress Section */}
                 {!dataLoading && (
-                    <Card className="mb-8 border-none shadow-md bg-white overflow-hidden">
+                    <Card className="mb-8 premium-card-3d border-none shadow-3d-sm bg-white overflow-hidden">
                         <div
-                            className="h-2 w-full flex bg-gray-100/50"
+                            className="h-2 w-full flex bg-slate-100"
                             role="progressbar"
                             aria-valuenow={Math.round(certificateInfo.progress)}
-                            aria-valuemin={0}
-                            aria-valuemax={100}
-                            aria-label={`Progression vers le certificat : ${Math.round(certificateInfo.progress)}%`}
                         >
                             <motion.div
                                 initial={{ width: 0 }}
                                 animate={{ width: `${certificateInfo.progress}%` }}
-                                transition={{ duration: 1, ease: "easeOut" }}
-                                className="h-full bg-gradient-to-r from-blue-600 via-indigo-500 to-blue-500 relative"
+                                transition={{ duration: 1, ease: "easeOut", delay: 0.5 }}
+                                className="h-full bg-gradient-to-r from-blue-600 via-indigo-500 to-purple-500 relative"
                             >
                                 <div className="absolute inset-0 bg-white/20 animate-pulse" />
                             </motion.div>
                         </div>
-                        <CardContent className="p-6 flex flex-col md:flex-row items-center justify-between gap-6">
-                            <div className="flex items-center gap-4">
-                                <div className={`p-4 rounded-2xl ${certificateInfo.eligible ? 'bg-amber-100 text-amber-600' : 'bg-gray-100 text-gray-400'}`} aria-hidden="true">
+                        <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div className="flex items-center gap-5">
+                                <div className={`p-4 rounded-2xl shadow-inner ${certificateInfo.eligible ? 'bg-gradient-to-br from-amber-300 to-amber-500 text-white shadow-amber-200/50' : 'bg-slate-100 text-slate-400'}`}>
                                     <Trophy className="h-8 w-8" />
                                 </div>
                                 <div>
-                                    <h3 className="text-xl font-bold">Certificat de Réussite</h3>
-                                    <p className="text-sm text-gray-500">
+                                    <h3 className="text-2xl font-black text-slate-900">Certificat de Réussite</h3>
+                                    <p className="text-sm text-slate-500 font-medium mt-1">
                                         {certificateInfo.eligible
-                                            ? "Félicitations ! Votre certificat est prêt."
-                                            : `Progrès : ${Math.round(certificateInfo.progress)}%. Maîtrisez tous les thèmes pour le débloquer.`}
+                                            ? "Félicitations ! Vous avez le niveau pour l'examen officiel."
+                                            : `Encore un effort (${Math.round(certificateInfo.progress)}%). Sécurisez 80% sur chaque thème.`}
                                     </p>
                                 </div>
                             </div>
-                            {certificateInfo.eligible ? (
-                                <Link href="/profile">
-                                    <Button className="bg-amber-500 hover:bg-amber-600 text-white font-bold px-8 shadow-lg shadow-amber-200">
-                                        Voir mon certificat
-                                    </Button>
-                                </Link>
-                            ) : (
-                                <div className="flex -space-x-2">
-                                    {['histoire', 'institutions', 'societe', 'vals_principes', 'droits'].map((t, idx) => {
-                                        const isMastered = !certificateInfo.missingThemes.includes(t);
-                                        return (
-                                            <div key={t} className={`w-10 h-10 rounded-full border-2 border-white flex items-center justify-center text-[8px] font-bold shadow-sm ${isMastered ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-400'}`} title={t} role="img" aria-label={`${t}: ${isMastered ? 'maîtrisé' : 'non maîtrisé'}`}>
-                                                {t.substring(0, 3).toUpperCase()}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
+                            {certificateInfo.eligible && (
+                                <Button onClick={() => router.push('/profile')} className="bg-amber-500 hover:bg-amber-600 text-white font-black text-lg h-14 px-8 rounded-2xl shadow-lg shadow-amber-200">
+                                    Voir mon certificat
+                                </Button>
                             )}
                         </CardContent>
                     </Card>
                 )}
 
-                {/* Success Roadmap - Dynamic "Wow" Section */}
-                {!dataLoading && !certificateInfo.eligible && (
-                    <motion.section 
-                        initial={{ opacity: 0, scale: 0.98 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        className="mb-12"
-                    >
-                        <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-6 pl-1">Votre Route vers le Succès</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            {[
-                                { step: 1, label: "S'entraîner", desc: "Pratiquez par thème pour cibler vos lacunes.", icon: BookOpen, color: "blue" },
-                                { step: 2, label: "Maîtriser", desc: "Atteignez 80% sur chaque thème clé.", icon: Target, color: "indigo" },
-                                { step: 3, label: "Valider", desc: "Passez l'examen blanc officiel avec succès.", icon: CheckCircle2, color: "green" },
-                                { step: 4, label: "Certifier", desc: "Obtenez votre attestation de réussite PDF.", icon: Trophy, color: "amber" }
-                            ].map((item, idx) => (
-                                <div key={idx} className="premium-card-3d bg-white p-6 relative group overflow-hidden">
-                                    <div className={`absolute top-0 right-0 w-24 h-24 bg-${item.color}-500/5 rounded-full -mr-12 -mt-12 group-hover:scale-110 transition-transform`} />
-                                    <div className="flex flex-col gap-4">
-                                        <div className={`w-10 h-10 rounded-xl bg-${item.color}-50 text-${item.color}-600 flex items-center justify-center font-black shadow-sm`}>
-                                            {item.step}
-                                        </div>
-                                        <div>
-                                            <h4 className="font-black text-gray-900 mb-1">{item.label}</h4>
-                                            <p className="text-xs text-gray-500 font-medium leading-relaxed">{item.desc}</p>
-                                        </div>
-                                    </div>
-                                    {idx < 3 && <div className="hidden md:block absolute -right-2 top-1/2 -translate-y-1/2 z-10 text-gray-200"><TrendingUp className="h-4 w-4 rotate-90" /></div>}
-                                </div>
-                            ))}
-                        </div>
-                    </motion.section>
-                )}
-
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                    <div className="lg:col-span-2">
-                        <section className="mt-4" aria-labelledby="quick-actions-title">
-                            <h2 id="quick-actions-title" className="text-[10px] font-black text-gray-400 uppercase tracking-[0.3em] mb-6 pl-1">Actions Prioritaires</h2>
+                    <div className="lg:col-span-2 space-y-8">
+                        {/* Roadmap */}
+                        {!dataLoading && !certificateInfo.eligible && (
+                            <motion.section 
+                                initial={{ opacity: 0, scale: 0.98 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                            >
+                                <h2 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4 pl-1">Votre Route vers le Succès</h2>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    {[
+                                        { step: 1, label: "Pratiquer", desc: "Séries thématiques ciblées.", icon: BookOpen, color: "blue" },
+                                        { step: 2, label: "Maîtriser", desc: "Objectif 80% de réussite locale.", icon: Target, color: "indigo" },
+                                        { step: 3, label: "Valider", desc: "Examen blanc officiel 30 questions.", icon: CheckCircle2, color: "green" },
+                                        { step: 4, label: "Certifier", desc: "Avis favorable de l'algorithme.", icon: Trophy, color: "amber" }
+                                    ].map((item, idx) => (
+                                        <div key={idx} className="glass-card bg-white p-6 relative group overflow-hidden rounded-2xl">
+                                            <div className={`absolute top-0 right-0 w-24 h-24 bg-${item.color}-500/5 rounded-full -mr-12 -mt-12 group-hover:scale-110 transition-transform`} />
+                                            <div className="flex items-center gap-4 relative z-10">
+                                                <div className={`w-12 h-12 rounded-xl bg-${item.color}-50 text-${item.color}-600 flex items-center justify-center font-black shadow-inner`}>
+                                                    {item.step}
+                                                </div>
+                                                <div>
+                                                    <h4 className="font-black text-slate-900 text-lg">{item.label}</h4>
+                                                    <p className="text-xs text-slate-500 font-medium">{item.desc}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </motion.section>
+                        )}
+                        
+                        <section aria-labelledby="quick-actions-title">
+                            <h2 id="quick-actions-title" className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4 pl-1">Lancez-vous</h2>
                             <QuickActions />
                         </section>
                     </div>
-                    {/* Sidebar Area */}
-                    <aside className="space-y-6" aria-label="Informations complémentaires">
-                        <Card className="border-none shadow-sm overflow-hidden bg-white">
-                            <CardHeader className="pb-3 flex flex-row items-center justify-between">
-                                <CardTitle className="text-lg font-bold" id="recent-activity-title">Activité Récente</CardTitle>
-                                <TrendingUp className="h-4 w-4 text-gray-400" aria-hidden="true" />
-                            </CardHeader>
-                            <CardContent aria-labelledby="recent-activity-title">
-                                {dataLoading ? (
-                                    <div className="space-y-4">
-                                        <Skeleton height="60px" />
-                                        <Skeleton height="60px" />
-                                        <Skeleton height="60px" />
-                                    </div>
-                                ) : recentActivity.length > 0 ? (
-                                    <ul className="space-y-3">
-                                        {recentActivity.slice(0, 5).map((activity) => (
-                                            <li key={activity.id} className="flex items-center justify-between p-3 rounded-xl bg-gray-50/50 hover:bg-gray-50 transition-colors">
-                                                <div className="min-w-0">
-                                                    <p className="text-sm font-bold truncate text-gray-800">{activity.theme}</p>
-                                                    <p className="text-[10px] text-gray-400 font-medium">{activity.date}</p>
-                                                </div>
-                                                <div className={`text-xs font-black px-2 py-1 rounded-lg ${activity.status === 'success' ? 'text-green-600 bg-green-100' :
-                                                    activity.status === 'warning' ? 'text-orange-600 bg-orange-100' :
-                                                        'text-red-600 bg-red-100'
-                                                    }`}>
-                                                    {activity.score}
-                                                </div>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : (
-                                    <div className="text-center py-10">
-                                        <div className="p-3 bg-gray-50 rounded-full w-fit mx-auto mb-3" aria-hidden="true">
-                                            <AlertCircle className="h-6 w-6 text-gray-300" />
-                                        </div>
-                                        <p className="text-sm text-gray-400 italic">Aucune activité enregistrée.</p>
-                                        <Link href="/training" className="text-blue-600 text-xs font-bold hover:underline mt-2 inline-block">
-                                            Lancer un test
-                                        </Link>
-                                    </div>
-                                )}
-                            </CardContent>
+                    
+                    {/* Activity Feed Sidebar */}
+                    <aside className="space-y-6">
+                        <Card className="premium-card-3d bg-white border-none shadow-3d-sm p-6 overflow-visible">
+                            <h3 className="text-sm font-black text-slate-800 uppercase tracking-widest mb-6 flex items-center justify-between">
+                                Historique
+                                <TrendingUp className="h-4 w-4 text-slate-300" />
+                            </h3>
+                            {dataLoading ? (
+                                <div className="space-y-4"><Skeleton height="60px" /><Skeleton height="60px" /></div>
+                            ) : recentActivity.length > 0 ? (
+                                <ul className="space-y-3 relative">
+                                    <div className="absolute left-[21px] top-4 bottom-4 w-0.5 bg-slate-100 z-0"></div>
+                                    {recentActivity.map((activity, idx) => (
+                                        <li key={activity.id} className="relative z-10 flex items-center gap-4 p-2 rounded-xl hover:bg-slate-50 transition-colors group">
+                                            <div className={`w-3 h-3 rounded-full flex-shrink-0 border-2 border-white shadow-sm ring-2 ${activity.status === 'success' ? 'bg-green-500 ring-green-100' :
+                                                activity.status === 'warning' ? 'bg-orange-500 ring-orange-100' : 'bg-red-500 ring-red-100'}`} />
+                                            <div className="flex-1 min-w-0">
+                                                <p className="text-sm font-black truncate text-slate-800">{activity.theme}</p>
+                                                <p className="text-[10px] text-slate-400 font-bold uppercase">{activity.date}</p>
+                                            </div>
+                                            <div className={`text-sm font-black px-3 py-1 rounded-lg ${activity.status === 'success' ? 'text-green-700 bg-green-50' :
+                                                activity.status === 'warning' ? 'text-orange-700 bg-orange-50' : 'text-red-700 bg-red-50'}`}>
+                                                {activity.score}
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <div className="text-center py-10 bg-slate-50 rounded-2xl">
+                                    <AlertCircle className="h-8 w-8 text-slate-300 mx-auto mb-3" />
+                                    <p className="text-sm text-slate-400 font-medium">L'entraînement commence ici.</p>
+                                </div>
+                            )}
                         </Card>
 
                         {/* Tip Card */}
-                        <Card className="border-none shadow-sm bg-[var(--color-primary)] text-white overflow-hidden p-6 relative" role="complementary" aria-label="Conseil pratique">
-                            <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-12 -mt-12 blur-2xl" aria-hidden="true" />
-                            <h4 className="font-black text-sm uppercase tracking-widest mb-2 text-blue-200">Conseil Pro</h4>
+                        <Card className="premium-card-3d border-none shadow-3d-md bg-gradient-to-br from-primary to-blue-800 text-white p-6 relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700" />
+                            <h4 className="font-black text-[10px] uppercase tracking-[0.2em] mb-3 text-blue-200">Recommandation IA</h4>
                             <p className="text-sm font-medium leading-relaxed">
-                                Un score de 80% ou plus indique une bonne maîtrise du sujet. Concentrez-vous sur les thèmes en dessous de 50%.
+                                Les utilisateurs qui maintiennent un <strong>Streak de 3 jours</strong> ont 85% de chances supplémentaires de réussir l'examen de l'état du premier coup.
                             </p>
                         </Card>
                     </aside>
@@ -365,26 +478,3 @@ export default function Dashboard() {
         </AnimatePresence>
     );
 }
-
-// Custom internal component for help icon
-function Award(props: any) {
-    return (
-        <svg
-            {...props}
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        >
-            <circle cx="12" cy="8" r="7" />
-            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88" />
-        </svg>
-    );
-}
-
-// Standard Button import from your UI might be missing or different, using a simple styled div for now if needed or ensuring import.
