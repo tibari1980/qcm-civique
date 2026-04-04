@@ -259,7 +259,7 @@ export default function TrainingSession() {
                 <Card>
                     <CardContent className="pt-6">
                         <p>Aucune question trouvée pour ce thème.</p>
-                        <Link href="/dashboard"><Button className="mt-4">Retour</Button></Link>
+                        <Button onClick={() => router.push('/dashboard')} className="mt-4">Retour</Button>
                     </CardContent>
                 </Card>
             </div>
@@ -315,11 +315,9 @@ export default function TrainingSession() {
                                 <Eye className="mr-2 h-5 w-5" aria-hidden="true" /> Revoir Erreurs
                             </Button>
                         )}
-                        <Link href="/dashboard" className="w-full sm:w-auto">
-                            <Button className="w-full h-14 px-8 rounded-2xl bg-blue-600 hover:bg-blue-700 font-black shadow-lg shadow-blue-200" aria-label="Retour au tableau de bord">
-                                <Home className="mr-2 h-5 w-5" aria-hidden="true" /> Accueil
-                            </Button>
-                        </Link>
+                        <Button onClick={() => router.push('/dashboard')} className="w-full sm:w-auto h-14 px-8 rounded-2xl bg-blue-600 hover:bg-blue-700 font-black shadow-lg shadow-blue-200" aria-label="Retour au tableau de bord">
+                            <Home className="mr-2 h-5 w-5" aria-hidden="true" /> Accueil
+                        </Button>
                     </CardFooter>
                 </Card>
             </div>
@@ -355,11 +353,9 @@ export default function TrainingSession() {
                         <Button variant="ghost" size="icon" onClick={() => setIsAudioEnabled(!isAudioEnabled)} className={`w-12 h-12 rounded-2xl transition-all ${isAudioEnabled ? 'text-primary bg-blue-50 shadow-3d-sm' : 'text-slate-400 bg-white'}`} aria-label={isAudioEnabled ? 'Désactiver la lecture audio' : 'Activer la lecture audio'} aria-pressed={isAudioEnabled}>
                             {isAudioEnabled ? <Volume2 className="h-6 w-6" aria-hidden="true" /> : <VolumeX className="h-6 w-6" aria-hidden="true" />}
                         </Button>
-                        <Link href="/dashboard" aria-label="Quitter l'entraînement">
-                            <Button variant="ghost" size="icon" className="w-12 h-12 rounded-2xl text-slate-400 bg-white hover:text-red-500 hover:bg-red-50 transition-all shadow-sm" aria-label="Quitter">
-                                <XCircle className="h-6 w-6" aria-hidden="true" />
-                            </Button>
-                        </Link>
+                        <Button onClick={() => router.push('/dashboard')} variant="ghost" size="icon" className="w-12 h-12 rounded-2xl text-slate-400 bg-white hover:text-red-500 hover:bg-red-50 transition-all shadow-sm" aria-label="Quitter l'entraînement">
+                            <XCircle className="h-6 w-6" aria-hidden="true" />
+                        </Button>
                     </div>
                 </header>
 
@@ -470,7 +466,7 @@ export default function TrainingSession() {
                 </main>
             </div>
 
-            <div className="fixed bottom-0 left-0 right-0 p-6 bg-white/95 backdrop-blur-xl border-t border-slate-100 z-50 shadow-2xl">
+            <div className="sticky bottom-0 mt-auto left-0 right-0 p-6 bg-white/95 backdrop-blur-xl border-t border-slate-100 z-50 shadow-2xl">
                 <div className="container mx-auto max-w-4xl flex justify-end">
                     {!isAnswered ? (
                         <Button size="lg" onClick={handleValidate} disabled={selectedAnswer === null} className="w-full sm:w-auto min-w-[200px] h-14 rounded-2xl font-black text-lg bg-primary hover:bg-blue-700 shadow-3d-md" aria-label={selectedAnswer === null ? 'Sélectionnez une réponse avant de vérifier' : 'Vérifier ma réponse'}>

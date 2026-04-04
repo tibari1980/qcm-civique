@@ -162,9 +162,7 @@ export default function ReviewSession() {
                         <CheckCircle className="h-16 w-16 text-green-500" />
                         <h2 className="text-2xl font-bold">Tout est parfait !</h2>
                         <p className="text-gray-600">Vous n&apos;avez aucune erreur à réviser pour le moment.</p>
-                        <Link href="/dashboard">
-                            <Button className="mt-4" size="lg">Retour au tableau de bord</Button>
-                        </Link>
+                        <Button onClick={() => router.push('/dashboard')} className="mt-4" size="lg">Retour au tableau de bord</Button>
                     </CardContent>
                 </Card>
             </div>
@@ -194,11 +192,9 @@ export default function ReviewSession() {
                         <Button onClick={handleRetry} variant="outline" size="lg">
                             <RotateCcw className="mr-2 h-5 w-5" aria-hidden="true" /> Continuer à réviser
                         </Button>
-                        <Link href="/dashboard">
-                            <Button size="lg">
-                                <Home className="mr-2 h-5 w-5" aria-hidden="true" /> Tableau de bord
-                            </Button>
-                        </Link>
+                        <Button onClick={() => router.push('/dashboard')} size="lg">
+                            <Home className="mr-2 h-5 w-5" aria-hidden="true" /> Tableau de bord
+                        </Button>
                     </CardFooter>
                 </Card>
             </main>
@@ -331,7 +327,7 @@ export default function ReviewSession() {
             </div>
 
             {/* Bottom Verification Bar */}
-            <div className={`fixed bottom-0 left-0 right-0 p-4 border-t-2 transition-colors duration-300 ${status === 'correct' ? 'bg-green-100 border-green-200' :
+            <div className={`sticky bottom-0 mt-auto left-0 right-0 p-4 border-t-2 z-50 shadow-md transition-colors duration-300 ${status === 'correct' ? 'bg-green-100 border-green-200' :
                 status === 'wrong' ? 'bg-red-100 border-red-200' : 'bg-white border-gray-200'
                 }`} role="status" aria-live="polite">
                 <div className="container mx-auto max-w-3xl flex justify-between items-center">
