@@ -219,9 +219,7 @@ export default function ExamSession() {
                         </p>
                     </CardContent>
                     <CardFooter className="justify-center py-8">
-                        <Link href="/dashboard">
-                            <Button size="lg" className="rounded-full px-8">Retour au tableau de bord</Button>
-                        </Link>
+                        <Button onClick={() => router.push('/dashboard')} size="lg" className="rounded-full px-8">Retour au tableau de bord</Button>
                     </CardFooter>
                 </Card>
             </main>
@@ -297,11 +295,9 @@ export default function ExamSession() {
                             <Button variant="outline" className="w-full h-14 rounded-2xl font-bold text-lg" onClick={() => window.location.reload()} aria-label="Recommencer un nouvel examen">
                                 Recommencer l&apos;Examen
                             </Button>
-                            <Link href="/dashboard" className="w-full">
-                                <Button className="w-full h-14 rounded-2xl font-bold text-lg shadow-lg" aria-label="Retour au tableau de bord">
-                                    Tableau de Bord
-                                </Button>
-                            </Link>
+                            <Button onClick={() => router.push('/dashboard')} className="w-full h-14 rounded-2xl font-bold text-lg shadow-lg" aria-label="Retour au tableau de bord">
+                                Tableau de Bord
+                            </Button>
                         </CardFooter>
                     </Card>
                 </motion.div>
@@ -357,13 +353,13 @@ export default function ExamSession() {
                                     <div className={`p-5 rounded-2xl border-2 ${isCorrect ? 'border-green-100 bg-green-50/30' : 'border-red-100 bg-red-50/30'}`}>
                                         <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Votre réponse</div>
                                         <div className={`font-bold ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
-                                            {answers[idx] !== undefined ? q.choices[answers[idx]] : 'Aucune réponse'}
+                                            {answers[idx] !== undefined ? <PedagogicalText text={q.choices[answers[idx]]} /> : 'Aucune réponse'}
                                         </div>
                                     </div>
                                     {!isCorrect && (
                                         <div className="p-5 rounded-2xl border-2 border-green-100 bg-green-50/30">
                                             <div className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Réponse correcte</div>
-                                            <div className="font-bold text-green-700">{q.choices[q.correct_index]}</div>
+                                            <div className="font-bold text-green-700"><PedagogicalText text={q.choices[q.correct_index]} /></div>
                                         </div>
                                     )}
                                 </div>
