@@ -90,6 +90,13 @@ export default function OnboardingFlow() {
                         whileTap={{ scale: 0.98 }}
                         role="button"
                         tabIndex={0}
+                        onClick={() => setSelectedTrack('residence')}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                setSelectedTrack('residence');
+                            }
+                        }}
                         aria-pressed={selectedTrack === 'residence'}
                         aria-label="Sélectionner le parcours Titre de Séjour : Test écrit de 40 questions."
                         className={`cursor-pointer focus:outline-none premium-card-3d bg-white rounded-[2rem] transition-all duration-500 border-4 relative overflow-hidden ${selectedTrack === 'residence'
@@ -126,6 +133,13 @@ export default function OnboardingFlow() {
                         whileTap={{ scale: 0.98 }}
                         role="button"
                         tabIndex={0}
+                        onClick={() => setSelectedTrack('naturalisation')}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                setSelectedTrack('naturalisation');
+                            }
+                        }}
                         aria-pressed={selectedTrack === 'naturalisation'}
                         aria-label="Sélectionner le parcours Naturalisation : Entretien d'assimilation et culture."
                         className={`cursor-pointer focus:outline-none premium-card-3d bg-white rounded-[2rem] transition-all duration-500 border-4 relative overflow-hidden ${selectedTrack === 'naturalisation'
