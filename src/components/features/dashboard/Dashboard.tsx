@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '../../ui/card';
-import { Trophy, Target, TrendingUp, AlertCircle, FileText, CheckCircle2, BookOpen, GraduationCap, Flame, Star, Activity } from 'lucide-react';
+import { Trophy, Target, TrendingUp, AlertCircle, FileText, CheckCircle2, BookOpen, GraduationCap, Flame, Star, Activity, PlayCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -331,7 +331,7 @@ export default function Dashboard() {
                                             <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f1f5f9" />
                                             <XAxis type="number" domain={[0, 100]} hide />
                                             <YAxis dataKey="name" type="category" axisLine={false} tickLine={false} tick={{fontSize: 11, fontWeight: 800, fill: '#475569'}} width={90}/>
-                                            <RechartsTooltip cursor={{fill: '#f8fafc'}} contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'}} formatter={(value: number) => [`${value}%`, 'Score Moyen']}/>
+                                            <RechartsTooltip cursor={{fill: '#f8fafc'}} contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)'}} formatter={(value: any) => [`${value}%`, 'Score Moyen']}/>
                                             <Bar dataKey="score" radius={[0, 4, 4, 0]}>
                                                 {themeStats.map((entry, index) => (
                                                     <Cell key={`cell-${index}`} fill={entry.color} />
@@ -423,6 +423,34 @@ export default function Dashboard() {
                             </motion.section>
                         )}
                         
+                        {/* Simulation Video Section (Exclusive to Naturalisation) */}
+                        {userProfile?.track === 'naturalisation' && (
+                            <motion.section 
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2 }}
+                                aria-labelledby="video-simulation-title"
+                            >
+                                <h2 id="video-simulation-title" className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4 pl-1">Préparation à l&apos;Entretien</h2>
+                                <Card className="premium-card-3d border-none shadow-3d-md bg-white overflow-hidden p-0 relative group">
+                                     <div className="aspect-video w-full border-b border-slate-100 bg-slate-900 overflow-hidden relative">
+                                           <iframe src="https://drive.google.com/file/d/18dK1eG_IeISQe01hBi_m0cCmgqV8gP80/preview" allow="autoplay" className="absolute top-0 left-0 w-full h-full border-none" />
+                                     </div>
+                                     <CardContent className="p-6">
+                                          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                                               <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-inner flex-shrink-0">
+                                                    <PlayCircle className="w-6 h-6" />
+                                               </div>
+                                               <div className="flex-1">
+                                                    <h3 className="text-xl font-black text-slate-900">Simulation Complète</h3>
+                                                    <p className="text-sm text-slate-500 font-medium mt-1">Visionnez cette vidéo interactive pour comprendre les attentes de l&apos;agent de préfecture et vous familiariser avec le déroulement de l&apos;entretien.</p>
+                                               </div>
+                                          </div>
+                                     </CardContent>
+                                </Card>
+                            </motion.section>
+                        )}
+
                         <section aria-labelledby="quick-actions-title">
                             <h2 id="quick-actions-title" className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4 pl-1">Lancez-vous</h2>
                             <QuickActions />
