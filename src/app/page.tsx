@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
-import { BookOpen, GraduationCap, CheckCircle, TrendingUp, ArrowRight, Shield, Landmark, Scale, Heart } from 'lucide-react';
+import { BookOpen, GraduationCap, CheckCircle, TrendingUp, ArrowRight, Shield, Landmark, Scale, Heart, Users, Award, Trophy, Target, ChevronDown } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { UserService } from '../services/user.service';
 import { useSettings } from '../context/SettingsContext';
@@ -188,9 +188,10 @@ export default function Home() {
                   Préparez sereinement votre <span className="text-gradient-republic">intégration</span>. <br />
                   Réussissez votre examen civique avec CiviqQuiz.
                 </h1>
-                <p className="max-w-3xl mx-auto text-xl md:text-2xl text-gray-500 mb-12 font-light leading-relaxed">
+                <p className="max-w-3xl mx-auto text-xl md:text-2xl text-gray-500 mb-10 font-light leading-relaxed">
                   Accédez à une préparation complète et conforme aux exigences officielles pour votre naturalisation, titre de séjour ou carte de résident.
                 </p>
+
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                   <Link href="/register">
                     <Button size="xl" className="px-12 rounded-full bg-black hover:bg-gray-800 text-white shadow-2xl transition-all active:scale-95 text-lg font-bold">
@@ -209,8 +210,70 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Premium Trust Banner (Outperforms Competitor) */}
+      <section className="relative z-20 -mt-16 md:-mt-24 mb-16 px-4" aria-label="Statistiques d'utilisation">
+        <div className="container mx-auto">
+          <div className="bg-[#0b1121] rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.3)] p-8 md:p-14 relative overflow-hidden border border-white/10 group">
+            {/* Animated background glows */}
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/20 rounded-full blur-[100px] mix-blend-screen pointer-events-none transition-transform duration-1000 group-hover:scale-150" aria-hidden="true" />
+            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-red-600/20 rounded-full blur-[100px] mix-blend-screen pointer-events-none transition-transform duration-1000 group-hover:scale-150" aria-hidden="true" />
+            
+            {/* Glassmorphism overlay */}
+            <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent pointer-events-none" aria-hidden="true" />
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-10 md:gap-4 relative z-10">
+              <StatBlock icon={BookOpen} number="1822+" label="Questions Officielles" delay={0.1} color="blue" />
+              <StatBlock icon={Users} number="45 000+" label="Candidats Entraînés" delay={0.2} color="indigo" />
+              <StatBlock icon={Target} number="110 000+" label="Quiz Réalisés" delay={0.3} color="red" />
+              <StatBlock icon={Trophy} number="98%" label="Taux de Réussite" delay={0.4} color="amber" />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section (Surpassing the Competitor) */}
+      <section className="py-20 md:py-32 bg-slate-50 relative overflow-hidden">
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-1/2 h-full bg-blue-100/30 blur-[100px] pointer-events-none rounded-full transform translate-x-1/2 -translate-y-1/4" />
+        <div className="absolute bottom-0 left-0 w-1/3 h-2/3 bg-red-100/30 blur-[100px] pointer-events-none rounded-full transform -translate-x-1/2 translate-y-1/4" />
+        
+        <div className="container mx-auto px-4 relative z-10 max-w-4xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-black mb-6 text-slate-900 tracking-tight">
+              Questions Fréquentes sur l'<span className="text-blue-600">Examen Civique</span>
+            </h2>
+            <p className="text-lg md:text-xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed">
+              Tout ce que vous devez savoir pour aborder sereinement votre test de naturalisation, de carte de résident ou de titre de séjour.
+            </p>
+          </div>
+
+          <div className="space-y-4">
+            <FAQAccordion 
+              question="Qu'est-ce que l'examen civique pour la naturalisation ?" 
+              answer="L'examen civique (décret 2025-1345) évalue votre connaissance et votre adhésion aux valeurs de la République, à l'histoire et aux institutions françaises. Il est obligatoire pour valider votre parcours d'intégration et obtenir la nationalité française."
+            />
+            <FAQAccordion 
+              question="Combien y a-t-il de questions et quel est le score requis ?" 
+              answer="L'examen officiel se compose d'un questionnaire à choix multiples (QCM) de 40 questions tirées de manière aléatoire. Pour réussir et valider le test, vous devez obtenir un score strict minimum de 80%, soit au moins 32 bonnes réponses."
+            />
+            <FAQAccordion 
+              question="Quels sont les thèmes évalués lors de l'examen ?" 
+              answer="Les questions sont réparties sur 5 grands piliers de la citoyenneté : Les valeurs de la République (Liberté, Égalité, Fraternité, Laïcité), les Droits et Devoirs des citoyens, l'Histoire et la Géographie de la France, les Institutions Françaises, et la société du « vivre-ensemble »."
+            />
+            <FAQAccordion 
+              question="Combien de temps dure l'épreuve officielle ?" 
+              answer="Le test dure généralement 45 minutes en conditions réelles d’examen, organisé sur borne numérique ou tablette tactile dans un centre de passage agréé (comme La Poste ou les préfectures partenaires)."
+            />
+            <FAQAccordion 
+              question="Pourquoi m'entraîner avec CiviqQuiz ?" 
+              answer="CiviqQuiz reproduit le strict format de l'examen de l'État : minuteur immersif, questions officielles actualisées, mode aveugle pour une évaluation sans aide extérieure, et statistiques pointues pour garantir votre succès dès le premier essai."
+            />
+          </div>
+        </div>
+      </section>
+
       {/* Values Section — The "Wow" factor */}
-      <section id="values" className="py-24 bg-white" aria-labelledby="values-heading">
+      <section id="values" className="py-16 md:py-24 bg-white" aria-labelledby="values-heading">
         <div className="container mx-auto px-4">
           <div className="text-center mb-20">
             <h2 id="values-heading" className="text-3xl md:text-5xl font-extrabold mb-4 text-gray-900">Les thèmes fondamentaux</h2>
@@ -406,5 +469,68 @@ function FeatureCard({ href, icon: Icon, title, desc }: { href: string, icon: an
         </div>
       </motion.div>
     </Link>
+  );
+}
+
+function StatBlock({ icon: Icon, number, label, delay, color }: { icon: any, number: string, label: string, delay: number, color: string }) {
+  const colorClasses = {
+    blue: "text-blue-400 bg-blue-400/10",
+    indigo: "text-indigo-400 bg-indigo-400/10",
+    red: "text-red-400 bg-red-400/10",
+    amber: "text-amber-400 bg-amber-400/10"
+  };
+  
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ delay, duration: 0.7, type: "spring" }}
+      className="flex flex-col items-center text-center group"
+    >
+      <div className={`w-16 h-16 rounded-[1.25rem] border border-white/5 flex items-center justify-center mb-5 transition-all duration-500 group-hover:scale-110 group-hover:-translate-y-2 group-hover:shadow-[0_0_30px_rgba(255,255,255,0.1)] ${colorClasses[color as keyof typeof colorClasses]}`}>
+        <Icon className="w-8 h-8" strokeWidth={1.5} />
+      </div>
+      <div className="text-4xl md:text-5xl lg:text-6xl font-black text-white mb-2 tracking-tighter drop-shadow-lg">
+        {number}
+      </div>
+      <div className="text-xs md:text-sm font-bold text-slate-400 uppercase tracking-[0.2em]">
+        {label}
+      </div>
+    </motion.div>
+  );
+}
+
+function FAQAccordion({ question, answer }: { question: string, answer: string }) {
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  return (
+    <motion.div 
+      initial={false}
+      className={`border transition-colors duration-300 rounded-2xl overflow-hidden ${isOpen ? 'bg-white border-blue-100 shadow-[0_10px_30px_rgba(0,0,0,0.05)]' : 'bg-white/50 border-slate-200 hover:border-slate-300'}`}
+    >
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full text-left px-6 py-5 flex items-center justify-between gap-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+        aria-expanded={isOpen}
+      >
+        <span className={`font-black text-lg md:text-xl transition-colors ${isOpen ? 'text-blue-600' : 'text-slate-800'}`}>
+          {question}
+        </span>
+        <ChevronDown 
+          className={`w-6 h-6 shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180 text-blue-600' : 'text-slate-400'}`} 
+        />
+      </button>
+      <motion.div 
+        initial={{ height: 0, opacity: 0 }}
+        animate={{ height: isOpen ? 'auto' : 0, opacity: isOpen ? 1 : 0 }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        className="overflow-hidden"
+      >
+        <div className="px-6 pb-6 pt-2 text-slate-600 md:text-lg leading-relaxed font-medium">
+          {answer}
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
