@@ -10,8 +10,11 @@ import { ExportUtils } from '../../../lib/exportUtils';
 import { Input } from '../../../components/ui/input';
 
 const TRACK_LABEL: Record<string, string> = {
-    residence: '🏠 Résidence',
+    csp: '📄 Titre de séjour',
+    cr: '💳 Carte de résident',
     naturalisation: '🇫🇷 Naturalisation',
+    residence: '🏠 Résidence (Ancien)',
+    titre_sejour: '📄 Titre de séjour (Ancien)'
 };
 
 export default function AdminUsersPage() {
@@ -189,13 +192,30 @@ export default function AdminUsersPage() {
                         <Download className="h-5 w-5" />
                     </button>
                     <button
+                        onClick={async () => {
+                            try {
+                                const res = await fetch('/api/admin/fix-user-tracks', { method: 'POST', headers: { 'Authorization': `Bearer ${await import('../../../lib/firebase').then(m=>m.auth.currentUser?.getIdToken())}` }});
+                                const d = await res.json();
+                                alert(d.message || d.error);
+                                loadInitialUsers();
+                            } catch(e) {
+                                alert("Failed");
+                            }
+                        }}
+                        className="p-2 rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition-colors flex items-center gap-2"
+                        title="Forcer tous les sans-parcours en CSP"
+                    >
+                        <RefreshCcw className="h-5 w-5" />
+                        <span className="hidden sm:inline text-sm font-medium">Forcer Parcours CSP</span>
+                    </button>
+                    <button
                         onClick={handleSync}
                         disabled={syncing}
                         className="p-2 rounded-lg bg-amber-50 text-amber-600 hover:bg-amber-100 transition-colors disabled:opacity-50 flex items-center gap-2"
-                        title="Réparer la base (Sync Auth -> Firestore)"
+                        title="Mettre à jour Auth -> Firestore"
                     >
                         <RefreshCcw className={`h-5 w-5 ${syncing ? 'animate-spin' : ''}`} />
-                        <span className="hidden sm:inline text-sm font-medium">Réparer la base</span>
+                        <span className="hidden sm:inline text-sm font-medium">Sync Auth</span>
                     </button>
                 </div>
                 {/* Search */}

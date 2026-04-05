@@ -150,6 +150,19 @@ export default function AdminQuestionsPage() {
                             >
                                 Fix Both
                             </button>
+                            <button
+                                onClick={async () => {
+                                    if(confirm("Êtes-vous sûr de vouloir Redistribuer INTELLIGEMMENT toutes les questions (1822) ?")) {
+                                        const res = await fetch('/api/admin/redistribute', { method: 'POST', headers: { 'Authorization': `Bearer ${await import('../../../lib/firebase').then(m => m.auth.currentUser?.getIdToken())}` }});
+                                        const data = await res.json();
+                                        alert(data.message || data.error);
+                                    }
+                                }}
+                                className="px-2 py-1 text-[10px] font-bold uppercase hover:bg-white border-l border-gray-200 ml-1 rounded transition-all text-purple-600 animate-pulse bg-purple-50"
+                                title="Répartir magiquement (Déb -> Titre, Int -> CR, Diff -> Nat)"
+                            >
+                                ✨ Répartir Auto
+                            </button>
                         </div>
                     )}
                     <Link
