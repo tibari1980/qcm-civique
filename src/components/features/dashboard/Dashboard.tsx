@@ -122,7 +122,7 @@ export default function Dashboard() {
                     }
                     setStreakDays(streak);
 
-                    const cert = await UserService.getCertificateStatus(user.uid);
+                    const cert = await UserService.getCertificateStatus(user.uid, userProfile.track || 'csp');
                     setCertificateInfo(cert);
 
                     await NotificationService.checkInactivity(user, userProfile);
@@ -189,7 +189,7 @@ export default function Dashboard() {
                                 Bonjour, <span className="text-gradient-republic">{user.displayName || 'Candidat'}</span>
                             </h1>
                             <p className="text-slate-500 text-lg font-medium mt-2 max-w-xl">
-                                Prêt à passer une nouvelle étape vers votre {userProfile?.track === 'residence' ? 'Titre de Séjour' : 'Nationalité Française'} ?
+                                Prêt à passer une nouvelle étape vers votre {userProfile?.track === 'naturalisation' ? 'Nationalité Française' : 'Titre de Séjour'} ?
                             </p>
                         </div>
                         

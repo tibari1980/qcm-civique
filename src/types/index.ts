@@ -4,7 +4,7 @@ export interface FirestoreTimestamp {
     nanoseconds: number;
 }
 
-export type ExamType = 'titre_sejour' | 'carte_resident' | 'naturalisation' | 'ai_qcm';
+export type ExamType = 'titre_sejour' | 'carte_resident' | 'naturalisation' | 'ai_qcm' | 'csp' | 'cr';
 export type Level = 'Débutant' | 'Intermédiaire' | 'Avancé';
 
 export interface Question {
@@ -44,11 +44,14 @@ export interface UserProfile {
     email: string;
     displayName: string;
     photoURL?: string | null;
-    track: 'residence' | 'naturalisation' | null;
+    track: 'csp' | 'cr' | 'naturalisation' | null;
     createdAt: number;
     role?: 'user' | 'admin';
     disabled?: boolean;
     stats?: UserProgress;
+    stats_csp?: UserProgress;
+    stats_cr?: UserProgress;
+    stats_naturalisation?: UserProgress;
     lastReminderAt?: number;
     welcomeEmailSent?: boolean;
 }

@@ -38,34 +38,84 @@ function dedupe(questions: Question[]): Question[] {
     });
 }
 
+/* ── Moteur d'héritage de parcours ── */
+// Logique en cascade (Poupées Russes) :
+// Naturalisation (240+) > inclut > CR (209+) > inclut > CSP (193+)
+function getTargetExamTypesForTrack(track: string): string[] {
+    if (track === 'csp') return ['titre_sejour', 'csp'];
+    if (track === 'cr') return ['carte_resident', 'cr', 'titre_sejour', 'csp'];
+    if (track === 'naturalisation') return ['naturalisation', 'carte_resident', 'titre_sejour', 'cr', 'csp'];
+    return ['titre_sejour', 'csp']; // Fallback de sécurité
+}
+
 export const QuestionService = {
+    /**
+     * ZÉRO COÛT CACHE: Télécharge la DB en entier 1 seule fois et stocke 24h.
+     */
+    _hydrateCache: async (): Promise<Question[]> => {
+        if (typeof window === 'undefined') return []; // Pas de SSR
+        
+        try {
+            const cachedParams = localStorage.getItem('qcm_offline_cache');
+            const cacheTimestamp = localStorage.getItem('qcm_offline_timestamp');
+            
+            // Expiration de 24 heures
+            const EXPIRATION_MS = 24 * 60 * 60 * 1000;
+            const now = Date.now();
+
+            if (cachedParams && cacheTimestamp && (now - parseInt(cacheTimestamp)) < EXPIRATION_MS) {
+                return JSON.parse(cachedParams) as Question[];
+            }
+
+            // Si expiré ou inexistant, on télécharge tout (240 questions = ~240 lectures MAX)
+            const snapshot = await getDocs(collection(db, 'questions'));
+            const allQuestions = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Question));
+            
+            try {
+                localStorage.setItem('qcm_offline_cache', JSON.stringify(allQuestions));
+                localStorage.setItem('qcm_offline_timestamp', now.toString());
+            } catch (e) {
+                console.warn('LocalStorage constraint, cache bypassed.', e);
+            }
+            
+            return allQuestions;
+        } catch (err) {
+            console.error("Cache Hydration Failed:", err);
+            // Fallback en cas d'erreur de cache
+            const snapshot = await getDocs(collection(db, 'questions'));
+            return snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Question));
+        }
+    },
     /**
      * Récupère `max` questions aléatoires pour un thème donné.
      */
-    getQuestionsByTheme: async (theme: string, max: number = 20, examType?: string): Promise<Question[]> => {
+    getQuestionsByTheme: async (theme: string, max: number = 20, examType?: string, ignoreIds: string[] = []): Promise<Question[]> => {
         try {
+            const gigaDatabase = await QuestionService._hydrateCache();
             const targetThemes = theme === 'histoire' ? ['histoire', 'geographie'] : [theme];
 
-            const results = await Promise.all(
-                targetThemes.map(t =>
-                    getDocs(query(collection(db, 'questions'), where('theme', '==', t), limit(500)))
-                )
-            );
+            let all = gigaDatabase.filter(q => targetThemes.includes(q.theme));
 
-            let all = results.flatMap(snap => snap.docs.map(d => ({ id: d.id, ...d.data() } as Question)));
-
-            // Filtrage par parcours si spécifié
+            // Filtrage par parcours en cascade (Héritage)
             if (examType) {
+                const targetTypes = getTargetExamTypesForTrack(examType);
                 all = all.filter(q => {
-                    const types = q.exam_types || (q.exam_type ? [q.exam_type] : ['titre_sejour']);
-                    return types.includes(examType);
+                    const qTypes = q.exam_types || (q.exam_type ? [q.exam_type] : ['titre_sejour', 'csp']);
+                    return qTypes.some(t => targetTypes.includes(t));
                 });
             }
 
             const randomizedPool = shuffle(all);
             const deduped = dedupe(randomizedPool);
+            
+            // Poupée Russe : Anti-répétition 
+            let finalPool = deduped.filter(q => !ignoreIds.includes(q.id));
+            if (finalPool.length < max) {
+                // Si l'utilisateur a répondu à toutes les questions possibles, on repioche dans tout.
+                finalPool = deduped; 
+            }
 
-            return shuffle(deduped).slice(0, max);
+            return shuffle(finalPool).slice(0, max);
         } catch (error) {
             console.error('Error fetching questions by theme:', error);
             return [];
@@ -76,39 +126,35 @@ export const QuestionService = {
      * Récupère 40 questions mélangées, parfaitement équilibrées entre tous les thèmes.
      * Cette version assure une distribution équitable même si le nombre total n'est pas divisible par le nombre de thèmes.
      */
-    getExamQuestions: async (max: number = 40, examType?: string): Promise<Question[]> => {
+    getExamQuestions: async (max: number = 40, examType?: string, ignoreIds: string[] = []): Promise<Question[]> => {
         try {
-            // Filtrer les thèmes pour exclure 'naturalisation' si c'est le parcours 'titre_sejour'
-            // ou garder tout selon le besoin. On utilise THEMES de base.
+            const gigaDatabase = await QuestionService._hydrateCache();
             const themesToDraw = THEMES.filter(t => t !== 'naturalisation' || examType === 'naturalisation');
             
-            // Calcul distribution cible
             const questionsPerThemeBase = Math.floor(max / themesToDraw.length);
             let remainder = max % themesToDraw.length;
 
-            const poolResults = await Promise.all(
-                themesToDraw.map(async (t, index) => {
-                    // Chaque thème reçoit soit le quota de base, soit base + 1 si on est dans le "reste"
-                    const countToFetch = questionsPerThemeBase + (index < remainder ? 1 : 0);
-                    
-                    const snapshot = await getDocs(query(
-                        collection(db, 'questions'), 
-                        where('theme', '==', t), 
-                        limit(countToFetch * 5) // Pool plus large pour avoir du choix et déduper
-                    ));
-                    
-                    let qs = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Question));
+            const poolResults = themesToDraw.map((t, index) => {
+                const countToFetch = questionsPerThemeBase + (index < remainder ? 1 : 0);
+                let qs = gigaDatabase.filter(q => q.theme === t);
                     
                     if (examType) {
+                        const targetTypes = getTargetExamTypesForTrack(examType);
                         qs = qs.filter(q => {
-                            const types = q.exam_types || (q.exam_type ? [q.exam_type] : ['titre_sejour']);
-                            return types.includes(examType);
+                            const qTypes = q.exam_types || (q.exam_type ? [q.exam_type] : ['titre_sejour', 'csp']);
+                            return qTypes.some(t => targetTypes.includes(t));
                         });
                     }
 
-                    return shuffle(qs).slice(0, countToFetch);
-                })
-            );
+                    // Déduplication puis exclusion
+                    qs = dedupe(qs);
+                    let qsFiltered = qs.filter(q => !ignoreIds.includes(q.id));
+                    if (qsFiltered.length < countToFetch) {
+                        qsFiltered = qs; // S'il a vu toutes les questions du thème, on reset sur le thème complet.
+                    }
+
+                    return shuffle(qsFiltered).slice(0, countToFetch);
+            });
 
             let all = poolResults.flat();
             all = dedupe(all);

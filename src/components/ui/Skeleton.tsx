@@ -41,12 +41,14 @@ export const CardSkeleton = () => (
 );
 
 export const StatsCardSkeleton = () => (
-    <div className="bg-white rounded-xl p-4 sm:p-6 border border-gray-100 shadow-sm space-y-3">
-        <div className="flex justify-between">
-            <Skeleton width="50%" height="1rem" />
-            <Skeleton width="1.25rem" height="1.25rem" circle />
+    <div className="premium-card-3d border-none bg-white rounded-xl p-6 shadow-sm space-y-4">
+        <div className="flex justify-between items-center pb-2">
+            <Skeleton width="40%" height="0.75rem" />
+            <Skeleton width="2.5rem" height="2.5rem" className="rounded-xl" />
         </div>
-        <Skeleton width="70%" height="2rem" />
-        <Skeleton width="40%" height="0.75rem" />
+        <div>
+            <Skeleton width="60%" height="2.5rem" className="mb-2" />
+            <Skeleton width="50%" height="1rem" />
+        </div>
     </div>
 );

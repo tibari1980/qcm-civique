@@ -3,15 +3,20 @@ import { Card, CardContent } from '../../../components/ui/card';
 import { Button } from '../../../components/ui/button';
 import { Download, Printer, ShieldCheck, Award, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
+
 
 interface CertificateProps {
     userName: string;
     date: string;
-    track: 'residence' | 'naturalisation';
+    track: 'csp' | 'cr' | 'naturalisation';
     preview?: boolean;
 }
+
+const trackLabels: Record<'csp' | 'cr' | 'naturalisation', string> = {
+    csp: 'Carte de Séjour Pluriannuelle',
+    cr: 'Carte de Résident',
+    naturalisation: 'Naturalisation'
+};
 
 export default function CertificateGenerator({ userName, date, track, preview = false }: CertificateProps) {
     const certificateRef = useRef<HTMLDivElement>(null);
@@ -60,6 +65,10 @@ export default function CertificateGenerator({ userName, date, track, preview = 
         setIsGenerating(true);
 
         try {
+            // DYNAMIC IMPORT FOR SCALABILITY & EXTREME LOAD SPEED
+            const html2canvas = (await import('html2canvas')).default;
+            const { jsPDF } = await import('jspdf');
+
             const canvas = await html2canvas(certificateRef.current, {
                 scale: 2,
                 useCORS: true,
@@ -166,7 +175,7 @@ export default function CertificateGenerator({ userName, date, track, preview = 
                             Pour avoir démontré une maîtrise exceptionnelle et une connaissance approfondie de
                             <span className="text-blue-700 font-bold"> l&apos;histoire, de la culture et des valeurs </span>
                             de la nation française dans le cadre du parcours officiel
-                            <span className="text-gray-900 font-bold"> {track === 'naturalisation' ? 'Naturalisation' : 'Titre de Séjour'}</span>.
+                            <span className="text-gray-900 font-bold"> {trackLabels[track]}</span>.
                         </p>
                     </div>
 

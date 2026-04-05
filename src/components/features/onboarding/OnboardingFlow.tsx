@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '../../../context/AuthContext';
 import { CardContent } from '../../../components/ui/card';
 import { Button } from '../../../components/ui/button';
-import { CheckCircle, Flag, FileText, ArrowRight } from 'lucide-react';
+import { CheckCircle, Flag, FileText, ArrowRight, Globe, Award } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UserService } from '../../../services/user.service';
 
@@ -13,7 +13,7 @@ export default function OnboardingFlow() {
     const { user, userProfile, refreshProfile, isAdmin } = useAuth();
     const router = useRouter();
     const [loading, setLoading] = useState(false);
-    const [selectedTrack, setSelectedTrack] = useState<'residence' | 'naturalisation' | null>(null);
+    const [selectedTrack, setSelectedTrack] = useState<'csp' | 'cr' | 'naturalisation' | null>(null);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
@@ -83,51 +83,100 @@ export default function OnboardingFlow() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 mb-8 md:mb-12 max-w-4xl mx-auto">
-                    {/* Track 1: Residence */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8 mb-8 md:mb-12 max-w-6xl mx-auto">
+                    {/* Track 1: CSP (Fondamental) */}
                     <motion.div
                         whileHover={{ y: -5 }}
                         whileTap={{ scale: 0.98 }}
                         role="button"
                         tabIndex={0}
-                        onClick={() => setSelectedTrack('residence')}
+                        onClick={() => setSelectedTrack('csp')}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' || e.key === ' ') {
                                 e.preventDefault();
-                                setSelectedTrack('residence');
+                                setSelectedTrack('csp');
                             }
                         }}
-                        aria-pressed={selectedTrack === 'residence'}
-                        aria-label="Sélectionner le parcours Titre de Séjour : Test écrit de 40 questions."
-                        className={`cursor-pointer focus:outline-none premium-card-3d bg-white rounded-[2rem] transition-all duration-500 border-4 relative overflow-hidden ${selectedTrack === 'residence'
-                            ? 'border-primary ring-8 ring-primary/5'
+                        aria-pressed={selectedTrack === 'csp'}
+                        aria-label="Sélectionner le parcours Carte de Séjour Pluriannuelle (193 questions)."
+                        className={`cursor-pointer focus:outline-none premium-card-3d bg-white rounded-[2rem] transition-all duration-500 border-4 relative overflow-hidden ${selectedTrack === 'csp'
+                            ? 'border-blue-600 ring-8 ring-blue-600/5'
                             : 'border-transparent'
                             }`}
                     >
-                        <CardContent className="p-8 sm:p-10 flex flex-col h-full relative z-10">
-                            <div className={`mx-auto p-6 rounded-[2rem] mb-8 transition-all duration-500 ${selectedTrack === 'residence' ? 'bg-primary text-white shadow-3d-md scale-110' : 'bg-slate-50 text-slate-400'}`} aria-hidden="true">
-                                <FileText className={`h-12 w-12 ${selectedTrack === 'residence' ? 'animate-float' : ''}`} />
+                        <CardContent className="p-8 flex flex-col h-full relative z-10">
+                            <div className="flex justify-center mb-6">
+                                <span className="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Fondamental</span>
                             </div>
-                            <h2 className={`text-2xl sm:text-3xl font-black text-center mb-4 antialiased ${selectedTrack === 'residence' ? 'text-primary' : 'text-slate-800'}`}>
-                                Titre de Séjour
+                            <div className={`mx-auto p-5 rounded-full mb-6 transition-all duration-500 ${selectedTrack === 'csp' ? 'bg-blue-600 text-white shadow-3d-md scale-110' : 'bg-slate-50 text-slate-400'}`} aria-hidden="true">
+                                <Globe className={`h-10 w-10 ${selectedTrack === 'csp' ? 'animate-float' : ''}`} />
+                            </div>
+                            <h2 className={`text-xl sm:text-2xl font-black text-center mb-2 antialiased ${selectedTrack === 'csp' ? 'text-blue-600' : 'text-slate-800'}`}>
+                                Carte de Séjour Pluriannuelle (CSP)
                             </h2>
-                            <p className="text-base text-slate-500 text-center mb-8 flex-grow font-medium leading-relaxed">
-                                Préparez l&apos;examen obligatoire de 40 questions pour valider votre demande de carte de résident.
+                            <p className="text-sm text-slate-500 text-center mb-6 flex-grow font-medium leading-relaxed">
+                                193 questions officielles (Vie quotidienne, valeurs de base).
                             </p>
-                            <div className="space-y-4 bg-slate-50/80 p-6 rounded-[1.5rem]" aria-label="Points clés">
+                            <div className="space-y-3 bg-slate-50/80 p-5 rounded-[1.5rem]" aria-label="Points clés">
                                 <div className="flex items-center text-sm font-bold text-slate-700">
-                                    <CheckCircle className="h-5 w-5 mr-4 text-green-500 flex-shrink-0" />
-                                    <span>QCM de 40 questions</span>
+                                    <CheckCircle className="h-5 w-5 mr-3 text-green-500 flex-shrink-0" />
+                                    <span>QCM 40 questions</span>
                                 </div>
                                 <div className="flex items-center text-sm font-bold text-slate-700">
-                                    <CheckCircle className="h-5 w-5 mr-4 text-green-500 flex-shrink-0" />
-                                    <span>Seuil de réussite : 32/40</span>
+                                    <CheckCircle className="h-5 w-5 mr-3 text-green-500 flex-shrink-0" />
+                                    <span>Seuil : 80% (32/40)</span>
                                 </div>
                             </div>
                         </CardContent>
                     </motion.div>
 
-                    {/* Track 2: Naturalisation */}
+                    {/* Track 2: CR (Intermédiaire) */}
+                    <motion.div
+                        whileHover={{ y: -5 }}
+                        whileTap={{ scale: 0.98 }}
+                        role="button"
+                        tabIndex={0}
+                        onClick={() => setSelectedTrack('cr')}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                setSelectedTrack('cr');
+                            }
+                        }}
+                        aria-pressed={selectedTrack === 'cr'}
+                        aria-label="Sélectionner le parcours Carte de Résident (209 questions)."
+                        className={`cursor-pointer focus:outline-none premium-card-3d bg-white rounded-[2rem] transition-all duration-500 border-4 relative overflow-hidden ${selectedTrack === 'cr'
+                            ? 'border-red-500 ring-8 ring-red-500/5'
+                            : 'border-transparent'
+                            }`}
+                    >
+                        <CardContent className="p-8 flex flex-col h-full relative z-10">
+                            <div className="flex justify-center mb-6">
+                                <span className="bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Intermédiaire</span>
+                            </div>
+                            <div className={`mx-auto p-5 rounded-full mb-6 transition-all duration-500 ${selectedTrack === 'cr' ? 'bg-red-500 text-white shadow-3d-md scale-110' : 'bg-slate-50 text-slate-400'}`} aria-hidden="true">
+                                <Flag className={`h-10 w-10 ${selectedTrack === 'cr' ? 'animate-float' : ''}`} />
+                            </div>
+                            <h2 className={`text-xl sm:text-2xl font-black text-center mb-2 antialiased ${selectedTrack === 'cr' ? 'text-red-600' : 'text-slate-800'}`}>
+                                Carte de Résident <br/> (CR)
+                            </h2>
+                            <p className="text-sm text-slate-500 text-center mb-6 flex-grow font-medium leading-relaxed">
+                                209 questions officielles (Histoire, institutions, politique).
+                            </p>
+                            <div className="space-y-3 bg-slate-50/80 p-5 rounded-[1.5rem]" aria-label="Points clés">
+                                <div className="flex items-center text-sm font-bold text-slate-700">
+                                    <CheckCircle className="h-5 w-5 mr-3 text-green-500 flex-shrink-0" />
+                                    <span>QCM 40 questions</span>
+                                </div>
+                                <div className="flex items-center text-sm font-bold text-slate-700">
+                                    <CheckCircle className="h-5 w-5 mr-3 text-green-500 flex-shrink-0" />
+                                    <span>Thèmes renforcés</span>
+                                </div>
+                            </div>
+                        </CardContent>
+                    </motion.div>
+
+                    {/* Track 3: Naturalisation (Approfondi) */}
                     <motion.div
                         whileHover={{ y: -5 }}
                         whileTap={{ scale: 0.98 }}
@@ -141,30 +190,33 @@ export default function OnboardingFlow() {
                             }
                         }}
                         aria-pressed={selectedTrack === 'naturalisation'}
-                        aria-label="Sélectionner le parcours Naturalisation : Entretien d'assimilation et culture."
+                        aria-label="Sélectionner le parcours Naturalisation (240 questions)."
                         className={`cursor-pointer focus:outline-none premium-card-3d bg-white rounded-[2rem] transition-all duration-500 border-4 relative overflow-hidden ${selectedTrack === 'naturalisation'
-                            ? 'border-red-500 ring-8 ring-red-500/5'
+                            ? 'border-rose-700 ring-8 ring-rose-700/5'
                             : 'border-transparent'
                             }`}
                     >
-                        <CardContent className="p-8 sm:p-10 flex flex-col h-full relative z-10">
-                            <div className={`mx-auto p-6 rounded-[2rem] mb-8 transition-all duration-500 ${selectedTrack === 'naturalisation' ? 'bg-red-500 text-white shadow-3d-md scale-110' : 'bg-slate-50 text-slate-400'}`} aria-hidden="true">
-                                <Flag className={`h-12 w-12 ${selectedTrack === 'naturalisation' ? 'animate-float' : ''}`} />
+                        <CardContent className="p-8 flex flex-col h-full relative z-10">
+                            <div className="flex justify-center mb-6">
+                                <span className="bg-rose-700 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-widest">Approfondi</span>
                             </div>
-                            <h2 className={`text-2xl sm:text-3xl font-black text-center mb-4 antialiased ${selectedTrack === 'naturalisation' ? 'text-red-600' : 'text-slate-800'}`}>
-                                Naturalisation
+                            <div className={`mx-auto p-5 rounded-full mb-6 transition-all duration-500 ${selectedTrack === 'naturalisation' ? 'bg-rose-700 text-white shadow-3d-md scale-110' : 'bg-slate-50 text-slate-400'}`} aria-hidden="true">
+                                <Award className={`h-10 w-10 ${selectedTrack === 'naturalisation' ? 'animate-float' : ''}`} />
+                            </div>
+                            <h2 className={`text-xl sm:text-2xl font-black text-center mb-2 antialiased ${selectedTrack === 'naturalisation' ? 'text-rose-700' : 'text-slate-800'}`}>
+                                Naturalisation Française
                             </h2>
-                            <p className="text-base text-slate-500 text-center mb-8 flex-grow font-medium leading-relaxed">
-                                Un parcours complet pour l&apos;entretien d&apos;assimilation, la culture et l&apos;histoire de France.
+                            <p className="text-sm text-slate-500 text-center mb-6 flex-grow font-medium leading-relaxed">
+                                240 questions (Culture, patrimoine, nuances républicaines).
                             </p>
-                            <div className="space-y-4 bg-slate-50/80 p-6 rounded-[1.5rem]" aria-label="Points clés">
+                            <div className="space-y-3 bg-slate-50/80 p-5 rounded-[1.5rem]" aria-label="Points clés">
                                 <div className="flex items-center text-sm font-bold text-slate-700">
-                                    <CheckCircle className="h-5 w-5 mr-4 text-green-500 flex-shrink-0" />
-                                    <span>Simulateur d&apos;entretien oral</span>
+                                    <CheckCircle className="h-5 w-5 mr-3 text-green-500 flex-shrink-0" />
+                                    <span>Toutes thématiques</span>
                                 </div>
                                 <div className="flex items-center text-sm font-bold text-slate-700">
-                                    <CheckCircle className="h-5 w-5 mr-4 text-green-500 flex-shrink-0" />
-                                    <span>Culture & Histoire complète</span>
+                                    <CheckCircle className="h-5 w-5 mr-3 text-green-500 flex-shrink-0" />
+                                    <span>Entretien d'assimilation</span>
                                 </div>
                             </div>
                         </CardContent>
@@ -191,8 +243,9 @@ export default function OnboardingFlow() {
                         disabled={!selectedTrack || loading}
                         onClick={handleConfirmTrack}
                         className={`w-full max-w-sm sm:w-auto h-16 px-12 text-xl font-black rounded-full transition-all duration-500 shadow-3d-md hover:shadow-3d-lg active:scale-95 ${!selectedTrack ? 'bg-slate-200 text-slate-400 cursor-not-allowed' :
-                            selectedTrack === 'naturalisation' ? 'bg-red-600 hover:bg-red-700 text-white' :
-                                'bg-primary hover:bg-blue-800 text-white'
+                            selectedTrack === 'naturalisation' ? 'bg-rose-700 hover:bg-rose-800 text-white' :
+                                selectedTrack === 'cr' ? 'bg-red-500 hover:bg-red-600 text-white' :
+                                    'bg-blue-600 hover:bg-blue-700 text-white'
                             }`}
                     >
                         {loading ? (

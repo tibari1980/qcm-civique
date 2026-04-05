@@ -59,9 +59,21 @@ export default function TrainingSession() {
                 setQuestions(wrongQs);
             } else {
                 const profile = await UserService.getUserProfile(user?.uid || '');
-                const track = profile?.track === 'naturalisation' ? 'naturalisation' : 'titre_sejour';
-                const fetched = await QuestionService.getQuestionsByTheme(themeId, 20, track);
+                const track = profile?.track || 'csp';
+                
+                // Récupération de la mémoire anti-répétition (limite à 200 pour reset)
+                let seenIds: string[] = [];
+                try {
+                    seenIds = JSON.parse(localStorage.getItem('qcm_seen_ids') || '[]');
+                } catch(e) {}
+                
+                const fetched = await QuestionService.getQuestionsByTheme(themeId, 20, track, seenIds);
                 setQuestions(fetched);
+
+                // Sauvegarde de l'historique local "Zéro Doublon"
+                const newSeenIds = [...new Set([...seenIds, ...fetched.map(q => q.id)])];
+                if (newSeenIds.length > 200) newSeenIds.splice(0, newSeenIds.length - 200); // Nettoyage FIFO
+                localStorage.setItem('qcm_seen_ids', JSON.stringify(newSeenIds));
             }
         } catch (error) {
             console.error("Error loading questions:", error);

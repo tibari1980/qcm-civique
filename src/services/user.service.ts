@@ -175,15 +175,20 @@ export const UserService = {
     },
 
     // Get global stats for dashboard
-    getUserStats: async (uid: string, track?: 'residence' | 'naturalisation', forceRecalc: boolean = false): Promise<UserProgress> => {
+    getUserStats: async (uid: string, track?: 'csp' | 'cr' | 'naturalisation', forceRecalc: boolean = false): Promise<UserProgress> => {
         const cacheKey = `stats_${uid}_${track || 'none'}`;
         if (!forceRecalc && isCacheValid(cacheKey)) return cache.stats[cacheKey];
 
         try {
-            // Priority 1: Check if profile already has pre-calculated stats (and no track filter requested)
-            if (!forceRecalc && !track) {
+            // Priority 1: Check if profile already has pre-calculated Firebase track stats
+            if (!forceRecalc) {
                 const profile = await UserService.getUserProfile(uid);
-                if (profile?.stats) {
+                if (track && profile && (profile as any)[`stats_${track}`]) {
+                    const s = (profile as any)[`stats_${track}`];
+                    cache.stats[cacheKey] = s;
+                    return s;
+                }
+                if (!track && profile?.stats) {
                     cache.stats[cacheKey] = profile.stats;
                     return profile.stats;
                 }
@@ -199,7 +204,10 @@ export const UserService = {
             let attempts = snapshot.docs.map(doc => doc.data() as Attempt);
 
             if (track) {
-                const targetTypes = track === 'residence' ? ['titre_sejour', 'carte_resident'] : ['naturalisation'];
+                let targetTypes: string[] = [track];
+                if (track === 'csp') targetTypes.push('titre_sejour', 'residence' as any);
+                else if (track === 'cr') targetTypes.push('carte_resident');
+                
                 attempts = attempts.filter(a => targetTypes.includes(a.exam_type));
             }
 
@@ -242,7 +250,7 @@ export const UserService = {
     },
 
     // Unified method: 1 Firestore call
-    getAllUserData: async (uid: string, options: { track?: 'residence' | 'naturalisation'; maxRecent?: number } = {}): Promise<{
+    getAllUserData: async (uid: string, options: { track?: 'csp' | 'cr' | 'naturalisation'; maxRecent?: number } = {}): Promise<{
         stats: UserProgress;
         recentActivity: Attempt[];
         incorrectIds: string[];
@@ -272,7 +280,10 @@ export const UserService = {
             const seenIds = Array.from(latestStatus.keys());
 
             if (track) {
-                const targetTypes = track === 'residence' ? ['titre_sejour', 'carte_resident'] : ['naturalisation'];
+                let targetTypes: string[] = [track];
+                if (track === 'csp') targetTypes.push('titre_sejour', 'residence' as any);
+                else if (track === 'cr') targetTypes.push('carte_resident');
+
                 attempts = attempts.filter(a => targetTypes.includes(a.exam_type));
             }
 
@@ -318,9 +329,10 @@ export const UserService = {
         }
     },
 
-    getCertificateStatus: async (uid: string): Promise<{ eligible: boolean; progress: number; missingThemes: string[] }> => {
+    getCertificateStatus: async (uid: string, track: string): Promise<{ eligible: boolean; progress: number; missingThemes: string[] }> => {
         try {
-            const { stats } = await UserService.getAllUserData(uid);
+            // OPTIMIZATION: Bypasses getAllUserData (which scans all DB) to read the instantly cached user profile stats natively
+            const stats = await UserService.getUserStats(uid, track as any);
             const themes = ['histoire', 'institutions', 'societe', 'vals_principes', 'droits'];
             const missingThemes: string[] = [];
             let masteredCount = 0;

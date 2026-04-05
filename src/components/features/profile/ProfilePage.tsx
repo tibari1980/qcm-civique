@@ -28,10 +28,11 @@ export default function ProfilePage() {
 
     React.useEffect(() => {
         if (user) {
-            UserService.getAllUserData(user.uid, { track: userProfile?.track as any }).then(data => {
+            const currentTrack = userProfile?.track || 'csp';
+            UserService.getAllUserData(user.uid, { track: currentTrack as any }).then(data => {
                 setStats(data.stats);
             });
-            UserService.getCertificateStatus(user.uid).then(status => {
+            UserService.getCertificateStatus(user.uid, currentTrack).then(status => {
                 setCertStatus(status);
                 setIsLoadingCert(false);
             });
@@ -61,9 +62,9 @@ export default function ProfilePage() {
         );
     }
 
-    const currentTrack = userProfile?.track || 'residence';
+    const currentTrack = userProfile?.track || 'csp';
 
-    const handleTrackSwitch = async (newTrack: 'residence' | 'naturalisation') => {
+    const handleTrackSwitch = async (newTrack: 'csp' | 'cr' | 'naturalisation') => {
         if (newTrack === currentTrack) return;
 
         setIsUpdating(true);
@@ -72,7 +73,7 @@ export default function ProfilePage() {
             await UserService.syncUserProfile(user.uid, { track: newTrack });
             if (refreshProfile) await refreshProfile();
             setUpdateMessage({
-                text: `Parcours mis à jour : ${newTrack === 'residence' ? 'Titre de Séjour' : 'Naturalisation'} activé.`,
+                text: `Parcours mis à jour : ${newTrack === 'csp' ? 'Carte de Séjour Pluriannuelle' : newTrack === 'cr' ? 'Carte de Résident' : 'Naturalisation'} activé.`,
                 type: 'success'
             });
         } catch (error) {
@@ -138,31 +139,57 @@ export default function ProfilePage() {
                         <div
                             role="radiogroup"
                             aria-label="Sélectionnez votre parcours d'examen"
-                            className="grid grid-cols-1 gap-4"
+                            className="grid grid-cols-1 sm:grid-cols-3 gap-4"
                         >
                             <motion.div
                                 whileHover={{ y: -4, scale: 1.01 }}
                                 whileTap={{ scale: 0.99 }}
                                 role="radio"
                                 tabIndex={0}
-                                aria-checked={currentTrack === 'residence'}
-                                onClick={() => handleTrackSwitch('residence')}
-                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleTrackSwitch('residence'); } }}
-                                className={`group relative cursor-pointer p-6 rounded-[2rem] border-2 transition-all flex flex-col gap-3 focus-visible:ring-4 focus-visible:ring-blue-500 focus-visible:outline-none ${currentTrack === 'residence'
-                                    ? 'border-primary bg-white shadow-3d-lg ring-1 ring-primary'
-                                    : 'border-slate-100 bg-slate-50/50 hover:bg-white hover:border-slate-200 shadow-sm'
+                                aria-checked={currentTrack === 'csp'}
+                                onClick={() => handleTrackSwitch('csp')}
+                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleTrackSwitch('csp'); } }}
+                                className={`group relative cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col gap-2 focus-visible:ring-4 focus-visible:ring-blue-500 focus-visible:outline-none ${currentTrack === 'csp'
+                                    ? 'border-blue-600 bg-white shadow-3d-md ring-1 ring-blue-600'
+                                    : 'border-slate-100 bg-slate-50/50 hover:bg-white hover:border-slate-200'
                                     }`}
                             >
-                                <div className="flex justify-between items-center">
-                                    <span className={`font-black text-xl tracking-tight ${currentTrack === 'residence' ? 'text-blue-700' : 'text-slate-700'}`}>
-                                        Titre de Séjour
+                                <div className="flex justify-between items-center mb-1">
+                                    <span className={`font-black text-lg tracking-tight ${currentTrack === 'csp' ? 'text-blue-700' : 'text-slate-700'}`}>
+                                        Carte Séjour (CSP)
                                     </span>
-                                    <div className={`w-8 h-8 rounded-2xl border-2 flex items-center justify-center transition-all duration-300 ${currentTrack === 'residence' ? 'border-blue-600 bg-blue-600 text-white shadow-3d-sm scale-110 rotate-6' : 'border-slate-200'}`}>
-                                        {currentTrack === 'residence' ? <Check className="h-5 w-5 font-black" aria-hidden="true" /> : <div className="w-2 h-2 rounded-full bg-slate-200" />}
+                                    <div className={`w-6 h-6 rounded-xl border flex items-center justify-center transition-all duration-300 ${currentTrack === 'csp' ? 'border-blue-600 bg-blue-600 text-white shadow-3d-sm scale-110' : 'border-slate-200'}`}>
+                                        {currentTrack === 'csp' ? <Check className="h-4 w-4 font-black" aria-hidden="true" /> : <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />}
                                     </div>
                                 </div>
-                                <p className={`text-sm leading-relaxed font-medium ${currentTrack === 'residence' ? 'text-blue-600/80' : 'text-slate-500'}`}>
-                                    Pour les résidents de 10 ans ou renouvellement de carte.
+                                <p className={`text-xs leading-relaxed font-medium ${currentTrack === 'csp' ? 'text-blue-600/80' : 'text-slate-500'}`}>
+                                    193 questions officielles, valeurs fondamentales.
+                                </p>
+                            </motion.div>
+
+                            <motion.div
+                                whileHover={{ y: -4, scale: 1.01 }}
+                                whileTap={{ scale: 0.99 }}
+                                role="radio"
+                                tabIndex={0}
+                                aria-checked={currentTrack === 'cr'}
+                                onClick={() => handleTrackSwitch('cr')}
+                                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleTrackSwitch('cr'); } }}
+                                className={`group relative cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col gap-2 focus-visible:ring-4 focus-visible:ring-red-500 focus-visible:outline-none ${currentTrack === 'cr'
+                                    ? 'border-red-500 bg-white shadow-3d-md ring-1 ring-red-500'
+                                    : 'border-slate-100 bg-slate-50/50 hover:bg-white hover:border-slate-200'
+                                    }`}
+                            >
+                                <div className="flex justify-between items-center mb-1">
+                                    <span className={`font-black text-lg tracking-tight ${currentTrack === 'cr' ? 'text-red-600' : 'text-slate-700'}`}>
+                                        Carte Résident (CR)
+                                    </span>
+                                    <div className={`w-6 h-6 rounded-xl border flex items-center justify-center transition-all duration-300 ${currentTrack === 'cr' ? 'border-red-500 bg-red-500 text-white shadow-3d-sm scale-110' : 'border-slate-200'}`}>
+                                        {currentTrack === 'cr' ? <Check className="h-4 w-4 font-black" aria-hidden="true" /> : <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />}
+                                    </div>
+                                </div>
+                                <p className={`text-xs leading-relaxed font-medium ${currentTrack === 'cr' ? 'text-red-500/80' : 'text-slate-500'}`}>
+                                    209 questions off. (Intermédiaire, Institutions).
                                 </p>
                             </motion.div>
 
@@ -174,21 +201,21 @@ export default function ProfilePage() {
                                 aria-checked={currentTrack === 'naturalisation'}
                                 onClick={() => handleTrackSwitch('naturalisation')}
                                 onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleTrackSwitch('naturalisation'); } }}
-                                className={`group relative cursor-pointer p-6 rounded-[2rem] border-2 transition-all flex flex-col gap-3 focus-visible:ring-4 focus-visible:ring-purple-500 focus-visible:outline-none ${currentTrack === 'naturalisation'
-                                    ? 'border-purple-600 bg-white shadow-3d-lg ring-1 ring-purple-600'
-                                    : 'border-slate-100 bg-slate-50/50 hover:bg-white hover:border-slate-200 shadow-sm'
+                                className={`group relative cursor-pointer p-4 rounded-2xl border-2 transition-all flex flex-col gap-2 focus-visible:ring-4 focus-visible:ring-rose-700 focus-visible:outline-none ${currentTrack === 'naturalisation'
+                                    ? 'border-rose-700 bg-white shadow-3d-md ring-1 ring-rose-700'
+                                    : 'border-slate-100 bg-slate-50/50 hover:bg-white hover:border-slate-200'
                                     }`}
                             >
-                                <div className="flex justify-between items-center">
-                                    <span className={`font-black text-xl tracking-tight ${currentTrack === 'naturalisation' ? 'text-purple-700' : 'text-slate-700'}`}>
+                                <div className="flex justify-between items-center mb-1">
+                                    <span className={`font-black text-lg tracking-tight ${currentTrack === 'naturalisation' ? 'text-rose-700' : 'text-slate-700'}`}>
                                         Naturalisation
                                     </span>
-                                    <div className={`w-8 h-8 rounded-2xl border-2 flex items-center justify-center transition-all duration-300 ${currentTrack === 'naturalisation' ? 'border-purple-600 bg-purple-600 text-white shadow-3d-sm scale-110 rotate-6' : 'border-slate-200'}`}>
-                                        {currentTrack === 'naturalisation' ? <Check className="h-5 w-5 font-black" aria-hidden="true" /> : <div className="w-2 h-2 rounded-full bg-slate-200" />}
+                                    <div className={`w-6 h-6 rounded-xl border flex items-center justify-center transition-all duration-300 ${currentTrack === 'naturalisation' ? 'border-rose-700 bg-rose-700 text-white shadow-3d-sm scale-110' : 'border-slate-200'}`}>
+                                        {currentTrack === 'naturalisation' ? <Check className="h-4 w-4 font-black" aria-hidden="true" /> : <div className="w-1.5 h-1.5 rounded-full bg-slate-200" />}
                                     </div>
                                 </div>
-                                <p className={`text-sm leading-relaxed font-medium ${currentTrack === 'naturalisation' ? 'text-purple-600/80' : 'text-slate-500'}`}>
-                                    Entretien d&apos;assimilation, culture et histoire française.
+                                <p className={`text-xs leading-relaxed font-medium ${currentTrack === 'naturalisation' ? 'text-rose-700/80' : 'text-slate-500'}`}>
+                                    240 questions (Culture, entretien d'assimilation).
                                 </p>
                             </motion.div>
                         </div>

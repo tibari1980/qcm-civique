@@ -55,7 +55,7 @@ export default function ExamSession() {
 
         if (user) {
             try {
-                const track = userProfile?.track === 'naturalisation' ? 'naturalisation' : 'titre_sejour';
+                const track = userProfile?.track || 'csp';
                 
                 const attemptAnswers = questions.map((q, index) => ({
                     question_id: q.id,
@@ -170,9 +170,24 @@ export default function ExamSession() {
         const loadExam = async () => {
             setIsLoadingData(true);
             try {
-                const track = userProfile?.track === 'naturalisation' ? 'naturalisation' : 'titre_sejour';
-                const fetched = await QuestionService.getExamQuestions(40, track);
+                const track = userProfile?.track || 'csp';
+                
+                // Récupération de la mémoire anti-répétition (limite à 200 pour reset)
+                let seenIds: string[] = [];
+                try {
+                    seenIds = JSON.parse(localStorage.getItem('qcm_seen_ids') || '[]');
+                } catch(e) {}
+
+                const fetched = await QuestionService.getExamQuestions(40, track, seenIds);
                 setQuestions(fetched);
+
+                if (fetched.length > 0) {
+                     console.log(`[Anti-Repeat] Excluded ${seenIds.length} historically seen questions for Exam.`);
+                     // Sauvegarde de l'historique local "Zéro Doublon"
+                     const newSeenIds = [...new Set([...seenIds, ...fetched.map(q => q.id)])];
+                     if (newSeenIds.length > 200) newSeenIds.splice(0, newSeenIds.length - 200); // Nettoyage FIFO
+                     localStorage.setItem('qcm_seen_ids', JSON.stringify(newSeenIds));
+                }
             } catch (error) {
                 console.error("Error loading exam:", error);
             } finally {
