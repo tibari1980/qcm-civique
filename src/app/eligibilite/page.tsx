@@ -34,7 +34,7 @@ export default function EligibilityPage() {
               Suis-je <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-blue-600">éligible</span> à l'examen civique ?
             </h1>
             <p className="text-lg text-[var(--color-text-secondary)] max-w-2xl mx-auto">
-              La loi de l'immigration de janvier 2024 introduit de nouvelles règles. Utilisez notre simulateur pour savoir instantanément si votre démarche nécessite la réussite du nouvel examen civique.
+              La loi de l'immigration de janvier 2026 introduit de nouvelles règles. Utilisez notre simulateur pour savoir instantanément si votre démarche nécessite la réussite du nouvel examen civique.
             </p>
           </div>
         </div>
