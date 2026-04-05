@@ -48,7 +48,14 @@ export default function AdminQuestionsPage() {
         let list = questions;
         if (filterTheme) list = list.filter(q => q.theme === filterTheme);
         if (filterLevel) list = list.filter(q => q.level === filterLevel);
-        if (filterExam) list = list.filter(q => q.exam_type === filterExam);
+        if (filterExam) {
+            list = list.filter(q => {
+                const types = q.exam_types || (q.exam_type ? [q.exam_type] : ['titre_sejour', 'csp']);
+                return types.includes(filterExam) || 
+                       (filterExam === 'titre_sejour' && types.includes('csp')) ||
+                       (filterExam === 'carte_resident' && types.includes('cr'));
+            });
+        }
         if (search) {
             const s = search.toLowerCase();
             list = list.filter(q => q.question.toLowerCase().includes(s));

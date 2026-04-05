@@ -81,7 +81,7 @@ export async function POST(request: Request) {
                             email: { stringValue: user.email || '' },
                             displayName: { stringValue: user.displayName || user.email?.split('@')[0] || 'Utilisateur' },
                             role: { stringValue: 'user' },
-                            track: { nullValue: null },
+                            track: { stringValue: 'csp' },
                             createdAt: { integerValue: (user.createdAt || Date.now()).toString() },
                             welcomeEmailSent: { booleanValue: true },
                             stats: {
@@ -134,6 +134,14 @@ export async function POST(request: Request) {
                     if (!fields.uid || !fields.uid.stringValue) {
                         updates.fields.uid = { stringValue: uid };
                         updateMasks.push('uid');
+                    }
+                    
+                    // Enforce track
+                    const trackVal = fields.track?.stringValue;
+                    const isTrackNull = fields.track?.nullValue !== undefined;
+                    if (isTrackNull || !fields.track || trackVal === 'residence' || trackVal === 'titre_sejour') {
+                         updates.fields.track = { stringValue: 'csp' };
+                         updateMasks.push('track');
                     }
 
                     if (updateMasks.length > 0) {

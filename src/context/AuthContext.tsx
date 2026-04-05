@@ -73,7 +73,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                             email: firebaseUser.email || '',
                             displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Utilisateur',
                             role: 'user',
-                            track: null,
+                            track: 'csp',
                             createdAt: Date.now(),
                             welcomeEmailSent: false,
                             stats: {
