@@ -231,6 +231,68 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Premium Video Prospecting Section */}
+      <section className="py-16 md:py-24 bg-white relative overflow-hidden" aria-labelledby="video-heading">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <div className="text-center mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 id="video-heading" className="text-3xl md:text-5xl font-black mb-6 text-slate-900 tracking-tight">
+                Découvrez la méthode <span className="text-blue-600">CiviqQuiz</span>
+              </h2>
+              <p className="text-lg md:text-xl text-slate-500 font-medium max-w-2xl mx-auto leading-relaxed mb-8">
+                Un aperçu en quelques minutes de l'outil qui va vous faire réussir votre examen haut la main.
+              </p>
+            </motion.div>
+          </div>
+
+          <div className="sr-only" aria-live="polite">
+            Cette vidéo présente en quelques minutes l'interface de CiviqQuiz, montrant des exemples de questions officielles du test de naturalisation et la manière dont nous mesurons votre réussite.
+          </div>
+          
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+            className="relative rounded-3xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] bg-slate-900 aspect-video ring-1 ring-slate-900/5 group focus-within:ring-4 focus-within:ring-blue-500"
+            role="region"
+            aria-label="Lecteur vidéo de présentation de CiviqQuiz"
+          >
+            {/* Elegant glass reflection overlay */}
+            <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none z-10" aria-hidden="true" />
+            
+            <iframe
+              src="https://drive.google.com/file/d/1GFnCVAPi-s2JYyaQ6BufXIQjbdm3XDK-/preview"
+              className="absolute top-0 left-0 w-full h-full border-0 z-0"
+              allow="autoplay; fullscreen"
+              title="Vidéo de présentation visuelle de l'outil CiviqQuiz"
+              tabIndex={0}
+            ></iframe>
+          </motion.div>
+          
+          <div className="text-center mt-12 flex justify-center">
+            {!user && (
+             <Link href="/register">
+               <Button size="xl" className="px-10 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg shadow-xl hover:shadow-2xl transition-all">
+                 Je suis convaincu, je commence
+               </Button>
+             </Link>
+            )}
+            {user && (
+             <Link href={dashboardLink}>
+               <Button size="xl" className="px-10 rounded-full bg-slate-900 hover:bg-slate-800 text-white font-bold text-lg shadow-xl hover:shadow-2xl transition-all">
+                 Aller à mon espace
+               </Button>
+             </Link>
+            )}
+          </div>
+        </div>
+      </section>
+
       {/* FAQ Section (Surpassing the Competitor) */}
       <section className="py-20 md:py-32 bg-slate-50 relative overflow-hidden">
         {/* Decorative elements */}

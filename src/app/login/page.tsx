@@ -116,6 +116,9 @@ export default function LoginPage() {
                                     {settings.appName}
                                 </h2>
                             </div>
+                            <div id="login-feedback" className="sr-only" aria-live="polite">
+                                {loading && "Tentative de connexion en cours..."}
+                            </div>
                             <p className="text-[10px] uppercase tracking-[0.4em] text-slate-400 mt-2 font-black antialiased" id={headingDescId}>
                                 Liberté • Égalité • Fraternité
                             </p>
@@ -134,13 +137,13 @@ export default function LoginPage() {
                                 animate={{ opacity: 1, x: 0 }}
                                 className="bg-red-50 border-2 border-red-100 text-red-700 p-4 rounded-2xl text-sm mb-8 font-bold flex items-center gap-3 shadow-3d-sm"
                             >
-                                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" aria-hidden="true" />
                                 {error}
                             </motion.div>
                         )}
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-6" aria-labelledby="login-title" aria-describedby={headingDescId} noValidate>
+                    <form onSubmit={handleSubmit} className="space-y-6" aria-labelledby="login-title" aria-describedby={`${headingDescId} login-feedback`} noValidate>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5" htmlFor="login-email">
                                 Adresse e-mail
@@ -149,9 +152,12 @@ export default function LoginPage() {
                                 <input
                                     id="login-email" type="email" name="email" placeholder="exemple@republique.fr"
                                     className="w-full px-4 py-3 pl-11 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all outline-none"
-                                    required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} aria-required="true"
+                                    required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} 
+                                    aria-required="true"
+                                    aria-describedby={error ? errorId : undefined}
+                                    aria-invalid={error ? "true" : "false"}
                                 />
-                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" aria-hidden="true" />
                             </div>
                         </div>
 
@@ -168,11 +174,14 @@ export default function LoginPage() {
                                 <input
                                     id="login-password" type={showPassword ? "text" : "password"} name="password" placeholder="••••••••"
                                     className="w-full px-4 py-3 pl-11 pr-11 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-600 focus:border-transparent transition-all outline-none"
-                                    required autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} aria-required="true"
+                                    required autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} 
+                                    aria-required="true"
+                                    aria-describedby={error ? errorId : undefined}
+                                    aria-invalid={error ? "true" : "false"}
                                 />
-                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" aria-hidden="true" />
                                 <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}>
-                                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                    {showPassword ? <EyeOff className="h-5 w-5" aria-hidden="true" /> : <Eye className="h-5 w-5" aria-hidden="true" />}
                                 </button>
                             </div>
                         </div>

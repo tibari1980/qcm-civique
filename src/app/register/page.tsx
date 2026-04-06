@@ -188,7 +188,7 @@ export default function RegisterPage() {
             <div className="flex-1 flex flex-col justify-center px-6 py-12 lg:px-24 bg-gray-50 dark:bg-gray-900">
                 <div className="max-w-[480px] w-full mx-auto space-y-8">
                     <div className="text-center lg:text-left space-y-2">
-                        <div className="flex h-8 w-20 shadow-3d-sm rounded-md overflow-hidden border border-white mb-6 lg:ml-0 mx-auto">
+                        <div className="flex h-8 w-20 shadow-3d-sm rounded-md overflow-hidden border border-white mb-6 lg:ml-0 mx-auto" aria-hidden="true">
                             <div className="w-1/3 bg-[#002394]"></div>
                             <div className="w-1/3 bg-white"></div>
                             <div className="w-1/3 bg-[#ed2939]"></div>
@@ -196,6 +196,9 @@ export default function RegisterPage() {
                         <h2 className="text-3xl font-black text-slate-900 dark:text-white leading-tight tracking-tight antialiased" id="register-title">
                             Créer mon espace
                         </h2>
+                        <div id="register-feedback" className="sr-only" aria-live="polite">
+                            {loading && "Création de votre compte en cours..."}
+                        </div>
                         <p className="text-slate-500 dark:text-slate-400 font-medium" id={headingDescId}>Commencez votre parcours vers la citoyenneté.</p>
                     </div>
 
@@ -206,22 +209,24 @@ export default function RegisterPage() {
                                 animate={{ opacity: 1, x: 0 }}
                                 className="bg-red-50 border-2 border-red-100 text-red-700 p-4 rounded-2xl text-sm font-bold flex items-center gap-3 shadow-3d-sm"
                             >
-                                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" />
+                                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse" aria-hidden="true" />
                                 {error}
                             </motion.div>
                         )}
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-6" aria-labelledby="register-title" aria-describedby={headingDescId} noValidate>
+                    <form onSubmit={handleSubmit} className="space-y-6" aria-labelledby="register-title" aria-describedby={`${headingDescId} register-feedback`} noValidate>
                         <div className="grid gap-4">
                             <div className="space-y-1.5">
                                 <label className="text-sm font-semibold text-gray-700 dark:text-gray-300" htmlFor="reg-name">Nom complet</label>
                                 <div className="relative">
-                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" aria-hidden="true" />
                                     <input
                                         id="reg-name" type="text" placeholder="Jean Dupont"
                                         className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#002394] focus:border-transparent outline-none transition-all dark:text-white"
-                                        required autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} aria-required="true"
+                                        required autoComplete="name" value={name} onChange={(e) => setName(e.target.value)} 
+                                        aria-required="true"
+                                        aria-invalid={error && error.includes('nom') ? "true" : "false"}
                                     />
                                 </div>
                             </div>
@@ -229,11 +234,14 @@ export default function RegisterPage() {
                             <div className="space-y-1.5">
                                 <label className="text-sm font-semibold text-gray-700 dark:text-gray-300" htmlFor="reg-email">Adresse e-mail</label>
                                 <div className="relative">
-                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" aria-hidden="true" />
                                     <input
                                         id="reg-email" type="email" placeholder="jean.dupont@exemple.fr"
                                         className="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#002394] focus:border-transparent outline-none transition-all dark:text-white"
-                                        required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} aria-required="true"
+                                        required autoComplete="email" value={email} onChange={(e) => setEmail(e.target.value)} 
+                                        aria-required="true"
+                                        aria-invalid={error && error.includes('email') ? "true" : "false"}
+                                        aria-describedby={error && error.includes('email') ? errorId : undefined}
                                     />
                                 </div>
                             </div>
@@ -242,15 +250,16 @@ export default function RegisterPage() {
                                 <label className="text-sm font-semibold text-gray-700 dark:text-gray-300" htmlFor="reg-password">Mot de passe</label>
                                 <p id={passwordHintId} className="text-xs text-gray-500">Minimum 6 caractères.</p>
                                 <div className="relative">
-                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" aria-hidden="true" />
                                     <input
                                         id="reg-password" type={showPassword ? "text" : "password"} placeholder="••••••••"
                                         className="w-full pl-10 pr-10 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#002394] focus:border-transparent outline-none transition-all dark:text-white"
                                         required autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)}
                                         aria-required="true" aria-describedby={passwordHintId} minLength={6}
+                                        aria-invalid={error && error.includes('faible') ? "true" : "false"}
                                     />
                                     <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none" onClick={() => setShowPassword(!showPassword)} aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}>
-                                        {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                        {showPassword ? <EyeOff className="h-5 w-5" aria-hidden="true" /> : <Eye className="h-5 w-5" aria-hidden="true" />}
                                     </button>
                                 </div>
                             </div>
@@ -258,23 +267,25 @@ export default function RegisterPage() {
                             <div className="space-y-1.5">
                                 <label className="text-sm font-semibold text-gray-700 dark:text-gray-300" htmlFor="reg-confirm-password">Confirmer le mot de passe</label>
                                 <div className="relative">
-                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" />
+                                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-5 w-5" aria-hidden="true" />
                                     <input
                                         id="reg-confirm-password" type={showConfirmPassword ? "text" : "password"} placeholder="••••••••"
                                         className="w-full pl-10 pr-10 py-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl focus:ring-2 focus:ring-[#002394] focus:border-transparent outline-none transition-all dark:text-white"
                                         required autoComplete="new-password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}
                                         aria-required="true"
+                                        aria-invalid={error && error.includes('correspondent') ? "true" : "false"}
+                                        aria-describedby={error && error.includes('correspondent') ? errorId : undefined}
                                     />
                                     <button type="button" className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none" onClick={() => setShowConfirmPassword(!showConfirmPassword)} aria-label={showConfirmPassword ? "Masquer le mot de passe de confirmation" : "Afficher le mot de passe de confirmation"}>
-                                        {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                        {showConfirmPassword ? <EyeOff className="h-5 w-5" aria-hidden="true" /> : <Eye className="h-5 w-5" aria-hidden="true" />}
                                     </button>
                                 </div>
                             </div>
 
-                            {/* Honeypot field for anti-spam (invisible to humans) */}
+                            {/* Honeypot field for anti-spam (invisible to humans and screen readers) */}
                             <div className="hidden" aria-hidden="true">
                                 <label htmlFor="website_url">Website URL (ne pas remplir)</label>
-                                <input id="website_url" type="text" name="website_url" tabIndex={-1} autoComplete="off" />
+                                <input id="website_url" type="text" name="website_url" tabIndex={-1} autoComplete="off" aria-hidden="true" />
                             </div>
                         </div>
 

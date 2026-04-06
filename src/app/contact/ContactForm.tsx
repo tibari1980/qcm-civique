@@ -127,10 +127,20 @@ export default function ContactForm() {
                                 </CardTitle>
                             </CardHeader>
                             <CardContent>
+                                <div id="form-feedback" className="sr-only" aria-live="polite">
+                                    {submitted ? "Votre message a été envoyé avec succès. Nous vous contacterons bientôt." : ""}
+                                    {loading ? "Envoi du message en cours..." : ""}
+                                </div>
+
                                 {submitted ? (
-                                    <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-12">
+                                    <motion.div 
+                                        initial={{ opacity: 0, scale: 0.9 }} 
+                                        animate={{ opacity: 1, scale: 1 }} 
+                                        className="text-center py-12"
+                                        role="status"
+                                    >
                                         <div className="h-20 w-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                                            <CheckCircle className="h-10 w-10 text-green-500" />
+                                            <CheckCircle className="h-10 w-10 text-green-500" aria-hidden="true" />
                                         </div>
                                         <h3 className="text-2xl font-black text-slate-900 mb-2">Message envoyé !</h3>
                                         <p className="text-slate-500 font-medium mb-8 max-w-sm mx-auto">
@@ -140,12 +150,13 @@ export default function ContactForm() {
                                             variant="outline" 
                                             className="h-12 px-8 rounded-2xl border-2 border-slate-100 font-bold hover:bg-slate-50 transition-all text-slate-900"
                                             onClick={() => setSubmitted(false)}
+                                            aria-label="Retourner au formulaire de contact"
                                         >
                                             Envoyer un autre message
                                         </Button>
                                     </motion.div>
                                 ) : (
-                                    <form onSubmit={handleSubmit} className="space-y-6">
+                                    <form onSubmit={handleSubmit} className="space-y-6" aria-describedby="form-feedback">
                                         <div className="grid md:grid-cols-2 gap-6">
                                             <div className="space-y-2">
                                                 <label htmlFor="name" className="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">
