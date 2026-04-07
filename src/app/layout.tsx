@@ -11,12 +11,13 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   metadataBase: new URL('https://civiqquiz.com'),
   title: {
-    default: "CiviqQuiz — Votre succès à l'examen civique français 2026",
-    template: "%s | CiviqQuiz"
+    default: "CiviQ Quiz — Votre succès à l'examen civique français 2026",
+    template: "%s | CiviQ Quiz"
   },
   icons: {
     icon: '/icon.png',
     apple: '/apple-icon.png',
+    shortcut: '/favicon.ico',
   },
   description: "La plateforme d'accompagnement pour réussir votre examen civique obligatoire. Préparez-vous sereinement à votre naturalisation ou votre titre de séjour avec nos QCM officiels et examens blancs.",
   keywords: [
