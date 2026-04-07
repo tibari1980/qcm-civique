@@ -498,7 +498,7 @@ export default function Home() {
                 
                 <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
                   <Link 
-                    href={`https://instagram.com/${settings.socialInstagram.replace('@', '')}`}
+                    href={`https://www.instagram.com/${settings.socialInstagram.replace('@', '')}/`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-3 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCB045] hover:opacity-90 text-white px-8 py-4 rounded-full text-lg font-black transition-all hover:shadow-2xl hover:scale-105 active:scale-95 shadow-xl"

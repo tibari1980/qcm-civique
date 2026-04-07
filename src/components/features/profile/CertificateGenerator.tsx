@@ -205,7 +205,7 @@ export default function CertificateGenerator({ userName, date, track, preview = 
                         <div className="text-right space-y-4">
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Validation</p>
                             <div className="h-20 flex flex-col items-end justify-center">
-                                <span className="font-serif italic text-3xl text-slate-900 leading-tight">CiviQuiz Online</span>
+                                <span className="font-serif italic text-3xl text-slate-900 leading-tight">CiviqQuiz Online</span>
                                 <div className="flex items-center gap-2 mt-2">
                                     <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                                     <span className="text-[10px] font-black text-blue-600/50 uppercase tracking-[0.2em]">Signature Numérique</span>
@@ -216,7 +216,7 @@ export default function CertificateGenerator({ userName, date, track, preview = 
 
                     {/* Official Watermark */}
                     <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03] rotate-[-15deg] overflow-hidden select-none">
-                        <h4 className="text-[200px] font-black uppercase tracking-tighter whitespace-nowrap antialiased">CIVIQUIZ RÉPUBLIQUE</h4>
+                        <h4 className="text-[200px] font-black uppercase tracking-tighter whitespace-nowrap antialiased">CIVIQQUIZ RÉPUBLIQUE</h4>
                     </div>
                 </CardContent>
             </Card>

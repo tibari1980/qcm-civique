@@ -48,7 +48,7 @@ export function Footer() {
                                 </a>
                             )}
                             {settings.socialInstagram && (
-                                <a href={`https://instagram.com/${settings.socialInstagram.replace('@', '')}`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-pink-600 transition-all" aria-label={`Suivre ${settings.appName} sur Instagram (nouvel onglet)`}>
+                                <a href={`https://www.instagram.com/${settings.socialInstagram.replace('@', '')}/`} target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-xl bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-pink-600 transition-all" aria-label={`Suivre ${settings.appName} sur Instagram (nouvel onglet)`}>
                                     <Instagram className="h-5 w-5" aria-hidden="true" />
                                 </a>
                             )}

@@ -14,6 +14,10 @@ export const metadata: Metadata = {
     default: "CiviqQuiz — Votre succès à l'examen civique français 2026",
     template: "%s | CiviqQuiz"
   },
+  icons: {
+    icon: '/icon.png',
+    apple: '/apple-icon.png',
+  },
   description: "La plateforme d'accompagnement pour réussir votre examen civique obligatoire. Préparez-vous sereinement à votre naturalisation ou votre titre de séjour avec nos QCM officiels et examens blancs.",
   keywords: [
     "examen civique français", "réussir examen civique", "préparation naturalisation",

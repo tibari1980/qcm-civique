@@ -20,7 +20,7 @@ interface AppSettings {
 }
 
 const DEFAULTS: AppSettings = {
-    appName: 'CiviqQuiz',
+    appName: 'CiviQ Quiz',
     brandColor: '#002394',
     questionsPerExam: 40,
     passThreshold: 75,
@@ -31,7 +31,7 @@ const DEFAULTS: AppSettings = {
     contactEmail: 'support@civiqquiz.com',
     socialInstagram: 'civiqquiz',
     socialLinkedIn: '',
-    socialTikTok: 'civiquiz',
+    socialTikTok: 'civiqquiz',
     maintenanceMode: false,
 };
 
@@ -45,13 +45,31 @@ const SettingsContext = createContext<SettingsContextType | undefined>(undefined
 
 const SETTINGS_CACHE_KEY = 'civiqquiz-settings-cache';
 
+// Helper to migrate legacy handles (force new brand)
+function migrateSettings(raw: any): AppSettings {
+    const instagram = String(raw.socialInstagram || '').toLowerCase();
+    const tiktok = String(raw.socialTikTok || '').toLowerCase();
+    
+    const settings = { ...DEFAULTS, ...raw };
+    
+    // Force new branding if legacy personal handles (tibari) detected or empty
+    if (instagram.includes('tibari') || !instagram) {
+        settings.socialInstagram = DEFAULTS.socialInstagram;
+    }
+    if (tiktok.includes('tibari') || !tiktok) {
+        settings.socialTikTok = DEFAULTS.socialTikTok;
+    }
+    
+    return settings;
+}
+
 export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const [settings, setSettings] = useState<AppSettings>(() => {
         // Instant render from localStorage cache (stale-while-revalidate)
         if (typeof window !== 'undefined') {
             try {
                 const cached = localStorage.getItem(SETTINGS_CACHE_KEY);
-                if (cached) return { ...DEFAULTS, ...JSON.parse(cached) };
+                if (cached) return migrateSettings(JSON.parse(cached));
             } catch { /* ignore parse errors */ }
         }
         return DEFAULTS;
@@ -61,10 +79,11 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const refreshSettings = async () => {
         try {
             const raw = await AdminService.getAppSettings();
-            const merged = { ...DEFAULTS, ...(raw as Partial<AppSettings>) };
-            setSettings(merged);
+            const migrated = migrateSettings(raw);
+            setSettings(migrated);
+            
             // Persist to localStorage for next visit
-            try { localStorage.setItem(SETTINGS_CACHE_KEY, JSON.stringify(merged)); } catch { /* quota exceeded */ }
+            try { localStorage.setItem(SETTINGS_CACHE_KEY, JSON.stringify(migrated)); } catch { /* quota exceeded */ }
         } catch (err) {
             console.error('Failed to fetch settings:', err);
         } finally {

@@ -234,7 +234,7 @@ export default function GuidePage() {
                     >
                         <span className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-white/5 backdrop-blur-xl text-primary font-black mb-8 border border-white/10 shadow-3d-sm animate-float">
                             <BookOpen className="h-5 w-5" aria-hidden="true" />
-                            Guide Officiel CiviQuiz — {new Date().getFullYear()}
+                            Guide Officiel CiviqQuiz — {new Date().getFullYear()}
                         </span>
                         <h1 className="text-5xl md:text-7xl lg:text-8xl font-black mb-8 leading-tight tracking-tighter">
                             <span className="sr-only">Guide CiviqQuiz : Réussissez votre naturalisation, titre de séjour et carte de résident en France</span>

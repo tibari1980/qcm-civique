@@ -140,7 +140,7 @@ export function Header() {
                         <ThemeToggle />
                         <div className="flex items-center gap-1 border-x border-gray-100 dark:border-gray-800 px-2 mx-1">
                             <a
-                                href={`https://instagram.com/${settings.socialInstagram.replace('@', '')}`}
+                                href={`https://www.instagram.com/${settings.socialInstagram.replace('@', '')}/`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400 hover:text-[#E4405F]"
@@ -292,7 +292,7 @@ export function Header() {
                             <div className="flex flex-col gap-2 bg-gray-50 dark:bg-gray-800/50 p-3 rounded-xl">
                                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1 px-1">Communauté</p>
                                 <a
-                                    href={`https://instagram.com/${settings.socialInstagram.replace('@', '')}`}
+                                    href={`https://www.instagram.com/${settings.socialInstagram.replace('@', '')}/`}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="flex items-center gap-2 text-sm font-medium py-2 text-gray-700 dark:text-gray-300 hover:text-[#E4405F]"
