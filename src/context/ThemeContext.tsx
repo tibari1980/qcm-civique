@@ -20,7 +20,7 @@ function getSystemTheme(): 'light' | 'dark' {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [theme, setThemeState] = useState<ThemeMode>('system');
+    const [theme, setThemeState] = useState<ThemeMode>('light');
     const [resolvedTheme, setResolvedTheme] = useState<'light' | 'dark'>('light');
 
     // Initialize from localStorage
