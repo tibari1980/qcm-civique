@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
-import { BookOpen, GraduationCap, CheckCircle, TrendingUp, ArrowRight, Shield, Landmark, Scale, Heart, Users, Award, Trophy, Target, ChevronDown } from 'lucide-react';
+import { BookOpen, GraduationCap, CheckCircle, TrendingUp, ArrowRight, Shield, Landmark, Scale, Heart, Users, Award, Trophy, Target, ChevronDown, Instagram } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { UserService } from '../services/user.service';
 import { useSettings } from '../context/SettingsContext';
@@ -473,39 +473,51 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TikTok Community Section */}
-      <section className="py-24 bg-gradient-to-b from-slate-50 to-white overflow-hidden" aria-labelledby="tiktok-heading">
+      {/* Social Community Section */}
+      <section className="py-24 bg-gradient-to-b from-slate-50 to-white overflow-hidden" aria-labelledby="social-heading">
         <div className="container mx-auto px-4">
-          <div className="bg-[#ff0050]/5 rounded-[3rem] border border-[#ff0050]/20 p-8 md:p-16 relative overflow-hidden group">
-            <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#ff0050]/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000" aria-hidden="true" />
-            <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-[#00f2ea]/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000" aria-hidden="true" />
+          <div className="bg-gradient-to-br from-indigo-50/50 to-pink-50/50 dark:from-indigo-900/10 dark:to-pink-900/10 rounded-[3rem] border border-gray-200 dark:border-gray-800 p-8 md:p-16 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl -mr-48 -mt-48 group-hover:scale-110 transition-transform duration-1000" aria-hidden="true" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-pink-500/5 rounded-full blur-3xl -ml-48 -mb-48 group-hover:scale-110 transition-transform duration-1000" aria-hidden="true" />
             
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-12">
               <div className="flex-1 text-center md:text-left">
                 <motion.div 
                    initial={{ opacity: 0, x: -20 }}
                    whileInView={{ opacity: 1, x: 0 }}
-                   className="inline-flex items-center gap-2 px-4 py-2 bg-[#ff0050] text-white rounded-full text-xs font-black uppercase tracking-widest mb-6 shadow-lg shadow-[#ff0050]/30 animate-pulse"
+                   className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-indigo-600 to-pink-600 text-white rounded-full text-xs font-black uppercase tracking-widest mb-6 shadow-lg shadow-indigo-500/20"
                 >
-                  🎥 Nouveau sur TikTok!
+                  📸 Rejoignez la communauté
                 </motion.div>
-                <h2 id="tiktok-heading" className="text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-tighter">
-                  Réussir son examen, <br /><span className="text-[#ff0050]">en format vidéo.</span>
+                <h2 id="social-heading" className="text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-tighter leading-tight">
+                  Plus que des quiz, <br /><span className="text-gradient-republic">un accompagnement quotidien.</span>
                 </h2>
                 <p className="text-xl text-slate-600 mb-10 max-w-xl leading-relaxed font-light">
-                  Rejoignez notre communauté sur TikTok pour des conseils exclusifs, des mini-quiz interactifs et des astuces mémotechniques quotidiennes.
+                  Conseils d'experts, astuces mémotechniques et actualités de l'examen civique. Suivez-nous pour ne rien manquer de votre préparation.
                 </p>
-                <Link 
-                  href={`https://www.tiktok.com/@${settings.socialTikTok.replace('@', '')}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-4 bg-slate-900 hover:bg-black text-white px-10 py-5 rounded-full text-lg font-black transition-all hover:shadow-2xl hover:scale-105 active:scale-95 shadow-xl"
-                >
-                  <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current">
-                    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.17-2.89-.6-4.13-1.47V18.5c0 1.51-.43 3.03-1.38 4.21-1.28 1.61-3.37 2.5-5.4 2.29-2.58-.2-4.73-2.12-5.32-4.63-.61-2.43.34-5.18 2.29-6.84 1.05-.88 2.4-1.38 3.77-1.41.32-.01.62.01.93.04v4.06c-.3-.06-.61-.1-.92-.1-.85-.05-1.74.15-2.46.61-.75.46-1.32 1.25-1.43 2.11-.15 1 0 2.05.61 2.87s1.61 1.27 2.62 1.25c.87.01 1.72-.34 2.31-1 .61-.76.73-1.8.73-2.73V.02z" />
-                  </svg>
-                  S'abonner à @{settings.socialTikTok}
-                </Link>
+                
+                <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
+                  <Link 
+                    href={`https://instagram.com/${settings.socialInstagram.replace('@', '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-3 bg-gradient-to-r from-[#833AB4] via-[#FD1D1D] to-[#FCB045] hover:opacity-90 text-white px-8 py-4 rounded-full text-lg font-black transition-all hover:shadow-2xl hover:scale-105 active:scale-95 shadow-xl"
+                  >
+                    <Instagram className="h-6 w-6" />
+                    Instagram
+                  </Link>
+                  <Link 
+                    href={`https://www.tiktok.com/@${settings.socialTikTok.replace('@', '')}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-3 bg-slate-900 hover:bg-black text-white px-8 py-4 rounded-full text-lg font-black transition-all hover:shadow-2xl hover:scale-105 active:scale-95 shadow-xl"
+                  >
+                    <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current">
+                      <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.17-2.89-.6-4.13-1.47V18.5c0 1.51-.43 3.03-1.38 4.21-1.28 1.61-3.37 2.5-5.4 2.29-2.58-.2-4.73-2.12-5.32-4.63-.61-2.43.34-5.18 2.29-6.84 1.05-.88 2.4-1.38 3.77-1.41.32-.01.62.01.93.04v4.06c-.3-.06-.61-.1-.92-.1-.85-.05-1.74.15-2.46.61-.75.46-1.32 1.25-1.43 2.11-.15 1 0 2.05.61 2.87s1.61 1.27 2.62 1.25c.87.01 1.72-.34 2.31-1 .61-.76.73-1.8.73-2.73V.02z" />
+                    </svg>
+                    TikTok
+                  </Link>
+                </div>
               </div>
               
               <motion.div 
@@ -515,7 +527,7 @@ export default function Home() {
               >
                 <img 
                   src="https://images.unsplash.com/photo-1611606063065-ee7946f0787a?q=80&w=400&auto=format&fit=crop" 
-                  alt="Aperçu TikTok CiviqQuiz"
+                  alt="Aperçu Réseaux CiviqQuiz"
                   className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
@@ -524,13 +536,15 @@ export default function Home() {
                     <div className="w-10 h-10 rounded-full border-2 border-white overflow-hidden">
                        <img src="/logo-civiqquiz.png" alt="Avatar" className="w-full h-full object-cover" />
                     </div>
-                    <div className="text-white">
-                      <p className="text-xs font-black">CiviqQuiz</p>
-                      <p className="text-[10px] opacity-70">il y a 2h</p>
+                    <div className="font-bold text-white">
+                      <p className="text-xs">CiviqQuiz Official</p>
+                      <p className="text-[10px] opacity-70 flex items-center gap-1">
+                        <span className="w-1 h-1 bg-green-500 rounded-full animate-pulse" /> En ligne
+                      </p>
                     </div>
                   </div>
                   <div className="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
-                    <div className="h-full w-1/3 bg-[#ff0050]" />
+                    <div className="h-full w-2/3 bg-gradient-to-r from-indigo-500 to-pink-500" />
                   </div>
                 </div>
               </motion.div>

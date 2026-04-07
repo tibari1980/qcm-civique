@@ -29,7 +29,7 @@ const DEFAULTS: AppSettings = {
     announcementMessage: '',
     announcementActive: false,
     contactEmail: 'support@civiqquiz.com',
-    socialInstagram: '',
+    socialInstagram: 'civiqquiz',
     socialLinkedIn: '',
     socialTikTok: 'civiquiz',
     maintenanceMode: false,
