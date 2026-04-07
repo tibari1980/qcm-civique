@@ -15,6 +15,7 @@ interface AppSettings {
     contactEmail: string;
     socialInstagram: string;
     socialLinkedIn: string;
+    socialTikTok: string;
     maintenanceMode: boolean;
 }
 
@@ -30,6 +31,7 @@ const DEFAULTS: AppSettings = {
     contactEmail: 'support@civiqquiz.com',
     socialInstagram: '',
     socialLinkedIn: '',
+    socialTikTok: 'civiquiz',
     maintenanceMode: false,
 };
 

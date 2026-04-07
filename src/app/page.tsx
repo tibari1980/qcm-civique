@@ -473,6 +473,72 @@ export default function Home() {
         </div>
       </section>
 
+      {/* TikTok Community Section */}
+      <section className="py-24 bg-gradient-to-b from-slate-50 to-white overflow-hidden" aria-labelledby="tiktok-heading">
+        <div className="container mx-auto px-4">
+          <div className="bg-[#ff0050]/5 rounded-[3rem] border border-[#ff0050]/20 p-8 md:p-16 relative overflow-hidden group">
+            <div className="absolute -top-24 -right-24 w-64 h-64 bg-[#ff0050]/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000" aria-hidden="true" />
+            <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-[#00f2ea]/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000" aria-hidden="true" />
+            
+            <div className="relative z-10 flex flex-col md:flex-row items-center gap-12">
+              <div className="flex-1 text-center md:text-left">
+                <motion.div 
+                   initial={{ opacity: 0, x: -20 }}
+                   whileInView={{ opacity: 1, x: 0 }}
+                   className="inline-flex items-center gap-2 px-4 py-2 bg-[#ff0050] text-white rounded-full text-xs font-black uppercase tracking-widest mb-6 shadow-lg shadow-[#ff0050]/30 animate-pulse"
+                >
+                  🎥 Nouveau sur TikTok!
+                </motion.div>
+                <h2 id="tiktok-heading" className="text-4xl md:text-6xl font-black text-slate-900 mb-6 tracking-tighter">
+                  Réussir son examen, <br /><span className="text-[#ff0050]">en format vidéo.</span>
+                </h2>
+                <p className="text-xl text-slate-600 mb-10 max-w-xl leading-relaxed font-light">
+                  Rejoignez notre communauté sur TikTok pour des conseils exclusifs, des mini-quiz interactifs et des astuces mémotechniques quotidiennes.
+                </p>
+                <Link 
+                  href={`https://www.tiktok.com/@${settings.socialTikTok.replace('@', '')}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-4 bg-slate-900 hover:bg-black text-white px-10 py-5 rounded-full text-lg font-black transition-all hover:shadow-2xl hover:scale-105 active:scale-95 shadow-xl"
+                >
+                  <svg viewBox="0 0 24 24" className="h-6 w-6 fill-current">
+                    <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.17-2.89-.6-4.13-1.47V18.5c0 1.51-.43 3.03-1.38 4.21-1.28 1.61-3.37 2.5-5.4 2.29-2.58-.2-4.73-2.12-5.32-4.63-.61-2.43.34-5.18 2.29-6.84 1.05-.88 2.4-1.38 3.77-1.41.32-.01.62.01.93.04v4.06c-.3-.06-.61-.1-.92-.1-.85-.05-1.74.15-2.46.61-.75.46-1.32 1.25-1.43 2.11-.15 1 0 2.05.61 2.87s1.61 1.27 2.62 1.25c.87.01 1.72-.34 2.31-1 .61-.76.73-1.8.73-2.73V.02z" />
+                  </svg>
+                  S'abonner à @{settings.socialTikTok}
+                </Link>
+              </div>
+              
+              <motion.div 
+                initial={{ opacity: 0, rotate: 5, y: 20 }}
+                whileInView={{ opacity: 1, rotate: -2, y: 0 }}
+                className="relative w-full max-w-[280px] aspect-[9/16] rounded-[2.5rem] overflow-hidden shadow-[0_40px_80px_rgba(0,0,0,0.3)] border-[10px] border-slate-900 group-hover:rotate-1 transition-transform duration-700"
+              >
+                <img 
+                  src="https://images.unsplash.com/photo-1611606063065-ee7946f0787a?q=80&w=400&auto=format&fit=crop" 
+                  alt="Aperçu TikTok CiviqQuiz"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
+                <div className="absolute bottom-8 left-6 right-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 rounded-full border-2 border-white overflow-hidden">
+                       <img src="/logo-civiqquiz.png" alt="Avatar" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="text-white">
+                      <p className="text-xs font-black">CiviqQuiz</p>
+                      <p className="text-[10px] opacity-70">il y a 2h</p>
+                    </div>
+                  </div>
+                  <div className="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
+                    <div className="h-full w-1/3 bg-[#ff0050]" />
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* FAQ Section */}
       <FaqSection />
 

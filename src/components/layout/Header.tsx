@@ -3,6 +3,7 @@
 import React, { useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Menu, X, BookOpen, GraduationCap, LayoutDashboard, Home, LogOut } from 'lucide-react';
+import { Music2 } from 'lucide-react'; // Si TikTok n'est pas dispo, on utilise Music2 ou un SVG
 import { Button } from '../ui/button';
 import { TricolorLogo } from './TricolorLogo';
 import { ThemeToggle } from './ThemeToggle';
@@ -137,6 +138,17 @@ export function Header() {
                     {/* Actions desktop */}
                     <div className="hidden md:flex items-center gap-4">
                         <ThemeToggle />
+                        <a
+                            href={`https://www.tiktok.com/@${settings.socialTikTok.replace('@', '')}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-gray-600 dark:text-gray-400 hover:text-[#ff0050]"
+                            aria-label="Suivre CiviqQuiz sur TikTok"
+                        >
+                            <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current">
+                                <path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.17-2.89-.6-4.13-1.47V18.5c0 1.51-.43 3.03-1.38 4.21-1.28 1.61-3.37 2.5-5.4 2.29-2.58-.2-4.73-2.12-5.32-4.63-.61-2.43.34-5.18 2.29-6.84 1.05-.88 2.4-1.38 3.77-1.41.32-.01.62.01.93.04v4.06c-.3-.06-.61-.1-.92-.1-.85-.05-1.74.15-2.46.61-.75.46-1.32 1.25-1.43 2.11-.15 1 0 2.05.61 2.87s1.61 1.27 2.62 1.25c.87.01 1.72-.34 2.31-1 .61-.76.73-1.8.73-2.73V.02z" />
+                            </svg>
+                        </a>
                         {user ? (
                             <div className="flex items-center gap-4">
                                 <NotificationBell />
@@ -264,6 +276,18 @@ export function Header() {
                                 <LayoutDashboard className="h-4 w-4" aria-hidden="true" />
                                 {isAdmin ? "Administration" : "Tableau de bord"}
                             </Link>
+
+                            {/* TikTok Mobile Link */}
+                            <a
+                                href={`https://www.tiktok.com/@${settings.socialTikTok.replace('@', '')}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-2 text-sm font-medium py-2 text-gray-700 dark:text-gray-300"
+                                onClick={closeMenu}
+                            >
+                                <Music2 className="h-4 w-4" aria-hidden="true" />
+                                Suivez-nous sur TikTok
+                            </a>
                         </nav>
                         <div className="flex flex-col gap-2 pt-4 border-t border-gray-100">
                             {user ? (
