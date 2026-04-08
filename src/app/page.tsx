@@ -32,7 +32,7 @@ export default function Home() {
             setStats(data);
           }
 
-          const cert = await UserService.getCertificateStatus(user.uid);
+          const cert = await UserService.getCertificateStatus(user.uid, userProfile?.track || 'naturalisation');
           setCertInfo(cert);
         } catch (error) {
           console.error("Error fetching stats for landing page", error);
@@ -266,7 +266,7 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none z-10" aria-hidden="true" />
             
             <iframe
-              src="https://drive.google.com/file/d/1GFnCVAPi-s2JYyaQ6BufXIQjbdm3XDK-/preview"
+              src="https://drive.google.com/file/d/1zSdCm0nIjZWqLy-jlQkcYJp-jtn9UdnE/preview"
               className="absolute top-0 left-0 w-full h-full border-0 z-0"
               allow="autoplay; fullscreen"
               title="Vidéo de présentation visuelle de l'outil CiviqQuiz"
