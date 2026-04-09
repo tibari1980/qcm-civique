@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
-import { BookOpen, GraduationCap, CheckCircle, TrendingUp, ArrowRight, Shield, Landmark, Scale, Heart, Users, Award, Trophy, Target, ChevronDown, Instagram } from 'lucide-react';
+import { BookOpen, GraduationCap, CheckCircle, TrendingUp, ArrowRight, Shield, Landmark, Scale, Heart, Users, Award, Trophy, Target, ChevronDown, Instagram, PlayCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { UserService } from '../services/user.service';
 import { useSettings } from '../context/SettingsContext';
@@ -43,6 +43,8 @@ export default function Home() {
   }, [user, userProfile]);
 
   const dashboardLink = isAdmin ? "/admin/" : "/dashboard/";
+
+  const [playVideo, setPlayVideo] = useState(false);
 
   return (
     <div className="flex flex-col gap-0 overflow-x-hidden">
@@ -265,13 +267,40 @@ export default function Home() {
             {/* Elegant glass reflection overlay */}
             <div className="absolute inset-0 bg-gradient-to-tr from-white/5 to-transparent pointer-events-none z-10" aria-hidden="true" />
             
-            <iframe
-              src="https://drive.google.com/file/d/1zSdCm0nIjZWqLy-jlQkcYJp-jtn9UdnE/preview"
-              className="absolute top-0 left-0 w-full h-full border-0 z-0"
-              allow="autoplay; fullscreen"
-              title="Vidéo de présentation visuelle de l'outil CiviqQuiz"
-              tabIndex={0}
-            ></iframe>
+            {!playVideo ? (
+              <div 
+                className="absolute inset-0 z-0 flex flex-col items-center justify-center cursor-pointer group/video overflow-hidden"
+                onClick={() => setPlayVideo(true)}
+              >
+                 <div className="absolute inset-0 bg-gradient-to-br from-[#002394] via-[#002394]/90 to-[#ed2939]/80 opacity-90 transition-transform duration-700 group-hover/video:scale-110" />
+                 <div className="relative z-20 flex flex-col items-center gap-6 text-white text-center p-8">
+                    <div className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-xl flex items-center justify-center border border-white/30 shadow-2xl group-hover/video:scale-110 group-hover/video:bg-white/30 transition-all duration-300">
+                      <PlayCircle className="w-10 h-10 fill-white" />
+                    </div>
+                    <div>
+                      <h4 className="text-2xl font-black uppercase tracking-tight mb-2">Découvrir la méthode</h4>
+                      <p className="text-sm font-medium text-white/70">Cliquez pour lancer la vidéo de présentation</p>
+                    </div>
+                 </div>
+                 {/* Decorative elements to make it look like a video thumbnail */}
+                 <div className="absolute bottom-6 left-6 z-20 flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-lg bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center">
+                       <FrenchFlag className="w-4 h-3 opacity-80" />
+                    </div>
+                    <span className="text-[10px] font-black tracking-widest uppercase opacity-60">Production Officielle</span>
+                 </div>
+              </div>
+            ) : (
+              <iframe
+                src="https://docs.google.com/file/d/1zSdCm0nIjZWqLy-jlQkcYJp-jtn9UdnE/preview"
+                className="absolute top-0 left-0 w-full h-full border-0 z-0"
+                allow="autoplay; fullscreen"
+                title="Vidéo de présentation de la méthode CiviqQuiz"
+                tabIndex={0}
+                loading="lazy"
+                sandbox="allow-scripts allow-same-origin allow-presentation allow-popups-to-escape-sandbox"
+              ></iframe>
+            )}
           </motion.div>
           
           <div className="text-center mt-12 flex justify-center">

@@ -60,12 +60,11 @@ export default function LoginPage() {
             await signInWithEmailAndPassword(auth, email, password);
             // La redirection est gérée par le useEffect qui attend le profil utilisateur
         } catch (err: any) {
-            console.error("Login error:", err);
             let message = "Échec de la connexion. Vérifiez vos identifiants et réessayez.";
 
-            if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential') {
-                message = "Identifiants invalides ou aucun compte trouvé avec cette adresse email.";
-            } else if (err.code === 'auth/wrong-password') {
+            if (err.code === 'auth/user-not-found' || err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') {
+                message = "Email ou mot de passe incorrect. Veuillez vérifier vos identifiants.";
+            } else if (err.code === 'auth/invalid-email') {
                 message = "Le mot de passe est incorrect.";
             } else if (err.code === 'auth/invalid-email') {
                 message = "L'adresse email n'est pas valide.";

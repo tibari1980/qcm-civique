@@ -121,11 +121,31 @@ export default function AdminUsersPage() {
     }, [search, users]);
 
     const toggleRole = async (uid: string, current: string) => {
-        setUpdatingUid(uid);
+        if (uid === user?.uid) {
+            alert("Vous ne pouvez pas retirer vos propres droits administrateur.");
+            return;
+        }
+
         const newRole = current === 'admin' ? 'user' : 'admin';
-        await AdminService.updateUserRole(uid, newRole);
-        setUsers(prev => prev.map(u => u.uid === uid ? { ...u, role: newRole } : u));
-        setUpdatingUid(null);
+        const confirmMsg = newRole === 'admin'
+            ? `Voulez-vous promouvoir cet utilisateur en Administrateur ? Il aura accès à TOUTES les fonctionnalités de gestion.`
+            : `Voulez-vous retirer les droits d'administration de cet utilisateur ?`;
+
+        if (!confirm(confirmMsg)) return;
+
+        setUpdatingUid(uid);
+        try {
+            await AdminService.updateUserRole(uid, newRole);
+            setUsers(prev => prev.map(u => u.uid === uid ? { ...u, role: newRole } : u));
+            alert(`✅ Succès : L'utilisateur est maintenant ${newRole === 'admin' ? 'Administrateur' : 'Utilisateur'}.`);
+        } catch (error: any) {
+            const errorMsg = error.message?.includes('Firebase Admin SDK') 
+                ? "Configuration serveur manquante (Vérifiez les variables d'environnement FIREBASE_...)."
+                : error.message || 'Le serveur a renvoyé une erreur.';
+            alert(`❌ Erreur : ${errorMsg}`);
+        } finally {
+            setUpdatingUid(null);
+        }
     };
 
     const toggleStatus = async (uid: string, currentDisabled: boolean) => {

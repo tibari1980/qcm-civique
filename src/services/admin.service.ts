@@ -246,7 +246,20 @@ export class AdminService {
 
     /* ── Mettre à jour le rôle / statut ── */
     static async updateUserRole(uid: string, role: 'user' | 'admin'): Promise<void> {
-        await updateDoc(doc(db, 'users', uid), { role });
+        const token = await getAuthToken();
+        const response = await fetch('/api/admin/set-role', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({ uid, role }),
+        });
+
+        if (!response.ok) {
+            const data = await response.json();
+            throw new Error(data.error || 'Failed to update user role');
+        }
     }
 
     static async setUserStatus(uid: string, disabled: boolean): Promise<void> {

@@ -388,6 +388,7 @@ export default function GuidePage() {
                     <div className="space-y-8">
                         {GUIDE_STEPS.map((step, i) => (
                                 <motion.div
+                                    key={i}
                                     whileHover={{ y: -10, rotate: 0.5 }}
                                     className="premium-card-3d bg-white p-8 md:p-10 rounded-[2.5rem] border-none"
                                 >

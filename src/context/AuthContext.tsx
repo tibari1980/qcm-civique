@@ -6,7 +6,6 @@ import { auth, db } from '../lib/firebase';
 import { doc, onSnapshot, updateDoc } from 'firebase/firestore';
 import { useRouter } from 'next/navigation';
 import { UserProfile } from '../types';
-import { ADMIN_EMAILS } from '../constants/app-constants';
 
 interface AuthContextType {
     user: User | null;
@@ -58,13 +57,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                             setUserProfile(null);
                             setUser(null);
                         } else {
-                            // Auto-sync admin role for whitelisted emails
-                            if (firebaseUser.email && ADMIN_EMAILS.includes(firebaseUser.email) && data.role !== 'admin') {
-                                await updateDoc(docRef, { role: 'admin' });
-                                setUserProfile({ ...data, role: 'admin' });
-                            } else {
-                                setUserProfile(data);
-                            }
+                            setUserProfile(data);
                         }
                     } else {
                         // AUTO-REPAIR: If user exists in Auth but not in Firestore, create it
@@ -128,7 +121,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         // No longer strictly needed but kept for backward compatibility if used anywhere
     };
 
-    const isAdmin = userProfile?.role === 'admin' || (user?.email ? ADMIN_EMAILS.includes(user.email) : false);
+    // Bootstrap Admin check (Fallback if DB is unconfigured or lockout occurs)
+    const bootstrapEmail = process.env.NEXT_PUBLIC_BOOTSTRAP_ADMIN_EMAIL;
+    const isBootstrapAdmin = !!(user?.email && bootstrapEmail && user.email.toLowerCase() === bootstrapEmail.toLowerCase());
+
+    const isAdmin = userProfile?.role === 'admin' || isBootstrapAdmin;
 
     return (
         <AuthContext.Provider value={{ user, userProfile, loading, isAdmin, signOut, refreshProfile }}>

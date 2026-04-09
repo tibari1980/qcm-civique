@@ -182,7 +182,6 @@ export default function ExamSession() {
                 setQuestions(fetched);
 
                 if (fetched.length > 0) {
-                     console.log(`[Anti-Repeat] Excluded ${seenIds.length} historically seen questions for Exam.`);
                      // Sauvegarde de l'historique local "Zéro Doublon"
                      const newSeenIds = [...new Set([...seenIds, ...fetched.map(q => q.id)])];
                      if (newSeenIds.length > 200) newSeenIds.splice(0, newSeenIds.length - 200); // Nettoyage FIFO

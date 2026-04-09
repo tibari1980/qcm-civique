@@ -37,6 +37,7 @@ export default function Dashboard() {
     const [themeStats, setThemeStats] = useState<{name: string, score: number, color: string}[]>([]);
     const [streakDays, setStreakDays] = useState(0);
     const [xpAmount, setXpAmount] = useState(0);
+    const [playSimulation, setPlaySimulation] = useState(false);
 
     const THEME_COLORS: Record<string, string> = {
         'histoire': '#3b82f6', // blue
@@ -354,7 +355,29 @@ export default function Dashboard() {
                                 <h2 id="video-simulation-title" className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4 pl-1">Préparation à l&apos;Entretien</h2>
                                 <Card className="premium-card-3d border-none shadow-3d-md bg-white overflow-hidden p-0 relative group">
                                      <div className="aspect-video w-full border-b border-slate-100 bg-slate-900 overflow-hidden relative">
-                                           <iframe src="https://drive.google.com/file/d/18dK1eG_IeISQe01hBi_m0cCmgqV8gP80/preview" allow="autoplay" className="absolute top-0 left-0 w-full h-full border-none" />
+                                           {!playSimulation ? (
+                                             <div 
+                                               className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer bg-slate-800 hover:bg-slate-700 transition-colors group/sim"
+                                               onClick={() => setPlaySimulation(true)}
+                                             >
+                                                <div className="absolute inset-0 bg-gradient-to-br from-blue-900/40 to-slate-900/80 z-0" />
+                                                <div className="relative z-10 flex flex-col items-center gap-4 text-white">
+                                                   <div className="w-16 h-16 rounded-full bg-blue-600/20 backdrop-blur-md flex items-center justify-center border border-blue-400/30 group-hover/sim:scale-110 transition-transform">
+                                                      <PlayCircle className="w-8 h-8 fill-blue-500" />
+                                                   </div>
+                                                   <span className="text-xs font-black uppercase tracking-widest opacity-80">Lancer la Simulation Vidéo</span>
+                                                </div>
+                                             </div>
+                                           ) : (
+                                             <iframe 
+                                                  src="https://docs.google.com/file/d/18dK1eG_IeISQe01hBi_m0cCmgqV8gP80/preview" 
+                                                  allow="autoplay" 
+                                                  className="absolute top-0 left-0 w-full h-full border-none" 
+                                                  title="Vidéo de simulation de l'entretien de naturalisation"
+                                                  loading="lazy"
+                                                  sandbox="allow-scripts allow-same-origin allow-presentation allow-popups-to-escape-sandbox"
+                                             />
+                                           )}
                                      </div>
                                      <CardContent className="p-6">
                                           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">

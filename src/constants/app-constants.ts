@@ -29,7 +29,4 @@ export const CECRL_TO_DB_LEVEL: Record<string, string | null> = {
     B2: 'Avancé',
 };
 
-export const ADMIN_EMAILS = [
-    'tibarinewdzign@gmail.com',
-    'admin@civiq.fr' // Backup admin
-];
+
