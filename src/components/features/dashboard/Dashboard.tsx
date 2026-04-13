@@ -190,7 +190,7 @@ export default function Dashboard() {
                                 Bonjour, <span className="text-gradient-republic">{user.displayName || 'Candidat'}</span>
                             </h1>
                             <p className="text-slate-500 text-lg font-medium mt-2 max-w-xl">
-                                Prêt à passer une nouvelle étape vers votre {userProfile?.track === 'naturalisation' ? 'Nationalité Française' : 'Titre de Séjour'} ?
+                                Un grand pas de plus vers votre {userProfile?.track === 'naturalisation' ? 'Nationalité Française' : 'Titre de Séjour'} ! On y va ?
                             </p>
                         </div>
                         
@@ -297,8 +297,8 @@ export default function Dashboard() {
                                     <h3 className="text-2xl font-black text-slate-900">Certificat de Réussite</h3>
                                     <p className="text-sm text-slate-500 font-medium mt-1">
                                         {certificateInfo.eligible
-                                            ? "Félicitations ! Vous avez le niveau pour l'examen officiel."
-                                            : `Encore un effort (${Math.round(certificateInfo.progress)}%). Sécurisez 80% sur chaque thème.`}
+                                            ? "Incroyable ! 🎉 Vous êtes officiellement prêt(e) à affronter l'examen réel les yeux fermés."
+                                            : `Vous y êtes presque (${Math.round(certificateInfo.progress)}%) ! 💪 Ciblez les zones rouges pour décrocher ce précieux sésame.`}
                                     </p>
                                 </div>
                             </div>
@@ -440,7 +440,7 @@ export default function Dashboard() {
                             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:scale-150 transition-transform duration-700" />
                             <h4 className="font-black text-[10px] uppercase tracking-[0.2em] mb-3 text-blue-200">Recommandation IA</h4>
                             <p className="text-sm font-medium leading-relaxed">
-                                Les utilisateurs qui maintiennent un <strong>Streak de 3 jours</strong> ont 85% de chances supplémentaires de réussir l'examen de l'état du premier coup.
+                                💡 <strong>Le conseil de notre IA</strong> : La régularité, c'est la clé ! Entraînez-vous 3 jours de suite et vos chances de réussite exploseront de 85% le jour J.
                             </p>
                         </Card>
                     </aside>

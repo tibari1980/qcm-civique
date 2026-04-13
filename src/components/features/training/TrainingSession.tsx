@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../../../components/ui/card';
 import { Button } from '../../../components/ui/button';
-import { CheckCircle, XCircle, ArrowRight, RotateCcw, Home, Volume2, VolumeX, Loader2, Flame, Eye, BookOpen } from 'lucide-react';
+import { CheckCircle, XCircle, ArrowRight, RotateCcw, Home, Volume2, VolumeX, Loader2, Flame, Eye, BookOpen, Lightbulb } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '../../../context/AuthContext';
 import { Question, QuestionService } from '../../../services/question.service';
@@ -440,17 +440,17 @@ export default function TrainingSession() {
                                             aria-label="Explication de la réponse"
                                         >
                                             <div className="premium-card-3d bg-slate-900 text-white p-10 relative overflow-hidden group">
-                                                <div className="absolute top-0 right-0 w-48 h-48 bg-blue-600/20 rounded-full -mr-24 -mt-24 blur-[80px] animate-pulse" aria-hidden="true" />
-                                                <div className="absolute bottom-0 left-0 w-48 h-48 bg-red-600/20 rounded-full -ml-24 -mb-24 blur-[80px] animate-pulse delay-700" aria-hidden="true" />
+                                                <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/20 rounded-full -mr-24 -mt-24 blur-[80px] animate-pulse" aria-hidden="true" />
+                                                <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-600/20 rounded-full -ml-24 -mb-24 blur-[80px] animate-pulse delay-700" aria-hidden="true" />
                                                 
                                                 <div className="flex flex-col md:flex-row items-start gap-8 relative z-10">
                                                     <div className="bg-white/10 backdrop-blur-md p-5 rounded-3xl flex-shrink-0 border border-white/10 shadow-3d-sm group-hover:rotate-12 transition-transform duration-700" aria-hidden="true">
-                                                        <BookOpen className="h-10 w-10 text-blue-300" />
+                                                        <Lightbulb className="h-10 w-10 text-amber-300" />
                                                     </div>
                                                     <div>
                                                         <h3 className="text-2xl font-black text-white mb-4 tracking-tight flex items-center gap-3">
-                                                            L&apos;Essentiel à Retenir
-                                                            <div className="h-1.5 w-16 bg-gradient-to-r from-blue-500 to-red-500 rounded-full" />
+                                                            Le saviez-vous ?
+                                                            <div className="h-1.5 w-16 bg-gradient-to-r from-amber-400 to-blue-500 rounded-full" />
                                                         </h3>
                                                         <p className="text-slate-300 leading-relaxed text-xl font-medium antialiased">
                                                             {currentQuestion.explanation}

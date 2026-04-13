@@ -71,10 +71,10 @@ export default function Home() {
             {user ? (
               <>
                 <h1 id="hero-heading" className="text-5xl md:text-7xl font-extrabold tracking-tight text-gray-900 mb-6">
-                  Ravi de vous revoir, <span className="text-gradient-republic">{userProfile?.displayName || user?.displayName || 'Candidat'}</span>
+                  Heureux de vous retrouver, <span className="text-gradient-republic">{userProfile?.displayName || user?.displayName || 'Candidat'}</span> ! 👋
                 </h1>
                 <p className="max-w-2xl mx-auto text-xl text-gray-600 mb-10 leading-relaxed font-light">
-                  Poursuivons ensemble votre préparation. Prêt à franchir une nouvelle étape vers votre réussite sur <span className="font-medium text-blue-600">{settings.appName}</span> ?
+                  Chaque session vous rapproche de votre objectif. Prêt(e) à faire exploser votre score aujourd'hui sur <span className="font-medium text-blue-600">{settings.appName}</span> ?
                 </p>
 
                 {/* Glassmorphism Stats Summary */}
@@ -193,17 +193,16 @@ export default function Home() {
                   🇫🇷 Excellence Républicaine
                 </motion.div>
                 <h1 id="hero-heading" className="text-4xl md:text-6xl font-black tracking-tighter text-gray-900 mb-8 leading-tight">
-                  Préparez sereinement votre <span className="text-gradient-republic">intégration</span>. <br />
-                  Réussissez votre examen civique avec CiviqQuiz.
+                  La nationalité ou la carte de résident n'est plus qu'à <span className="text-gradient-republic">quelques clics</span>. 🇫🇷
                 </h1>
                 <p className="max-w-3xl mx-auto text-xl md:text-2xl text-gray-500 mb-10 font-light leading-relaxed">
-                  Accédez à une préparation complète et conforme aux exigences officielles pour votre naturalisation, titre de séjour ou carte de résident.
+                  Réussissez votre examen civique du premier coup grâce à une préparation pensée pour vous, sans stress et 100% conforme aux attentes de l'État.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
                   <Link href="/register">
                     <Button size="xl" className="px-12 rounded-full bg-black hover:bg-gray-800 text-white shadow-2xl transition-all active:scale-95 text-lg font-bold">
-                      Je commence
+                      Je démarre mon parcours 🚀
                     </Button>
                   </Link>
                   <Link href="/eligibilite">
@@ -214,7 +213,7 @@ export default function Home() {
                   </Link>
                   <Link href="#values">
                     <Button variant="ghost" size="xl" className="px-8 rounded-full text-gray-600 hover:bg-gray-100 font-medium whitespace-nowrap">
-                      Découvrir la méthode
+                      Voir comment ça marche
                     </Button>
                   </Link>
                 </div>

@@ -65,7 +65,7 @@ export function QuickActions() {
             <ActionCard
                 href="/fiches"
                 title="Réviser"
-                description="L'essentiel du programme résumé en fiches mémo visuelles."
+                description="Allez droit au but avec nos fiches mémos visuelles, garanties sans maux de tête."
                 icon={BookOpen}
                 colorClass="bg-blue-50/50"
                 iconBgClass="bg-blue-600 shadow-blue-200"
@@ -74,7 +74,7 @@ export function QuickActions() {
             <ActionCard
                 href="/training"
                 title="S'entraîner"
-                description="Entraînez-vous par thème avec des corrections instantanées."
+                description="Ciblez vos points faibles et transformez-les en force de frappe."
                 icon={Target}
                 colorClass="bg-emerald-50/50"
                 iconBgClass="bg-emerald-600 shadow-emerald-200"
@@ -83,7 +83,7 @@ export function QuickActions() {
             <ActionCard
                 href="/exam"
                 title="Examen Blanc"
-                description="Testez-vous en conditions réelles avec le timer officiel."
+                description="Le jour J approche ? Immergez-vous dans notre simulation officielle minutée."
                 icon={GraduationCap}
                 colorClass="bg-indigo-50/50"
                 iconBgClass="bg-indigo-600 shadow-indigo-200"
@@ -92,7 +92,7 @@ export function QuickActions() {
             <ActionCard
                 href="/review"
                 title="Mes Erreurs"
-                description="Analysez et reprenez uniquement les questions échouées."
+                description="Ne restez pas sur un échec. On analyse vos erreurs ensemble pour ne plus les refaire."
                 icon={AlertCircle}
                 colorClass="bg-orange-50/50"
                 iconBgClass="bg-orange-600 shadow-orange-200"
@@ -101,7 +101,7 @@ export function QuickActions() {
             <ActionCard
                 href="/contact"
                 title="Aide & Feedback"
-                description="Un problème ou une suggestion ? Notre équipe vous écoute."
+                description="Une question ou un doute ? Dites-nous tout, nous sommes là pour vous aider."
                 icon={MessageCircleQuestion}
                 colorClass="bg-rose-50/50"
                 iconBgClass="bg-rose-600 shadow-rose-200"

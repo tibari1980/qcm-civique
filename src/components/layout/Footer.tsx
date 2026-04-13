@@ -101,6 +101,11 @@ export function Footer() {
                                 <h2 className="text-white font-bold text-lg uppercase tracking-wider text-sm">Communauté</h2>
                                 <ul className="space-y-3 text-gray-400 text-sm">
                                     <li>
+                                        <Link href="/blog" className="text-emerald-400 font-semibold hover:text-emerald-300 transition-colors flex items-center gap-2">
+                                            <span>📰</span> Blog / Actualités
+                                        </Link>
+                                    </li>
+                                    <li>
                                         <Link href="/reviews" className="text-blue-400 font-semibold hover:text-blue-300 transition-colors flex items-center gap-2">
                                             <span>⭐</span> Avis Utilisateurs
                                         </Link>

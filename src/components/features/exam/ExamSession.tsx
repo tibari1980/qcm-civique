@@ -4,7 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '../../../components/ui/card';
 import { Button } from '../../../components/ui/button';
-import { Clock, AlertCircle, ArrowLeft, ArrowRight, CheckCircle2, ChevronRight, Loader2, Eye } from 'lucide-react';
+import { Clock, AlertCircle, ArrowLeft, ArrowRight, CheckCircle2, ChevronRight, Loader2, Eye, Lightbulb } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '../../../context/AuthContext';
 import { useRouter } from 'next/navigation';
@@ -211,7 +211,7 @@ export default function ExamSession() {
                         <CheckCircle2 className="h-8 w-8 text-slate-300" aria-hidden="true" />
                     </div>
                 </div>
-                <p className="text-slate-600 font-semibold animate-pulse">Préparation de votre session d&apos;examen...</p>
+                <p className="text-slate-600 font-semibold animate-pulse">Installation de votre grille d'examen... Prenez une grande inspiration ! 🧘‍♂️</p>
             </div>
         );
     }
@@ -229,7 +229,7 @@ export default function ExamSession() {
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <p className="text-slate-600">
-                            Nous n&apos;avons pas pu générer votre session. Vérifiez votre connexion ou réessayez dans quelques instants.
+                            Oups, petit souci réseau. Nos serveurs n'ont pas pu préparer votre grille d'examen. Vérifiez votre connexion et on réessaie !
                         </p>
                     </CardContent>
                     <CardFooter className="justify-center py-8">
@@ -379,17 +379,24 @@ export default function ExamSession() {
                                 </div>
 
                                 {q.explanation && (
-                                    <div className="bg-slate-900 text-white p-8 rounded-[1.5rem] relative overflow-hidden group">
-                                         <div className="absolute top-0 right-0 w-32 h-32 bg-blue-600/10 rounded-full blur-[60px]" aria-hidden="true" />
-                                         <div className="relative z-10">
-                                            <div className="flex items-center gap-3 mb-4">
-                                                <div className="h-1 w-8 bg-blue-500 rounded-full" />
-                                                <span className="text-xs font-black uppercase tracking-[0.2em] text-blue-300">Explication</span>
+                                    <div className="premium-card-3d bg-slate-900 text-white p-10 rounded-[2rem] relative overflow-hidden group">
+                                        <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/20 rounded-full -mr-24 -mt-24 blur-[80px] animate-pulse" aria-hidden="true" />
+                                        <div className="absolute bottom-0 left-0 w-48 h-48 bg-blue-600/20 rounded-full -ml-24 -mb-24 blur-[80px] animate-pulse delay-700" aria-hidden="true" />
+                                        
+                                        <div className="flex flex-col md:flex-row items-start gap-8 relative z-10">
+                                            <div className="bg-white/10 backdrop-blur-md p-5 rounded-3xl flex-shrink-0 border border-white/10 shadow-3d-sm group-hover:rotate-12 transition-transform duration-700" aria-hidden="true">
+                                                <Lightbulb className="h-10 w-10 text-amber-300" />
                                             </div>
-                                            <p className="text-slate-300 leading-relaxed font-medium antialiased">
-                                                {q.explanation}
-                                            </p>
-                                         </div>
+                                            <div>
+                                                <h3 className="text-2xl font-black text-white mb-4 tracking-tight flex items-center gap-3">
+                                                    Le saviez-vous ?
+                                                    <div className="h-1.5 w-16 bg-gradient-to-r from-amber-400 to-blue-500 rounded-full" />
+                                                </h3>
+                                                <p className="text-slate-300 leading-relaxed text-xl font-medium antialiased">
+                                                    {q.explanation}
+                                                </p>
+                                            </div>
+                                        </div>
                                     </div>
                                 )}
                             </motion.div>
