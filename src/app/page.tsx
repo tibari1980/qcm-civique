@@ -192,11 +192,11 @@ export default function Home() {
                 >
                   🇫🇷 Excellence Républicaine
                 </motion.div>
-                <h1 id="hero-heading" className="text-4xl md:text-6xl font-black tracking-tighter text-gray-900 mb-8 leading-tight">
-                  La nationalité ou la carte de résident n'est plus qu'à <span className="text-gradient-republic">quelques clics</span>. 🇫🇷
+                <h1 id="hero-heading" className="text-4xl md:text-6xl font-black tracking-tighter text-gray-900 mb-6 leading-tight">
+                  L'entraînement N°1 pour réussir votre <span className="text-gradient-republic">Examen Civique</span> 🇫🇷
                 </h1>
-                <p className="max-w-3xl mx-auto text-xl md:text-2xl text-gray-500 mb-10 font-light leading-relaxed">
-                  Réussissez votre examen civique du premier coup grâce à une préparation pensée pour vous, sans stress et 100% conforme aux attentes de l'État.
+                <p className="max-w-3xl mx-auto text-xl md:text-2xl text-gray-500 mb-10 font-light leading-relaxed lg:px-8">
+                  Préparez efficacement votre entretien de <strong>naturalisation</strong>, votre <strong>carte de résident</strong> ou votre <strong>titre de séjour</strong> avec nos quiz conformes aux attentes de l'État.
                 </p>
 
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
