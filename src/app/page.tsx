@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { Button } from '../components/ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from '../components/ui/card';
-import { BookOpen, GraduationCap, CheckCircle, TrendingUp, ArrowRight, Shield, Landmark, Scale, Heart, Users, Award, Trophy, Target, ChevronDown, Instagram, PlayCircle } from 'lucide-react';
+import { BookOpen, GraduationCap, CheckCircle, TrendingUp, ArrowRight, Shield, Landmark, Scale, Heart, Users, Award, Trophy, Target, ChevronDown, Instagram, PlayCircle, ShieldCheck } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { UserService } from '../services/user.service';
 import { useSettings } from '../context/SettingsContext';
@@ -164,15 +164,21 @@ export default function Home() {
                 )}
 
 
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
                   <Link href={dashboardLink}>
                     <Button size="xl" className="px-10 rounded-full bg-blue-600 hover:bg-blue-700 shadow-xl shadow-blue-500/30 animate-pulse-glow transition-all active:scale-95 text-lg font-bold">
                       {isAdmin ? "Administration" : "Reprendre l'entraînement"}
                     </Button>
                   </Link>
+                  <Link href="/eligibilite">
+                    <Button variant="outline" size="xl" className="px-8 rounded-full glass-card hover:bg-blue-50 border-blue-200/50 text-blue-700 text-lg font-bold flex items-center gap-2">
+                      <ShieldCheck className="w-5 h-5" />
+                      Éligibilité
+                    </Button>
+                  </Link>
                   <Link href="/review">
-                    <Button variant="outline" size="xl" className="px-10 rounded-full glass-card hover:bg-white/80 border-white/50 text-gray-800 text-lg font-medium">
-                      Analyse de mes erreurs
+                    <Button variant="ghost" size="xl" className="px-10 rounded-full hover:bg-white/80 text-gray-800 text-lg font-medium">
+                      Analyse erreurs
                     </Button>
                   </Link>
                 </div>
@@ -194,14 +200,20 @@ export default function Home() {
                   Accédez à une préparation complète et conforme aux exigences officielles pour votre naturalisation, titre de séjour ou carte de résident.
                 </p>
 
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
                   <Link href="/register">
                     <Button size="xl" className="px-12 rounded-full bg-black hover:bg-gray-800 text-white shadow-2xl transition-all active:scale-95 text-lg font-bold">
-                      Je commence ma préparation gratuite
+                      Je commence
+                    </Button>
+                  </Link>
+                  <Link href="/eligibilite">
+                    <Button variant="outline" size="xl" className="px-10 rounded-full glass-card hover:bg-blue-50 border-blue-200/50 text-blue-700 text-lg font-black flex items-center gap-3 shadow-lg hover:shadow-blue-500/10 group">
+                      <ShieldCheck className="w-6 h-6 group-hover:scale-110 transition-transform" />
+                      Éligibilité
                     </Button>
                   </Link>
                   <Link href="#values">
-                    <Button variant="ghost" size="xl" className="px-8 rounded-full text-gray-600 hover:bg-gray-100 font-medium">
+                    <Button variant="ghost" size="xl" className="px-8 rounded-full text-gray-600 hover:bg-gray-100 font-medium whitespace-nowrap">
                       Découvrir la méthode
                     </Button>
                   </Link>

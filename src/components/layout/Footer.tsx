@@ -11,13 +11,16 @@ import Link from 'next/link';
  * - Liens avec textes descriptifs
  */
 import { useSettings } from '../../context/SettingsContext';
+import { useAuth } from '../../context/AuthContext';
 import { Instagram, Linkedin, Mail } from 'lucide-react';
 
 /**
  * Footer — Pied de page
  */
 export function Footer() {
+    const { user, userProfile, isAdmin } = useAuth();
     const { settings } = useSettings();
+    const isRestricted = !!(user && userProfile && !userProfile.track && !isAdmin);
 
     return (
         <footer aria-label="Pied de page" className="relative bg-gray-900 pt-20 pb-10 overflow-hidden">
@@ -68,50 +71,72 @@ export function Footer() {
                     </div>
 
                     {/* Navigation */}
-                    <nav aria-label="Liens de navigation" className="space-y-6">
-                        <h2 className="text-white font-bold text-lg uppercase tracking-wider text-sm">Modules</h2>
-                        <ul className="space-y-3 text-gray-400 text-sm">
-                            <li>
-                                <Link href="/training" className="hover:text-blue-400 transition-colors flex items-center gap-2">
-                                    <span>•</span> Entraînement thématique
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/exam" className="hover:text-blue-400 transition-colors flex items-center gap-2">
-                                    <span>•</span> Examen Blanc officiel
-                                </Link>
-                            </li>
-                            {settings.enableInterview && (
-                                <li>
-                                    <Link href="/interview" className="hover:text-blue-400 transition-colors flex items-center gap-2">
-                                        <span>•</span> Préparation Entretien
-                                    </Link>
-                                </li>
-                            )}
-                        </ul>
-                    </nav>
+                    {!isRestricted && (
+                        <>
+                            <nav aria-label="Liens de navigation" className="space-y-6">
+                                <h2 className="text-white font-bold text-lg uppercase tracking-wider text-sm">Modules</h2>
+                                <ul className="space-y-3 text-gray-400 text-sm">
+                                    <li>
+                                        <Link href="/training" className="hover:text-blue-400 transition-colors flex items-center gap-2">
+                                            <span>•</span> Entraînement thématique
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/exam" className="hover:text-blue-400 transition-colors flex items-center gap-2">
+                                            <span>•</span> Examen Blanc officiel
+                                        </Link>
+                                    </li>
+                                    {settings.enableInterview && (
+                                        <li>
+                                            <Link href="/interview" className="hover:text-blue-400 transition-colors flex items-center gap-2">
+                                                <span>•</span> Préparation Entretien
+                                            </Link>
+                                        </li>
+                                    )}
+                                </ul>
+                            </nav>
 
-                    {/* Communauté */}
-                    <nav aria-label="Liens communauté" className="space-y-6">
-                        <h2 className="text-white font-bold text-lg uppercase tracking-wider text-sm">Communauté</h2>
-                        <ul className="space-y-3 text-gray-400 text-sm">
-                            <li>
-                                <Link href="/reviews" className="text-blue-400 font-semibold hover:text-blue-300 transition-colors flex items-center gap-2">
-                                    <span>⭐</span> Avis Utilisateurs
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/contact" className="hover:text-blue-400 transition-colors flex items-center gap-2">
-                                    <span>•</span> Support & Contact
-                                </Link>
-                            </li>
-                            <li>
-                                <Link href="/guide" className="hover:text-blue-400 transition-colors flex items-center gap-2">
-                                    <span>📖</span> Guide d'utilisation
-                                </Link>
-                            </li>
-                        </ul>
-                    </nav>
+                            {/* Communauté */}
+                            <nav aria-label="Liens communauté" className="space-y-6">
+                                <h2 className="text-white font-bold text-lg uppercase tracking-wider text-sm">Communauté</h2>
+                                <ul className="space-y-3 text-gray-400 text-sm">
+                                    <li>
+                                        <Link href="/reviews" className="text-blue-400 font-semibold hover:text-blue-300 transition-colors flex items-center gap-2">
+                                            <span>⭐</span> Avis Utilisateurs
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/contact" className="hover:text-blue-400 transition-colors flex items-center gap-2">
+                                            <span>•</span> Support & Contact
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link href="/guide" className="hover:text-blue-400 transition-colors flex items-center gap-2">
+                                            <span>•</span> Guide d'utilisation
+                                        </Link>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </>
+                    )}
+
+                    {/* Restricted Footer View */}
+                    {isRestricted && (
+                        <div className="md:col-span-2 flex flex-col justify-center p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="w-10 h-10 rounded-full bg-blue-600/20 flex items-center justify-center">
+                                    <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                                </div>
+                                <h3 className="text-white font-bold">Parcours en attente</h3>
+                            </div>
+                            <p className="text-gray-400 text-sm leading-relaxed mb-6">
+                                Vous êtes presque arrivé ! Finalisez la configuration de votre compte en choisissant votre parcours d'apprentissage pour débloquer l'accès à tous nos modules d'entraînement.
+                            </p>
+                            <Link href="/onboarding" className="inline-flex items-center justify-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all w-fit">
+                                Choisir mon parcours
+                            </Link>
+                        </div>
+                    )}
 
                     {/* Légal */}
                     <nav aria-label="Liens légaux" className="space-y-6">

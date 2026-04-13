@@ -67,6 +67,8 @@ import { Toaster } from 'sonner';
 
 import { GlobalA11yRoot } from "../components/layout/GlobalA11yRoot";
 
+import { TrackGuard } from "../components/layout/TrackGuard";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -121,11 +123,13 @@ export default function RootLayout({
                 <TricolorBar />
                 <AnnouncementBanner />
                 <SkipLink />
-                <Header />
-                <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
-                  {children}
-                </main>
-                <Footer />
+                <TrackGuard>
+                  <Header />
+                  <main id="main-content" tabIndex={-1} className="flex-1 outline-none">
+                    {children}
+                  </main>
+                  <Footer />
+                </TrackGuard>
               </GlobalA11yRoot>
             </SettingsProvider>
           </AuthProvider>
