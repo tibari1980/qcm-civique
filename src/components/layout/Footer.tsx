@@ -86,7 +86,7 @@ export function Footer() {
                                             <span>•</span> Examen Blanc officiel
                                         </Link>
                                     </li>
-                                    {settings.enableInterview && (
+                                    {settings.enableInterview && userProfile?.track === 'naturalisation' && (
                                         <li>
                                             <Link href="/interview" className="hover:text-blue-400 transition-colors flex items-center gap-2">
                                                 <span>•</span> Préparation Entretien

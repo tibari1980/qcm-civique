@@ -123,7 +123,7 @@ export function Header() {
                             <Link href="/fiches" className="text-sm font-medium text-[var(--color-primary)] hover:opacity-80 transition-all flex items-center gap-1 font-bold">
                                 <span aria-hidden="true">💡</span> Fiches
                             </Link>
-                            {settings.enableInterview && (
+                            {settings.enableInterview && userProfile?.track === 'naturalisation' && (
                                 <Link href="/interview" className="text-sm font-medium text-gray-700 hover:text-[var(--color-primary)] transition-colors">
                                     Entretien
                                 </Link>
@@ -290,7 +290,7 @@ export function Header() {
                                         <span aria-hidden="true" className="text-base">💡</span>
                                         Fiches
                                     </Link>
-                                    {settings.enableInterview && (
+                                    {settings.enableInterview && userProfile?.track === 'naturalisation' && (
                                         <Link href="/interview" className="flex items-center gap-2 text-sm font-medium py-2" onClick={closeMenu}>
                                             <GraduationCap className="h-4 w-4" aria-hidden="true" />
                                             Entretien

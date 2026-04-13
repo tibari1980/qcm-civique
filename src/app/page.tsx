@@ -12,6 +12,7 @@ import { useSettings } from '../context/SettingsContext';
 import { FrenchFlag } from '../components/layout/FrenchFlag';
 
 import { FaqSection } from '../components/features/home/FaqSection';
+import { Premium3DCTA } from '../components/features/home/Premium3DCTA';
 
 export default function Home() {
   const { user, userProfile, isAdmin } = useAuth();
@@ -512,6 +513,9 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+      {/* 3D WOW Effect CTA (Aimant à clics) */}
+      <Premium3DCTA />
 
       {/* Social Community Section */}
       <section className="py-24 bg-gradient-to-b from-slate-50 to-white overflow-hidden" aria-labelledby="social-heading">
