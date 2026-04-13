@@ -1,6 +1,6 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager } from "firebase/firestore";
+import { getFirestore, initializeFirestore, persistentLocalCache, persistentMultipleTabManager, memoryLocalCache } from "firebase/firestore";
 
 const firebaseConfig = {
     apiKey: "AIzaSyBgwmq_u5Z6rJS4z7Ndebo5dWzgP0MyHNE",
@@ -15,16 +15,20 @@ const firebaseConfig = {
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 
-// Enable offline persistence and local caching
+// Enable offline persistence only on client side (browsers)
+// On server-side (Next.js SSR/Edge), we must use memory cache to avoid hangs
 let db: ReturnType<typeof getFirestore>;
 
+const isBrowser = typeof window !== 'undefined';
+
 try {
-    // initializeFirestore avoids re-run errors if called multiple times in some environments
     db = initializeFirestore(app, {
-        localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+        localCache: isBrowser 
+            ? persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+            : memoryLocalCache()
     });
 } catch (e) {
-    // Fallback to existing instance if already initialized
+    // Fallback if already initialized
     db = getFirestore(app);
 }
 

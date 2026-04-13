@@ -77,15 +77,24 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
     const [loading, setLoading] = useState(true);
 
     const refreshSettings = async () => {
+        // Add a safety timeout (5s) to prevent infinite loading if Firestore hangs
+        const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error("Settings fetch timeout")), 5000)
+        );
+
         try {
-            const raw = await AdminService.getAppSettings();
+            const raw = await Promise.race([
+                AdminService.getAppSettings(),
+                timeoutPromise
+            ]) as Record<string, unknown>;
+
             const migrated = migrateSettings(raw);
             setSettings(migrated);
             
             // Persist to localStorage for next visit
             try { localStorage.setItem(SETTINGS_CACHE_KEY, JSON.stringify(migrated)); } catch { /* quota exceeded */ }
         } catch (err) {
-            console.error('Failed to fetch settings:', err);
+            console.error('Failed to fetch settings (falling back to cache/defaults):', err);
         } finally {
             setLoading(false);
         }
